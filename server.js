@@ -25,8 +25,10 @@ try {
   // Cambiar al directorio backend y requerir el servidor real
   process.chdir('./backend');
   console.log('📂 Directorio cambiado a:', process.cwd());
-  require('./server.js');
+  console.log('🔄 Cargando servidor backend...');
+  require('./server');
 } catch (error) {
   console.error('❌ Error al iniciar el servidor backend:', error);
+  console.error('❌ Stack trace:', error.stack);
   process.exit(1);
 }
