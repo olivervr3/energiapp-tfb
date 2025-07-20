@@ -1,8 +1,8 @@
 // Archivo server.js en la raíz para Render
-// Redirige al servidor backend real
+// Ejecuta directamente el servidor backend simplificado
 
 console.log('🚀 Iniciando EnergiApp TFB...');
-console.log('📁 Redirigiendo al servidor backend...');
+console.log('📁 Cargando servidor backend simplificado...');
 
 // Asegurar que el puerto esté configurado para Render
 process.env.PORT = process.env.PORT || 10000;
@@ -22,11 +22,8 @@ process.on('unhandledRejection', (reason, promise) => {
 });
 
 try {
-  // Cambiar al directorio backend y requerir el servidor real
-  process.chdir('./backend');
-  console.log('📂 Directorio cambiado a:', process.cwd());
-  console.log('🔄 Cargando servidor backend...');
-  require('./server');
+  console.log(' Cargando servidor backend simplificado...');
+  require('./backend/server-simple');
 } catch (error) {
   console.error('❌ Error al iniciar el servidor backend:', error);
   console.error('❌ Stack trace:', error.stack);
