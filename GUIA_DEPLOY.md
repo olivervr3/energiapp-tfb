@@ -219,15 +219,35 @@ app.get('/api/health', (req, res) => {
 
 ## 🚀 Deploy Rápido para Demo Académico
 
-### Opción Express: Heroku
+### ⚡ OPCIÓN RECOMENDADA: Railway
+```bash
+# 1. Crear repositorio en GitHub
+# Ve a github.com → New repository → "energiapp-tfb"
+
+# 2. Subir código
+git remote add origin https://github.com/[TU-USUARIO]/energiapp-tfb.git
+git branch -M main
+git push -u origin main
+
+# 3. Ir a railway.app
+# → Login con GitHub
+# → New Project → Deploy from GitHub repo
+# → Seleccionar "energiapp-tfb"
+# → Variables de entorno:
+#   NODE_ENV=production
+#   JWT_SECRET=tu_jwt_secret_super_seguro_para_produccion_2024
+
+# ¡Listo! Tu app estará en:
+# https://energiapp-tfb-production.up.railway.app
+```
+
+### Tiempo estimado: 5-10 minutos
+
+### 🟦 Alternativa: Heroku
 ```bash
 # 1. Crear cuenta en heroku.com
 # 2. Instalar Heroku CLI
 # 3. En el proyecto:
-
-git init
-git add .
-git commit -m "Initial commit v2.0"
 
 heroku create energiapp-tfb-[tu-nombre]
 heroku config:set NODE_ENV=production
@@ -239,15 +259,17 @@ git push heroku main
 # https://energiapp-tfb-[tu-nombre].herokuapp.com
 ```
 
-### Tiempo estimado: 15-30 minutos
-
 ## 🌐 URLs de Ejemplo
 
 Después del deploy, tendrás:
-- **App Principal**: https://energiapp-tfb-demo.herokuapp.com
-- **API Health**: https://energiapp-tfb-demo.herokuapp.com/api/health
-- **Login**: https://energiapp-tfb-demo.herokuapp.com (credenciales normales)
+- **App Principal**: https://energiapp-tfb-production.up.railway.app
+- **API Health**: https://energiapp-tfb-production.up.railway.app/api/health
+- **Login**: https://energiapp-tfb-production.up.railway.app (credenciales normales)
 - **Admin**: Mismo login con admin@energiapp.com
+
+### Con Heroku:
+- **App Principal**: https://energiapp-tfb-[tu-nombre].herokuapp.com
+- **API Health**: https://energiapp-tfb-[tu-nombre].herokuapp.com/api/health
 
 ## ✅ Checklist Pre-Deploy
 
@@ -282,9 +304,9 @@ const PORT = process.env.PORT || 3001;
 ## 📞 Soporte para la Tutora
 
 ### URLs de Prueba (tras deploy)
-1. **Demo Live**: https://tu-app.herokuapp.com
-2. **API Status**: https://tu-app.herokuapp.com/api/health
-3. **Documentación**: https://tu-app.herokuapp.com/api/docs
+1. **Demo Live**: https://energiapp-tfb-production.up.railway.app
+2. **API Status**: https://energiapp-tfb-production.up.railway.app/api/health
+3. **Documentación**: https://energiapp-tfb-production.up.railway.app/api/docs
 
 ### Credenciales de Acceso
 ```
