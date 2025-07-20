@@ -15,7 +15,6 @@
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{array}
-\usepackage{multirow}
 \usepackage{geometry}
 \usepackage{fancyhdr}
 \usepackage{setspace}
@@ -29,6 +28,8 @@
 % \usepackage{nomencl}
 \usepackage{csquotes}
 \usepackage[backend=biber,style=ieee,sorting=ynt]{biblatex}
+
+% Configuración de página
 \geometry{
     left=3cm,
     right=2.5cm,
@@ -110,11 +111,14 @@
 % Bibliografía
 \addbibresource{bibliografia.bib}
 
+% Comando para las siglas (comentado hasta que se use)
+% \makenomenclature
+
 % Información del documento
 \title{
     \textbf{\Huge EnergiApp v1.0: Sistema de Gestión Energética con Machine Learning} \\
     \vspace{1cm}
-    \Large Trabajo Final de Grado - Bàtxelor en Informàtica
+    \Large Trabajo Final de Grado - Ingeniería en Sistemas
 }
 \author{Oliver Vincent Rice}
 \date{Diciembre 2024}
@@ -126,11 +130,14 @@
     \centering
     \vspace*{1cm}
     
+    % Logo de la universidad (opcional)
+    % \includegraphics[width=0.3\textwidth]{images/logo_universidad.png}\\
+    
     \vspace{1.5cm}
     
-    {\huge\textbf{Universitat Carlemany}}\\
+    {\huge\textbf{Universidad Católica de Santa Fe}}\\
     \vspace{0.5cm}
-    {\Large Bàtxelor en Informàtica}\\
+    {\Large Facultad de Ingeniería - Ingeniería en Sistemas}\\
     
     \vspace{2cm}
     
@@ -152,19 +159,23 @@
     \end{minipage}
     \begin{minipage}{0.45\textwidth}
         \begin{flushright}
-            \textbf{Tutora:}\\
-            Isabel Sánchez
+            \textbf{Director:}\\
+            [Nombre del Director]
         \end{flushright}
     \end{minipage}
     
     \vfill
     
-    {\large Julio 2025}
+    {\large Diciembre 2024}\\
+    {\large Santa Fe, Argentina}
     
 \end{titlepage}
 
 % Páginas preliminares
 \frontmatter
+
+\chapter*{Resumen}
+\addcontentsline{toc}{chapter}{Resumen}
 
 \chapter*{Resumen}
 \addcontentsline{toc}{chapter}{Resumen}
@@ -197,12 +208,46 @@ La implementación demuestra el potencial de las tecnologías web avanzadas para
 
 \textbf{Palabras clave:} IoT, Machine Learning, Gestión energética, React, Node.js, Sostenibilidad, Dashboard, Optimización automática, Predicción
 
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+
+This Bachelor's Thesis presents the development and implementation of EnergiApp v1.0, a web platform for domestic energy management that integrates data visualization, machine learning prediction, and automatic consumption optimization. The application combines analysis of public datasets (UK-DALE), IoT device simulation, and artificial intelligence algorithms to provide a comprehensive energy management solution.
+
+The architecture implements a modern technology stack with Node.js/Express backend, React frontend with responsive design, and machine learning models based on real domestic consumption patterns. The system includes 1-7 day consumption predictions, automatic optimization recommendations, and temporal device control.
+
+\textbf{Main functionalities:}
+\begin{itemize}
+    \item Real-time dashboard with system KPI metrics
+    \item Energy predictions with integrated meteorological information
+    \item Executable intelligent recommendation system
+    \item Multi-user administrative management with differentiated roles
+    \item Interactive visualizations and intelligent notifications
+\end{itemize}
+
+\textbf{Technical results:}
+\begin{itemize}
+    \item 6,700+ lines of code in 25+ React components
+    \item 30+ REST API endpoints
+    \item Response times < 100ms
+    \item Predictive accuracy > 90\%
+    \item Multi-device responsive architecture
+\end{itemize}
+
+The project contributes to the Sustainable Development Goals (SDG 7, 11, 12, 13) by providing accessible tools for reducing domestic energy consumption and making informed decisions about energy efficiency.
+
+The implementation demonstrates the potential of advanced web technologies to democratize access to professional energy management tools, establishing a solid foundation for future extensions toward real IoT ecosystems and intelligent energy communities.
+
+\textbf{Keywords:} IoT, Artificial Intelligence, Energy consumption, ML Prediction, Automatic optimization, Sustainability, React, Node.js, Python, Home automation, Executive dashboard, Responsive design
+
 % Índices
 \tableofcontents
 \clearpage
 \listoffigures
 \clearpage
 \listoftables
+
+% Nomenclatura/Glosario (comentado hasta que se agreguen términos)
+% \printnomenclature[3cm]
 
 % Contenido principal
 \mainmatter
@@ -212,7 +257,9 @@ La implementación demuestra el potencial de las tecnologías web avanzadas para
 \include{capitulos/02_marco_teorico}
 \include{capitulos/03_analisis_diseño}
 \include{capitulos/04_desarrollo}
+\include{capitulos/04_desarrollo_v2}
 \include{capitulos/05_resultados}
+\include{capitulos/05_resultados_v2}
 \include{capitulos/06_conclusiones}
 
 % Capítulos técnicos especializados en Big Data y Machine Learning
@@ -225,6 +272,14 @@ La implementación demuestra el potencial de las tecnologías web avanzadas para
 
 % Bibliografía
 \printbibliography[heading=bibintoc,title={Referencias Bibliográficas}]
+
+% Apéndices (descomenta cuando los crees)
+% \begin{appendices}
+% \include{apendices/A_codigo}
+% \include{apendices/B_manual_usuario}
+% \include{apendices/C_instalacion}
+% \include{apendices/D_datasets}
+% \end{appendices}
 
 \end{document}
 

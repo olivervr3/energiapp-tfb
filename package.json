@@ -2,9 +2,9 @@
   "name": "energiapp-tfb-production",
   "version": "2.0.0",
   "description": "Plataforma integrada de análisis de consumo energético doméstico - Servidor de Producción",
-  "main": "backend/server.js",
+  "main": "start.js",
   "scripts": {
-    "start": "node backend/server.js",
+    "start": "node start.js",
     "dev": "nodemon backend/server.js",
     "build": "npm run build:frontend && npm run build:backend",
     "build:frontend": "cd frontend && npm run build",

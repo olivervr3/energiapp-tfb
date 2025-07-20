@@ -1,0 +1,178 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.2 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{ynt/global//global/global}
+    \entry{kelly2015uk}{article}{}
+      \name{author}{2}{}{%
+        {{hash=905fa4c85d3960c6f396ce73622174c4}{%
+           family={Kelly},
+           familyi={K\bibinitperiod},
+           given={Jack},
+           giveni={J\bibinitperiod}}}%
+        {{hash=135098a77e5408e14725d53603819c56}{%
+           family={Knottenbelt},
+           familyi={K\bibinitperiod},
+           given={William},
+           giveni={W\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Nature Publishing Group}%
+      }
+      \strng{namehash}{a73805694fcaec3a606c7ace360e476c}
+      \strng{fullhash}{a73805694fcaec3a606c7ace360e476c}
+      \strng{bibnamehash}{a73805694fcaec3a606c7ace360e476c}
+      \strng{authorbibnamehash}{a73805694fcaec3a606c7ace360e476c}
+      \strng{authornamehash}{a73805694fcaec3a606c7ace360e476c}
+      \strng{authorfullhash}{a73805694fcaec3a606c7ace360e476c}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Scientific Data}
+      \field{number}{1}
+      \field{title}{The UK-DALE dataset, domestic appliance-level electricity demand and whole-house demand from five UK homes}
+      \field{volume}{2}
+      \field{year}{2015}
+      \field{pages}{1\bibrangedash 14}
+      \range{pages}{14}
+    \endentry
+    \entry{shi2018deep}{article}{}
+      \name{author}{3}{}{%
+        {{hash=62257a60e83cd41294d5877cb386fccd}{%
+           family={Shi},
+           familyi={S\bibinitperiod},
+           given={Heng},
+           giveni={H\bibinitperiod}}}%
+        {{hash=ac61be29759ad593d29c986a8dd05e62}{%
+           family={Xu},
+           familyi={X\bibinitperiod},
+           given={Minghao},
+           giveni={M\bibinitperiod}}}%
+        {{hash=0db2f67a2af4a0c032dd8513a4110838}{%
+           family={Li},
+           familyi={L\bibinitperiod},
+           given={Ran},
+           giveni={R\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {IEEE}%
+      }
+      \strng{namehash}{21662eb047230e34d0f0bf01521fc665}
+      \strng{fullhash}{987d554d9ff98b2ff1b4c503dcde712a}
+      \strng{bibnamehash}{987d554d9ff98b2ff1b4c503dcde712a}
+      \strng{authorbibnamehash}{987d554d9ff98b2ff1b4c503dcde712a}
+      \strng{authornamehash}{21662eb047230e34d0f0bf01521fc665}
+      \strng{authorfullhash}{987d554d9ff98b2ff1b4c503dcde712a}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{IEEE Transactions on Smart Grid}
+      \field{number}{5}
+      \field{title}{Deep learning for household load forecasting—a novel pooling deep RNN}
+      \field{volume}{9}
+      \field{year}{2018}
+      \field{pages}{5271\bibrangedash 5280}
+      \range{pages}{10}
+    \endentry
+    \entry{european_green_deal}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=a1b813a6e85874b4c945aec2cdbea74c}{%
+           family={{European Commission}},
+           familyi={E\bibinitperiod}}}%
+      }
+      \strng{namehash}{a1b813a6e85874b4c945aec2cdbea74c}
+      \strng{fullhash}{a1b813a6e85874b4c945aec2cdbea74c}
+      \strng{bibnamehash}{a1b813a6e85874b4c945aec2cdbea74c}
+      \strng{authorbibnamehash}{a1b813a6e85874b4c945aec2cdbea74c}
+      \strng{authornamehash}{a1b813a6e85874b4c945aec2cdbea74c}
+      \strng{authorfullhash}{a1b813a6e85874b4c945aec2cdbea74c}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: July 15, 2023}
+      \field{title}{The European Green Deal}
+      \field{year}{2019}
+      \verb{urlraw}
+      \verb https://ec.europa.eu/info/strategy/priorities-2019-2024/european-green-deal_en
+      \endverb
+      \verb{url}
+      \verb https://ec.europa.eu/info/strategy/priorities-2019-2024/european-green-deal_en
+      \endverb
+    \endentry
+    \entry{iea2022digitalization}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=b33b47b3008c8c47f90a77e0c2dd3060}{%
+           family={{International Energy Agency}},
+           familyi={I\bibinitperiod}}}%
+      }
+      \strng{namehash}{b33b47b3008c8c47f90a77e0c2dd3060}
+      \strng{fullhash}{b33b47b3008c8c47f90a77e0c2dd3060}
+      \strng{bibnamehash}{b33b47b3008c8c47f90a77e0c2dd3060}
+      \strng{authorbibnamehash}{b33b47b3008c8c47f90a77e0c2dd3060}
+      \strng{authornamehash}{b33b47b3008c8c47f90a77e0c2dd3060}
+      \strng{authorfullhash}{b33b47b3008c8c47f90a77e0c2dd3060}
+      \field{extraname}{1}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: July 15, 2023}
+      \field{title}{Digitalisation and Energy}
+      \field{year}{2022}
+      \verb{urlraw}
+      \verb https://www.iea.org/reports/digitalisation-and-energy
+      \endverb
+      \verb{url}
+      \verb https://www.iea.org/reports/digitalisation-and-energy
+      \endverb
+    \endentry
+    \entry{iea2023}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=b33b47b3008c8c47f90a77e0c2dd3060}{%
+           family={{International Energy Agency}},
+           familyi={I\bibinitperiod}}}%
+      }
+      \strng{namehash}{b33b47b3008c8c47f90a77e0c2dd3060}
+      \strng{fullhash}{b33b47b3008c8c47f90a77e0c2dd3060}
+      \strng{bibnamehash}{b33b47b3008c8c47f90a77e0c2dd3060}
+      \strng{authorbibnamehash}{b33b47b3008c8c47f90a77e0c2dd3060}
+      \strng{authornamehash}{b33b47b3008c8c47f90a77e0c2dd3060}
+      \strng{authorfullhash}{b33b47b3008c8c47f90a77e0c2dd3060}
+      \field{extraname}{2}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: July 15, 2023}
+      \field{title}{Energy Efficiency 2023}
+      \field{year}{2023}
+      \verb{urlraw}
+      \verb https://www.iea.org/reports/energy-efficiency-2023
+      \endverb
+      \verb{url}
+      \verb https://www.iea.org/reports/energy-efficiency-2023
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

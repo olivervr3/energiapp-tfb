@@ -140,13 +140,8 @@ def create_temporal_features(data):
 
 **Estrategia multi-nivel:** El sistema implementa detección de anomalías en múltiples niveles temporales (minutos, horas, días) para capturar diferentes tipos de irregularidades. Las anomalías a nivel de minutos pueden indicar picos de consumo genuinos, mientras que anomalías diarias sugieren comportamientos atípicos del usuario.
 
-**Correction adaptativa:** Una vez detectadas, las anomalías se corrigen utilizando interpolación inteligente que considera patrones estacionales y tendencias a largo plazo, preservando la estructura temporal inherente de los datos energéticos.
-    df['power_std_1h'] = df['power'].rolling('1H').std()
-    df['power_ma_24h'] = df['power'].rolling('24H').mean()
-    
-    # Rate of change
-    df['power_diff'] = df['power'].diff()
-    df['power_pct_change'] = df['power'].pct_change()
+**Corrección adaptativa:** Una vez detectadas, las anomalías se corrigen utilizando interpolación inteligente que considera patrones estacionales y tendencias a largo plazo, preservando la estructura temporal inherente de los datos energéticos.
+
 \subsection{Corrección de deriva temporal y sincronización multi-canal}
 
 **Corrección de deriva temporal:** Los sensores energéticos experimentan deriva debido a factores ambientales. El sistema implementa corrección automática utilizando períodos de referencia conocidos (standby nocturno) para calibrar la deriva y mantener precisión a largo plazo.
@@ -179,84 +174,20 @@ def synchronize_multi_channel_data(channels_data, target_frequency='6S'):
 **Sincronización multi-canal:** El UK-DALE dataset presenta desafíos de sincronización debido a diferentes frecuencias de muestreo. El algoritmo implementa estrategias específicas por tipo de dispositivo: interpolación lineal para electrodomésticos continuos (frigorífico), y agregación máxima para dispositivos discretos (lavadora).
 
 **Métricas de calidad:** El sistema calcula métricas de calidad de sincronización incluyendo porcentaje de datos faltantes, duración máxima de gaps, y scores de alineación temporal basados en correlación cruzada entre canales.
-    df = data.copy()
-    
-    # Features cíclicas para capturar periodicidad
-    df['hour_sin'] = np.sin(2 * np.pi * df.index.hour / 24)
-    df['hour_cos'] = np.cos(2 * np.pi * df.index.hour / 24)
-    df['day_sin'] = np.sin(2 * np.pi * df.index.dayofyear / 365.25)
-    df['day_cos'] = np.cos(2 * np.pi * df.index.dayofyear / 365.25)
-    df['week_sin'] = np.sin(2 * np.pi * df.index.dayofweek / 7)
-    df['week_cos'] = np.cos(2 * np.pi * df.index.dayofweek / 7)
-    
-    # Features de calendario extendidas
-    df['is_business_day'] = df.index.to_series().dt.day_name().isin(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'])
-    df['is_holiday'] = df.index.to_series().apply(lambda x: is_uk_holiday(x.date()))
-    df['season'] = df.index.month.map({12: 0, 1: 0, 2: 0, 3: 1, 4: 1, 5: 1, 6: 2, 7: 2, 8: 2, 9: 3, 10: 3, 11: 3})
-    
-    # Features de lag temporal
-    for lag in [1, 6, 144, 1008]:  # 6s, 1min, 24h, 7days en intervalos de 6s
-        df[f'power_lag_{lag}'] = df['power'].shift(lag)
-        df[f'power_diff_lag_{lag}'] = df['power'].diff(lag)
-    
-    # Features de ventana deslizante con múltiples estadísticas
-    windows = ['15min', '1H', '6H', '24H', '7D']
-    for window in windows:
-        df[f'power_mean_{window}'] = df['power'].rolling(window).mean()
-        df[f'power_std_{window}'] = df['power'].rolling(window).std()
-        df[f'power_min_{window}'] = df['power'].rolling(window).min()
-        df[f'power_max_{window}'] = df['power'].rolling(window).max()
-        df[f'power_range_{window}'] = df[f'power_max_{window}'] - df[f'power_min_{window}']
-        df[f'power_skew_{window}'] = df['power'].rolling(window).skew()
-        df[f'power_kurt_{window}'] = df['power'].rolling(window).kurt()
-    
-    # Features de frecuencia (FFT)
-    df = add_frequency_features(df, 'power', window_size=144)  # 24h en intervalos de 6s
-    
-    return df
 
-def add_frequency_features(df, column, window_size):
-    """
-    Añade features basadas en análisis de frecuencia usando FFT
-    """
-    def extract_freq_features(series):
-        if len(series) < window_size:
-            return pd.Series([np.nan] * 5)
-        
-        # FFT
-        fft = np.fft.fft(series.values)
-        freqs = np.fft.fftfreq(len(fft))
-        
-        # Características espectrales
-        power_spectrum = np.abs(fft) ** 2
-        
-        # Frecuencia dominante
-        dominant_freq_idx = np.argmax(power_spectrum[1:len(power_spectrum)//2]) + 1
-        dominant_freq = freqs[dominant_freq_idx]
-        
-        # Energía en diferentes bandas de frecuencia
-        total_energy = np.sum(power_spectrum)
-        low_freq_energy = np.sum(power_spectrum[:len(power_spectrum)//8]) / total_energy
-        mid_freq_energy = np.sum(power_spectrum[len(power_spectrum)//8:len(power_spectrum)//4]) / total_energy
-        high_freq_energy = np.sum(power_spectrum[len(power_spectrum)//4:len(power_spectrum)//2]) / total_energy
-        
-        # Centroide espectral
-        spectral_centroid = np.sum(freqs[:len(freqs)//2] * power_spectrum[:len(power_spectrum)//2]) / np.sum(power_spectrum[:len(power_spectrum)//2])
-        
-        return pd.Series([dominant_freq, low_freq_energy, mid_freq_energy, high_freq_energy, spectral_centroid])
-    
-    freq_features = df[column].rolling(window_size).apply(
-        lambda x: extract_freq_features(x), raw=False
-    )
-    
-    feature_names = [f'{column}_dominant_freq', f'{column}_low_freq_energy', 
-                    f'{column}_mid_freq_energy', f'{column}_high_freq_energy', f'{column}_spectral_centroid']
-    
-    for i, name in enumerate(feature_names):
-        df[name] = freq_features.apply(lambda x: x.iloc[i] if hasattr(x, 'iloc') else np.nan)
-    
-    return df
-\end{lstlisting}
+\subsection{Feature Engineering avanzado para datos energéticos}
+
+El proceso de feature engineering implementa múltiples categorías de características especializadas para capturar patrones complejos en los datos de consumo energético:
+
+\textbf{Features cíclicas temporales:} Se implementan transformaciones trigonométricas para capturar periodicidad en múltiples escalas temporales (hora del día, día del año, día de la semana), preservando la continuidad en los límites de los ciclos.
+
+\textbf{Features de calendario extendidas:} Incluyen identificación de días laborables, detección de festivos del Reino Unido, y clasificación estacional, proporcionando contexto social y cultural al consumo energético.
+
+\textbf{Features de lag temporal:} Se calculan características de retardo en múltiples horizontes temporales (6 segundos, 1 minuto, 24 horas, 7 días) para capturar dependencias temporales de corto y largo plazo.
+
+\textbf{Features de ventana deslizante:} Implementan estadísticas descriptivas (media, desviación estándar, mínimo, máximo, rango, asimetría, curtosis) en ventanas temporales múltiples para caracterizar la variabilidad del consumo.
+
+\textbf{Features de frecuencia (FFT):} Mediante análisis de Fourier, se extraen características espectrales incluyendo frecuencia dominante, distribución de energía en bandas de frecuencia, y centroide espectral para identificar patrones periódicos complejos.
 
 \subsection{Optimización de almacenamiento y acceso a datos}
 
@@ -553,7 +484,7 @@ class DataQualityValidator:
             'max_observed_rate': rate_change.abs().max(),
             'max_allowed_rate': rule['max_change_per_second'],
             'percentile_95_rate': rate_change.abs().quantile(0.95),
-            'passed': excessive_changes.sum() < len(data) * 0.001  # <0.1% permitido
+            'passed': excessive_changes.sum() < len(data) * 0.001  # <0.1\% permitido
         }
     
     def _validate_physical_correlations(self, data):
@@ -563,7 +494,7 @@ class DataQualityValidator:
         correlations = {}
         
         if 'total_power' in data.columns and len([col for col in data.columns if 'device_' in col]) > 1:
-            # Validar que suma de dispositivos ≈ total (considerando pérdidas)
+            # Validar que suma de dispositivos aproximadamente igual a total (considerando pérdidas)
             device_columns = [col for col in data.columns if 'device_' in col]
             device_sum = data[device_columns].sum(axis=1)
             total_power = data['total_power']
@@ -575,7 +506,7 @@ class DataQualityValidator:
                 'correlation': total_power.corr(device_sum),
                 'mean_relative_diff': relative_diff.mean(),
                 'max_relative_diff': relative_diff.max(),
-                'passed': relative_diff.mean() < 0.15  # <15% diferencia promedio
+                'passed': relative_diff.mean() < 0.15  # <15\% diferencia promedio
             }
         
         return correlations

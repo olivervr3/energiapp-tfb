@@ -1,103 +1,42 @@
-\chapter{Desarrollo técnico}
+\chapter{Desarrollo e Implementación}
 \label{ch:desarrollo}
 
-\section{Metodología de desarrollo y gestión de versiones}
+\section{Metodología de desarrollo}
 
-\subsection{Implementación de GitFlow para desarrollo colaborativo}
+\subsection{Control de versiones con GitFlow}
 
-El desarrollo del proyecto EnergiApp TFB implementa una metodología de control de versiones basada en GitFlow, adaptada específicamente para el contexto académico y la naturaleza evolutiva del prototipo. Esta decisión metodológica responde a la necesidad de mantener un equilibrio entre la estabilidad del sistema en producción y la flexibilidad para implementar mejoras continuas.
+El proyecto implementa GitFlow adaptado para desarrollo académico, con separación clara entre ramas:
 
-\subsubsection{Estructura de ramas y flujo de trabajo}
-
-La arquitectura de ramas implementada establece una clara separación entre los diferentes estados del código:
-
-\textbf{Rama main (producción):}
-Contiene exclusivamente código estable y desplegado en el ambiente de producción. Esta rama está protegida contra commits directos, requiriendo pull requests desde la rama develop para cualquier actualización. El despliegue en Render.com se ejecuta automáticamente mediante integración continua al detectar cambios en esta rama.
-
-\textbf{Rama develop (integración):}
-Funciona como rama de integración para nuevas funcionalidades completadas. Todas las features y correcciones de bugs se desarrollan en ramas específicas que posteriormente se integran a develop mediante merge requests. Esta rama mantiene la versión más actual del desarrollo, permitiendo testing integral antes del release a producción.
-
-\textbf{Ramas feature/ y fix/:}
-Para cada nueva funcionalidad o corrección de bug se crea una rama específica desde develop. Esta práctica garantiza el aislamiento de cambios y facilita la revisión de código antes de la integración.
-
-\subsubsection{Integración continua y despliegue automático}
-
-El proyecto implementa un pipeline de CI/CD que automatiza el proceso desde el desarrollo hasta la producción:
-
-\begin{enumerate}
-    \item \textbf{Desarrollo local}: Las funcionalidades se desarrollan en ramas feature/
-    \item \textbf{Testing e integración}: Merge a develop con testing local completo
-    \item \textbf{Release a producción}: Merge de develop a main activa el despliegue automático
-    \item \textbf{Monitoring}: Verificación automática de health checks post-despliegue
-\end{enumerate}
-
-Esta metodología asegura que cada release a producción haya sido previamente probado en el ambiente de desarrollo, minimizando la probabilidad de errores en el sistema productivo.
-
-\subsection{Gestión de configuraciones y ambientes}
-
-\subsubsection{Separación de ambientes mediante variables de entorno}
-
-El sistema implementa una clara separación entre ambientes de desarrollo y producción mediante el uso de variables de entorno específicas:
-
-\textbf{Ambiente de desarrollo:}
 \begin{itemize}
-    \item Base de datos SQLite local con datos de prueba
-    \item Logging detallado para debugging
-    \item CORS permisivo para desarrollo frontend/backend separado
-    \item Variables de autenticación con valores de desarrollo
+    \item \textbf{main}: Código estable en producción, despliegue automático en Render.com
+    \item \textbf{develop}: Integración de funcionalidades completadas
+    \item \textbf{feature/}: Desarrollo de nuevas funcionalidades específicas
 \end{itemize}
 
-\textbf{Ambiente de producción:}
+El pipeline CI/CD automatiza: desarrollo local → testing en develop → release a main → despliegue automático con health checks.
+
+\subsection{Gestión de ambientes}
+
+La separación de ambientes se realiza mediante variables de entorno específicas para desarrollo (SQLite local, logging detallado, CORS permisivo) y producción (base de datos optimizada, logging de monitoreo, CORS restrictivo).
+
+El sistema implementa inicialización automática de base de datos: verificación/creación de esquemas, población de usuarios administrativos, validación de integridad y logging del proceso.
+
+\section{Arquitectura del sistema}
+
+\subsection{Decisiones de diseño}
+
+Se seleccionó una \textbf{arquitectura modular híbrida} que combina simplicidad operacional con flexibilidad tecnológica. Esta decisión se basó en el análisis de alternativas:
+
 \begin{itemize}
-    \item Base de datos optimizada para persistencia en la nube
-    \item Logging configurado para monitoreo de producción
-    \item CORS restrictivo para seguridad
-    \item Secrets de autenticación seguros para producción
+    \item \textbf{Monolítica}: Descartada por acoplamiento fuerte entre módulos heterogéneos
+    \item \textbf{Microservicios}: Considerada excesiva para el alcance del prototipo
+    \item \textbf{Modular híbrida}: Seleccionada por equilibrio entre simplicidad y escalabilidad
 \end{itemize}
 
-\subsubsection{Automatización de inicialización de base de datos}
+\subsection{Stack tecnológico}
 
-Una innovación específica implementada para resolver los desafíos de despliegue en ambientes cloud es el sistema de inicialización automática de base de datos. Este componente ejecuta las siguientes operaciones al arranque del servidor:
-
-\begin{itemize}
-    \item Verificación y creación automática de esquemas de base de datos
-    \item Población inicial con usuarios administrativos y de prueba
-    \item Validación de integridad de datos críticos
-    \item Logging detallado del proceso de inicialización
-\end{itemize}
-
-Esta automatización elimina la necesidad de intervención manual en los despliegues, garantizando consistencia entre diferentes instancias del sistema.
-
-\section{Arquitectura del sistema: análisis de decisiones de diseño}
-
-\subsection{Selección metodológica de la arquitectura}
-
-La elección de la arquitectura del sistema constituye una decisión crítica que impacta directamente en la escalabilidad, mantenibilidad y experiencia de usuario de la plataforma. El proceso de selección se basó en un análisis comparativo de tres alternativas arquitectónicas principales, evaluadas mediante criterios cuantitativos y cualitativos.
-
-\subsubsection{Análisis comparativo de arquitecturas candidatas}
-
-\textbf{Arquitectura Monolítica Tradicional:}
-Ventajas identificadas: simplicidad de despliegue, menor latencia inter-componentes, facilidad de debugging integral. 
-Limitaciones críticas: acoplamiento fuerte entre módulos, escalabilidad limitada, tecnología única obligatoria.
-Evaluación: Descartada debido a la naturaleza heterogénea de los módulos (web frontend, ML backend, simulación IoT) que requieren diferentes tecnologías optimizadas.
-
-\textbf{Microservicios Distribuidos:}
-Ventajas: escalabilidad independiente por servicio, flexibilidad tecnológica, resilencia ante fallos parciales.
-Limitaciones: complejidad operacional elevada, overhead de comunicación inter-servicios, gestión compleja de transacciones distribuidas.
-Evaluación: Considerada excesiva para el alcance actual del prototipo, aunque mantenida como evolución futura.
-
-\textbf{Arquitectura Modular Híbrida (Seleccionada):}
-Combina la simplicidad operacional de monolitos con la flexibilidad de microservicios mediante módulos semi-acoplados comunicados por APIs internas bien definidas. Esta aproximación permite evolución incremental hacia microservicios según las necesidades de escalabilidad.
-
-\subsection{Justificación de decisiones tecnológicas críticas}
-
-\subsubsection{Backend: Node.js vs alternativas}
-
-La selección de Node.js como runtime del backend se basó en un análisis multi-criterio que consideró rendimiento, ecosistema de librerías, curva de aprendizaje y características específicas del dominio energético.
-
-\textbf{Evaluación de rendimiento para cargas típicas:}
-Los sistemas de gestión energética presentan patrones de carga caracterizados por: 
-\begin{itemize}
+\textbf{Backend - Node.js/Express:}
+Seleccionado por características específicas del dominio energético: manejo eficiente de I/O asíncrono para datos de sensores, ecosistema npm robusto para análisis de datos, y capacidad de procesamiento en tiempo real.
     \item Múltiples conexiones concurrentes de dispositivos IoT (modelo I/O intensivo)
     \item Procesamiento de series temporales con baja complejidad computacional
     \item Requimientos de tiempo real para alertas y visualizaciones
@@ -138,34 +77,19 @@ Los dispositivos exhiben consumo base determinístico modulado por componentes e
 El consumo presenta auto-correlación temporal con diferentes horizontes según el dispositivo. Climatización: correlación fuerte con temperatura exterior (lag 2-4 horas). Iluminación: correlación con horarios de sunset/sunrise estacionales.
 
 \textbf{Eventos excepcionales y festividades:}
-Los datos reales muestran desviaciones significativas durante eventos especiales (23% incremento promedio en períodos festivos), requiriendo modelado específico de calendar effects.
+Los datos reales muestran desviaciones significativas durante eventos especiales (23\% incremento promedio en períodos festivos), requiriendo modelado específico de calendar effects.
 
-\subsection{Arquitectura del simulador: escalabilidad y realismo}
+\subsection{Arquitectura del simulador de dispositivos IoT}
 
-\begin{lstlisting}[caption=Arquitectura del simulador de dispositivos IoT]
-backend/
-|-- simulators/
-|   |-- deviceSimulator.js      # Motor principal de simulación
-|   |-- models/                 # Modelos específicos por dispositivo
-|   |   |-- refrigerator.js     # Ciclos determinísticos + ruido
-|   |   |-- washing_machine.js  # Eventos discretos programados
-|   |   \-- hvac.js            # Modelo térmico simplificado
-|   \-- patterns/               # Patrones calibrados
-|       |-- daily_patterns.json
-|       \-- seasonal_adjustments.json
-\-- utils/
-    \-- statistical_generators.js # Generadores estocásticos
-\end{lstlisting}
+El simulador implementa una arquitectura modular con modelos específicos por tipo de dispositivo:
 
-\subsubsection{Implementación de modelos estocásticos calibrados}
+\begin{itemize}
+    \item \textbf{Refrigerador:} Modelo térmico con ciclos de compresión y ruido gaussiano calibrado
+    \item \textbf{Climatización:} Modelo predictivo-correctivo basado en diferencial térmico
+    \item \textbf{Dispositivos programables:} Máquinas de estado finito para ciclos operacionales
+\end{itemize}
 
-El simulador implementa una arquitectura híbrida que combina modelos determinísticos para comportamientos predecibles con componentes estocásticos para variabilidad realista:
-
-\textbf{Modelo de refrigerador:} Implementa un modelo térmico simplificado que simula ciclos de compresión basados en pérdidas térmicas del ambiente, modulado por ruido gaussiano calibrado (σ = 0.15 * consumo_base).
-
-\textbf{Modelo de climatización:} Utiliza un modelo predictivo-correctivo que estima demanda térmica basada en diferencial interior-exterior, con factores de eficiencia variables según antigüedad simulada del equipo.
-
-\textbf{Modelo de dispositivos programables:} Implementa máquinas de estado finito que simulan ciclos operacionales completos (lavado, secado, standby) con duraciones variables siguiendo distribuciones empíricamente calibradas.
+La arquitectura combina modelos determinísticos para comportamientos predecibles con componentes estocásticos para variabilidad realista, calibrados con datos reales del dataset UK-DALE.
 
 \section{Sistema de machine learning: arquitectura y optimizaciones}
 
@@ -187,56 +111,50 @@ La arquitectura implementa un modelo híbrido edge-cloud que optimiza el trade-o
 
 \subsection{Stack tecnológico completo implementado}
 
-El desarrollo de EnergiApp v2.0 ha requerido la integración de un stack tecnológico avanzado que combina herramientas de desarrollo modernas con metodologías profesionales de gestión de código y despliegue.
+El desarrollo de EnergiApp v1.0 ha requerido la integración de un stack tecnológico avanzado que combina herramientas de desarrollo modernas con metodologías profesionales de gestión de código y despliegue.
 
 \subsubsection{Tecnologías de desarrollo frontend y backend}
 
-\textbf{Frontend - React 18 con arquitectura de componentes:}
-\begin{itemize}
-    \item React 18.2.0 con hooks modernos (useState, useEffect, useContext, useCallback)
-    \item React Router 6.x para navegación SPA avanzada
-    \item Axios para comunicación asíncrona con APIs
-    \item CSS Modules y metodología BEM para estilos escalables
-    \item WebWorkers para procesamiento ML en cliente
-\end{itemize}
+\subsubsection{Tecnologías de desarrollo frontend y backend}
 
-\textbf{Backend - Node.js con Express framework:}
-\begin{itemize}
-    \item Node.js 18.x LTS para máximo rendimiento y estabilidad
-    \item Express.js 4.x con middleware especializado
-    \item Sequelize ORM para abstracción de base de datos
-    \item JWT (jsonwebtoken) para autenticación stateless
-    \item bcryptjs para hashing seguro de contraseñas
-    \item Helmet.js para security headers automáticos
-\end{itemize}
-
-\textbf{Base de datos y persistencia:}
-\begin{itemize}
-    \item SQLite para desarrollo y despliegue simplificado
-    \item Sequelize migrations para versionado de esquema
-    \item Seeds automáticos para datos de prueba
-    \item Backup automático en producción
-\end{itemize}
-
-\subsubsection{Herramientas de desarrollo y control de versiones}
-
-\textbf{Git y GitHub - Control de versiones profesional:}
-\begin{itemize}
-    \item Git 2.x con GitFlow implementado
-    \item GitHub como repositorio remoto central
-    \item Branch protection rules en rama main
-    \item GitHub Actions para CI/CD (futuro)
-    \item Issue tracking para gestión de tareas
-\end{itemize}
-
-\textbf{Desarrollo local y debugging:}
-\begin{itemize}
-    \item Visual Studio Code como IDE principal
-    \item Node.js debugger integrado
-    \item Chrome DevTools para debugging frontend
-    \item Thunder Client para testing de APIs
-    \item GitLens para análisis de historial de código
-\end{itemize}
+\begin{table}[H]
+\centering
+\caption{Stack tecnológico implementado}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Componente} & \textbf{Tecnología} & \textbf{Versión/Características} \\
+\hline
+\multirow{4}{*}{Frontend} & React & 18.2.0 con hooks modernos \\
+\cline{2-3}
+& React Router & 6.x navegación SPA \\
+\cline{2-3}
+& Axios & Comunicación API asíncrona \\
+\cline{2-3}
+& CSS Modules & Metodología BEM escalable \\
+\hline
+\multirow{4}{*}{Backend} & Node.js & 18.x LTS máximo rendimiento \\
+\cline{2-3}
+& Express.js & 4.x con middleware especializado \\
+\cline{2-3}
+& Sequelize ORM & Abstracción base de datos \\
+\cline{2-3}
+& JWT + bcryptjs & Autenticación segura stateless \\
+\hline
+\multirow{3}{*}{Base de Datos} & SQLite & Desarrollo y despliegue simplificado \\
+\cline{2-3}
+& Migrations & Versionado de esquema automático \\
+\cline{2-3}
+& Seeds & Datos de prueba automatizados \\
+\hline
+\multirow{3}{*}{DevOps} & Git/GitHub & GitFlow + branch protection \\
+\cline{2-3}
+& VS Code & IDE con debugging integrado \\
+\cline{2-3}
+& Chrome DevTools & Testing y debugging frontend \\
+\hline
+\end{tabular}
+\label{tab:stack_desarrollo}
+\end{table}
 
 \subsection{Infraestructura de hosting y despliegue}
 
@@ -288,77 +206,56 @@ La selección de Render.com como plataforma de hosting se basó en criterios esp
 
 El diseño de características específicas para datos energéticos representa una contribución técnica clave:
 
-\textbf{Características temporales contextuales:} Más allá de timestamp básico, se incorporan características como "minutes_to_next_meal", "daylight_remaining", "weekend_proximity" que capturan patrones de comportamiento humano.
+\textbf{Frontend - React/TypeScript:}
+Optimizado para análisis energético con componentes especializados: dashboard de métricas en tiempo real, visualizaciones Chart.js para patrones de consumo, gestión CRUD de dispositivos IoT, y sistema de predicciones interactivo.
 
-\textbf{Características de memoria adaptativa:} Implementación de ventanas deslizantes con pesos temporales que dan mayor importancia a patrones recientes, permitiendo adaptación a cambios de comportamiento del usuario.
+\textbf{Backend - Node.js/Express:}
+API RESTful con arquitectura modular, autenticación JWT, middleware de seguridad (helmet, CORS, rate limiting), y endpoints especializados para datos energéticos. Incluye inicialización automática de base de datos y manejo robusto de errores.
 
-\textbf{Características climáticas sintéticas:} Generación de características pseudo-meteorológicas correlacionadas con patrones de consumo estacionales, permitiendo simulación realista sin requerir APIs meteorológicas externas.
+\textbf{Base de datos - SQLite:}
+Esquema optimizado para datos temporales con índices en timestamps, particionado de tablas por dispositivo, y constraints de integridad referencial. Modelos ORM con Sequelize para usuarios, dispositivos, consumo y predicciones.
 
-\begin{lstlisting}[language=JavaScript, caption=Configuración principal de Express]
-const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
-const { sequelize } = require('./config/database');
+\textbf{Machine Learning - Python:}
+Servicio independiente con modelos sklearn para predicción agregada y específica por dispositivo, pipeline de feature engineering temporal, y API de predicciones con intervalos de confianza.
 
-const app = express();
+\subsection{Optimizaciones para datos energéticos}
 
-// Middlewares de seguridad
-app.use(helmet());
-app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-    credentials: true
-}));
+\subsubsection{Feature engineering especializado}
 
-// Rate limiting
-const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutos
-    max: 100 // máximo 100 requests por ventana
-});
-app.use(limiter);
+Diseño de características específicas para análisis energético:
 
-// Parseo de JSON
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true }));
+\begin{itemize}
+    \item \textbf{Características temporales contextuales:} Incorporación de patrones de comportamiento humano (proximidad a comidas, luz diurna restante, proximidad a fin de semana)
+    \item \textbf{Características de memoria adaptativa:} Ventanas deslizantes con pesos temporales para adaptación a cambios de comportamiento
+    \item \textbf{Características climáticas sintéticas:} Generación de patrones pseudo-meteorológicos correlacionados con consumo estacional
+\end{itemize}
 
-// Rutas
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/devices', require('./routes/devices'));
-app.use('/api/consumption', require('./routes/consumption'));
+\subsection{Arquitectura de seguridad}
 
-// Manejo de errores
-app.use(require('./middleware/errorHandler'));
+Implementación de medidas de seguridad específicas:
 
-module.exports = app;
-\end{lstlisting}
-
-\subsection{Modelos de datos con Sequelize}
-
-Los modelos implementados utilizan Sequelize ORM para la abstracción de la base de datos:
-
-\subsubsection{Modelo de Usuario}
-
-\begin{lstlisting}[language=JavaScript, caption=Modelo de Usuario]
-const { DataTypes } = require('sequelize');
-const bcrypt = require('bcryptjs');
-
-const User = sequelize.define('User', {
-    id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true
-    },
-    email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-        validate: {
-            isEmail: true
-        }
-    },
-    password: {
-        type: DataTypes.STRING,
-        allowNull: false,
+\begin{table}[H]
+\centering
+\caption{Medidas de seguridad implementadas}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Componente} & \textbf{Medida de Seguridad} \\
+\hline
+Autenticación & JWT con expiración automática \\
+\hline
+API & Rate limiting (100 req/15min) \\
+\hline
+Headers & Helmet.js para headers de seguridad \\
+\hline
+CORS & Origen específico configurado \\
+\hline
+Datos & Validación de entrada con Joi \\
+\hline
+Contraseñas & Hash bcrypt con salt rounds \\
+\hline
+\end{tabular}
+\label{tab:seguridad}
+\end{table}
         validate: {
             len: [8, 100]
         }
@@ -391,269 +288,40 @@ module.exports = User;
 
 \subsubsection{Modelo de Dispositivo}
 
-\begin{lstlisting}[language=JavaScript, caption=Modelo de Dispositivo]
-const Device = sequelize.define('Device', {
-    id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true
-    },
-    nombre: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    tipo: {
-        type: DataTypes.ENUM(
-            'refrigerator', 'washing_machine', 'dishwasher',
-            'oven', 'tv', 'computer', 'ac_heating',
-            'lighting', 'router', 'gaming_console', 'other'
-        ),
-        allowNull: false
-    },
-    potenciaNominal: {
-        type: DataTypes.DECIMAL(10, 2),
-        allowNull: false,
-        validate: {
-            min: 0
-        }
-    },
-    ubicacion: {
-        type: DataTypes.STRING
-    },
-    activo: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: true
-    },
-    configuracion: {
-        type: DataTypes.JSONB,
-        defaultValue: {}
-    }
-});
-
-// Relaciones
-Device.belongsTo(User, { foreignKey: 'userId' });
-User.hasMany(Device, { foreignKey: 'userId' });
-
-module.exports = Device;
-\end{lstlisting}
+El modelo de dispositivo implementa una estructura robusta que incluye identificación única mediante UUID, validación de nombre requerido, clasificación por tipo de electrodoméstico, especificaciones técnicas como potencia nominal y eficiencia energética, ubicación dentro del hogar, estados operacionales, y configuraciones JSON flexibles para parámetros específicos de cada dispositivo.
 
 \subsection{Sistema de simulación IoT}
 
-Una de las características más innovadoras del sistema es el simulador de datos IoT que genera información realista de consumo energético:
+El simulador IoT genera datos realistas mediante algoritmos que consideran múltiples factores para reproducir patrones de consumo energético auténticos:
 
-\begin{lstlisting}[language=JavaScript, caption=Simulador de dispositivos IoT]
-class DeviceSimulator {
-    constructor(device) {
-        this.device = device;
-        this.baseConsumption = device.potenciaNominal;
-        this.patterns = this.loadConsumptionPatterns();
-    }
+\begin{itemize}
+    \item \textbf{Patrones temporales:} Variación por hora del día, día de semana y estacionalidad
+    \item \textbf{Factores de dispositivo:} Tipo, potencia nominal, eficiencia por antigüedad  
+    \item \textbf{Variabilidad estocástica:} Ruido gaussiano calibrado para realismo
+    \item \textbf{Estados operacionales:} Standby, funcionamiento normal, picos de consumo
+\end{itemize}
 
-    generateConsumption(timestamp) {
-        const hour = timestamp.getHours();
-        const dayOfWeek = timestamp.getDay();
-        const month = timestamp.getMonth();
-
-        // Factor base según el tipo de dispositivo
-        let baseFactor = this.getBaseFactor(hour, dayOfWeek);
-        
-        // Factor estacional
-        let seasonalFactor = this.getSeasonalFactor(month);
-        
-        // Variabilidad estocástica
-        let randomFactor = 0.8 + Math.random() * 0.4;
-        
-        // Factor de eficiencia según la edad del dispositivo
-        let efficiencyFactor = this.getEfficiencyFactor();
-
-        const consumption = this.baseConsumption * 
-                          baseFactor * 
-                          seasonalFactor * 
-                          randomFactor * 
-                          efficiencyFactor;
-
-        return {
-            timestamp,
-            potencia: Math.max(0, consumption),
-            estado: this.determineDeviceState(consumption),
-            factores: {
-                base: baseFactor,
-                estacional: seasonalFactor,
-                aleatorio: randomFactor,
-                eficiencia: efficiencyFactor
-            }
-        };
-    }
-
-    getBaseFactor(hour, dayOfWeek) {
-        const patterns = {
-            refrigerator: [0.8, 0.8, 0.8, 0.8, 0.9, 1.0, 1.1, 1.2,
-                          1.1, 1.0, 1.0, 1.1, 1.2, 1.1, 1.0, 1.0,
-                          1.1, 1.2, 1.3, 1.2, 1.1, 1.0, 0.9, 0.8],
-            washing_machine: this.getWashingMachinePattern(hour, dayOfWeek),
-            tv: this.getTVPattern(hour, dayOfWeek)
-        };
-
-        return patterns[this.device.tipo] || 
-               patterns.refrigerator[hour] || 1.0;
-    }
-
-    getWashingMachinePattern(hour, dayOfWeek) {
-        // Mayor uso en fines de semana y horarios específicos
-        const weekendFactor = [0, 6].includes(dayOfWeek) ? 1.5 : 1.0;
-        const hourlyPattern = hour >= 7 && hour <= 22 ? 1.0 : 0.1;
-        const peakHours = [9, 10, 11, 15, 16, 17].includes(hour) ? 2.0 : 1.0;
-        
-        return weekendFactor * hourlyPattern * peakHours;
-    }
-}
-\end{lstlisting}
+La implementación utiliza patrones específicos calibrados con datos reales del dataset UK-DALE para cada tipo de dispositivo, aplicando factores de corrección horarios, semanales y estacionales que reflejan el comportamiento real de usuarios domésticos.
 
 \subsection{Sistema de autenticación JWT}
 
-La implementación de autenticación utiliza JSON Web Tokens para gestionar sesiones:
-
-\begin{lstlisting}[language=JavaScript, caption=Middleware de autenticación JWT]
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
-
-const authMiddleware = async (req, res, next) => {
-    try {
-        const token = req.header('Authorization')?.replace('Bearer ', '');
-        
-        if (!token) {
-            return res.status(401).json({
-                success: false,
-                message: 'Token de acceso requerido'
-            });
-        }
-
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const user = await User.findByPk(decoded.userId);
-
-        if (!user) {
-            return res.status(401).json({
-                success: false,
-                message: 'Token inválido'
-            });
-        }
-
-        req.user = user;
-        next();
-    } catch (error) {
-        res.status(401).json({
-            success: false,
-            message: 'Token inválido',
-            error: error.message
-        });
-    }
-};
-
-module.exports = authMiddleware;
-\end{lstlisting}
+La implementación de autenticación utiliza JSON Web Tokens para gestionar sesiones de usuario de forma segura y escalable. El sistema incluye middleware de verificación de tokens, validación de usuarios, gestión de expiración, refresh tokens para sesiones prolongadas, y protección contra ataques comunes de seguridad.
 
 \section{Implementación del frontend}
 
 \subsection{Estructura y arquitectura React}
 
-El frontend implementa una Single Page Application (SPA) utilizando React 18 con TypeScript, siguiendo principios de componentes reutilizables y gestión de estado centralizada:
+El frontend implementa una Single Page Application (SPA) utilizando React 18 con TypeScript, siguiendo principios de componentes reutilizables y gestión de estado centralizada. La arquitectura modular incluye contextos para autenticación, rutas protegidas, componentes de visualización de datos, hooks personalizados para gestión de estado, y servicios para comunicación con APIs.
 
-\begin{lstlisting}[caption=Estructura del proyecto frontend]
-frontend/
-|-- public/
-|   |-- index.html
-|   \-- manifest.json
-|-- src/
-|   |-- components/         # Componentes reutilizables
-|   |   |-- common/
-|   |   |-- charts/
-|   |   \-- forms/
-|   |-- pages/             # Páginas principales
-|   |   |-- Dashboard/
-|   |   |-- Devices/
-|   |   |-- Analysis/
-|   |   \-- Settings/
-|   |-- contexts/          # Context API para estado global
-|   |   |-- AuthContext.tsx
-|   |   \-- ThemeContext.tsx
-|   |-- services/          # Servicios para APIs
-|   |   |-- api.ts
-|   |   |-- authService.ts
-|   |   \-- deviceService.ts
-|   |-- utils/             # Utilidades y helpers
-|   |   |-- formatters.ts
-|   |   \-- validators.ts
-|   |-- types/             # Definiciones TypeScript
-|   |   \-- index.ts
-|   |-- App.tsx           # Componente principal
-|   \-- index.tsx         # Punto de entrada
-\-- package.json
-\end{lstlisting}
+La estructura del proyecto frontend organiza el código en directorios especializados: componentes reutilizables clasificados por funcionalidad, páginas principales del dashboard, contextos para estado global, servicios para comunicación con APIs, utilidades y validadores, y definiciones de tipos TypeScript para type safety.
 
 \subsection{Gestión de estado con Context API}
 
-Para la gestión de estado global se utiliza React Context API, evitando la complejidad de Redux para un proyecto de este tamaño:
-
-\begin{lstlisting}[language=TypeScript, caption=Context de autenticación]
-interface AuthContextType {
-  user: User | null;
-  loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
-  register: (userData: RegisterData) => Promise<void>;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
-  children 
-}) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const token = localStorage.getItem('authToken');
-    if (token) {
-      validateToken(token);
-    } else {
-      setLoading(false);
-    }
-  }, []);
-
-  const login = async (email: string, password: string) => {
-    try {
-      const response = await authService.login(email, password);
-      const { user, token } = response.data;
-      
-      localStorage.setItem('authToken', token);
-      setUser(user);
-    } catch (error) {
-      throw new Error('Credenciales inválidas');
-    }
-  };
-
-  const logout = () => {
-    localStorage.removeItem('authToken');
-    setUser(null);
-  };
-
-  return (
-    <AuthContext.Provider value={{
-      user,
-      loading,
-      login,
-      logout,
-      register
-    }}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
-\end{lstlisting}
+Para la gestión de estado global se implementa React Context API, proporcionando una solución escalable sin la complejidad de Redux. El sistema incluye contextos especializados para autenticación de usuarios, configuración de temas, gestión de dispositivos, y estado de la aplicación. La implementación incluye persistencia en localStorage, validación automática de tokens, y manejo de errores centralizado.
 
 \subsection{Componentes de visualización}
 
-Los componentes de visualización utilizan Chart.js para crear gráficos interactivos:
+Los componentes de visualización implementan gráficos interactivos utilizando Chart.js y React-Chartjs-2, proporcionando múltiples tipos de visualización para análisis energético:
 
 \begin{lstlisting}[language=TypeScript, caption=Componente de gráfico de consumo]
 interface ConsumptionChartProps {
@@ -790,7 +458,7 @@ const Dashboard: React.FC = () => {
           <MetricCard
             title="Eficiencia"
             value={efficiency}
-            unit="%"
+            unit="\%"
             icon={<EcoIcon />}
             color="info"
           />
@@ -1237,3 +905,4 @@ En este capítulo se ha detallado la implementación técnica completa de Energi
 \end{itemize}
 
 La implementación demuestra la aplicación práctica de tecnologías modernas para resolver un problema real de sostenibilidad energética, cumpliendo todos los objetivos técnicos establecidos.
+

@@ -1,8 +1,16 @@
 version: "2"
-build:
-  commands:
-    - npm install
-    - cd backend && npm install && cd ..
-    - cd frontend && npm install && npm run build && cd ..
-start:
-  command: NODE_ENV=production node backend/server.js
+services:
+  - type: web
+    name: energiapp-tfb
+    env: node
+    plan: free
+    buildCommand: |
+      npm install
+      cd backend && npm install && cd ..
+      cd frontend && npm install && npm run build && cd ..
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000

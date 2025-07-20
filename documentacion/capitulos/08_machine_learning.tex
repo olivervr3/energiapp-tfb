@@ -57,185 +57,30 @@ El predictor de consumo agregado utiliza un modelo híbrido que combina análisi
 
 El predictor agregado representa el componente central del sistema de machine learning, diseñado específicamente para predecir el consumo energético total del hogar. Su implementación se basa en un ensemble de algoritmos de gradient boosting que combina XGBoost, LightGBM y Gradient Boosting clásico.
 
-\begin{lstlisting}[language=Python, caption=Estructura principal del predictor agregado]
-class AggregateEnergyPredictor:
-    def __init__(self, config=None):
-        self.models = {
-            'xgboost': XGBRegressor(n_estimators=1000, max_depth=8),
-            'lightgbm': LGBMRegressor(n_estimators=1000, max_depth=10),
-            'gradient_boosting': GradientBoostingRegressor(n_estimators=500)
-        }
-        self.ensemble_weights = {'xgboost': 0.4, 'lightgbm': 0.4, 'gradient_boosting': 0.2}
-    
-    def create_temporal_features(self, data):
-        # Features cíclicas: hour_sin, hour_cos, day_sin, day_cos
-        # Features de calendario: hour, day_of_week, month, is_weekend
-        # Features de lag: power_lag_1, power_lag_144, power_lag_1008
-        # Rolling statistics: power_mean_144, power_std_144, power_volatility_144
-        return enhanced_features
-    
-    def train_ensemble(self, X_train, y_train):
-        for name, model in self.models.items():
-            model.fit(X_train, y_train)
-        return self
-    
-    def predict(self, X):
-        predictions = {}
-        for name, model in self.models.items():
-            predictions[name] = model.predict(X)
-        
-        # Ensemble ponderado
-        ensemble_pred = sum(self.ensemble_weights[name] * predictions[name] 
-                          for name in self.models.keys())
-        return ensemble_pred
-\end{lstlisting}
+**Arquitectura del ensemble:** El sistema integra tres algoritmos complementarios donde XGBoost proporciona robustez y capacidad de generalización, LightGBM aporta eficiencia computacional y manejo optimizado de features categóricas, mientras que Gradient Boosting clásico ofrece estabilidad predictiva. Los pesos del ensemble se optimizaron mediante validación cruzada temporal para maximizar la precisión predictiva.
 
-La arquitectura del predictor agregado incorpora features temporales avanzadas que capturan múltiples patrones estacionales. Las features cíclicas utilizan transformaciones sinusoidales para representar la naturaleza circular del tiempo, mientras que las features de lag capturan dependencias temporales a diferentes horizontes (6 segundos, 24 horas, 7 días).
+**Features temporales avanzadas:** La arquitectura incorpora features temporales que capturan múltiples patrones estacionales. Las features cíclicas utilizan transformaciones sinusoidales para representar la naturaleza circular del tiempo (hora del día, día de la semana, mes del año), mientras que las features de lag capturan dependencias temporales a diferentes horizontes temporales (6 segundos, 24 horas, 7 días).
 
-El sistema de ensemble combina tres algoritmos complementarios: XGBoost proporciona robustez y capacidad de generalización, LightGBM aporta eficiencia computacional y manejo optimizado de features categóricas, mientras que Gradient Boosting clásico ofrece estabilidad predictiva. Los pesos del ensemble (0.4, 0.4, 0.2) se optimizaron mediante validación cruzada temporal.
-                    period=1008  # Periodicidad semanal
-                )
-                
-                df['seasonal_component'] = decomposition.seasonal
-                df['trend_component'] = decomposition.trend
-                df['residual_component'] = decomposition.resid
-                
-                # Features derivadas
-                df['seasonal_strength'] = df['seasonal_component'].abs()
-                df['trend_direction'] = np.sign(df['trend_component'].diff())
-                df['residual_volatility'] = df['residual_component'].rolling(144).std()
-                
-            except Exception as e:
-                print(f"Warning: Seasonal decomposition failed: {e}")
-                df['seasonal_component'] = 0
+**Estadísticas móviles:** El sistema implementa rolling statistics que calculan medias, desviaciones estándar y volatilidad sobre ventanas temporales deslizantes, proporcionando al modelo información sobre tendencias recientes y variabilidad del consumo energético.
+
+**Metodología de entrenamiento:** El entrenamiento del ensemble utiliza validación cruzada temporal que respeta la naturaleza secuencial de los datos energéticos, evitando data leakage y proporcionando estimaciones realistas del rendimiento en producción.
+
+\subsection{Preprocesamiento avanzado de features}
                 df['trend_component'] = df['power']
                 df['residual_component'] = 0
-        
-        return df
-    
-    def train(self, X_train, y_train, X_val=None, y_val=None):
-        """
-        Entrena el ensemble de modelos para predicción agregada
-        """
-        print("Iniciando entrenamiento del predictor agregado...")
-        
-        # Preparar datos
-        X_train_scaled = self._scale_features(X_train, fit=True)
-        
-        if X_val is not None:
-            X_val_scaled = self._scale_features(X_val, fit=False)
-        
-        # Entrenar cada modelo del ensemble
-        for model_name, config in self.config['models'].items():
-            print(f"Entrenando modelo {model_name}...")
-            
-            if model_name == 'xgboost':
-                model = xgb.XGBRegressor(**config)
-                
-                # Entrenamiento con early stopping si hay validación
-                if X_val is not None:
-                    model.fit(
-                        X_train_scaled, y_train,
-                        eval_set=[(X_val_scaled, y_val)],
-                        early_stopping_rounds=50,
-                        verbose=False
-                    )
-                else:
-                    model.fit(X_train_scaled, y_train)
-                    
-            elif model_name == 'lightgbm':
-                model = lgb.LGBMRegressor(**config)
-                
-                if X_val is not None:
-                    model.fit(
-                        X_train_scaled, y_train,
-                        eval_set=[(X_val_scaled, y_val)],
-                        early_stopping_rounds=50,
-                        verbose=False
-                    )
-                else:
-                    model.fit(X_train_scaled, y_train)
-                    
-            elif model_name == 'gradient_boosting':
-                model = GradientBoostingRegressor(**config)
-                model.fit(X_train_scaled, y_train)
-            
-            self.models[model_name] = model
-            
-            # Calcular feature importance
-            if hasattr(model, 'feature_importances_'):
-                self.feature_importance[model_name] = dict(
-                    zip(X_train.columns, model.feature_importances_)
-                )
-            
-            # Validación individual del modelo
-            if X_val is not None:
-                val_pred = model.predict(X_val_scaled)
-                self.validation_metrics[model_name] = {
-                    'mae': mean_absolute_error(y_val, val_pred),
-                    'rmse': np.sqrt(mean_squared_error(y_val, val_pred)),
-                    'r2': r2_score(y_val, val_pred),
-                    'mape': np.mean(np.abs((y_val - val_pred) / y_val)) * 100
-                }
-                
-                print(f"{model_name} - MAE: {self.validation_metrics[model_name]['mae']:.2f}, "
-                      f"RMSE: {self.validation_metrics[model_name]['rmse']:.2f}, "
-                      f"R²: {self.validation_metrics[model_name]['r2']:.4f}")
-    
-    def predict(self, X):
-        """
-        Realiza predicción usando ensemble ponderado
-        """
-        X_scaled = self._scale_features(X, fit=False)
+El sistema implementa un enfoque de descomposición estacional avanzada que identifica componentes temporales, tendencias y residuos para mejorar la calidad predictiva. La periodicidad semanal se captura mediante análisis de frecuencia que considera ciclos de 1008 períodos de medición.
+
 La implementación del ensemble permite combinar las predicciones de múltiples modelos mediante pesos optimizados, mejorando la robustez y precisión predictiva del sistema.
 
 \subsection{Predictores especializados por dispositivo}
 
 Cada tipo de electrodoméstico requiere un enfoque predictivo específico debido a sus patrones de uso únicos. El sistema implementa predictores especializados que adaptan tanto la arquitectura del modelo como las features utilizadas según el tipo de dispositivo.
 
-\begin{lstlisting}[language=Python, caption=Arquitectura de predictores especializados]
-class ApplianceSpecificPredictor:
-    def __init__(self, appliance_type):
-        self.appliance_type = appliance_type
-        self.config = self._get_appliance_config(appliance_type)
-    
-    def _get_appliance_config(self, appliance_type):
-        configs = {
-            'washing_machine': {
-                'model_type': 'classification_then_regression',
-                'on_threshold': 20,
-                'cycle_duration_hours': 2,
-                'features_focus': ['cycle_detection', 'time_based']
-            },
-            'fridge': {
-                'model_type': 'continuous_regression',
-                'baseline_power': 120,
-                'seasonal_patterns': True,
-                'features_focus': ['temperature', 'efficiency_trends']
-            },
-            'television': {
-                'model_type': 'binary_classification',
-                'usage_patterns': 'evening_weekend',
-                'features_focus': ['time_based', 'day_type']
-            }
-        }
-        return configs.get(appliance_type, self._default_config())
-    
-    def create_appliance_features(self, data):
-        # Electrodomésticos cíclicos: detección de inicio/fin de ciclo
-        if self.appliance_type in ['washing_machine', 'dishwasher']:
-            return self._add_cycle_detection_features(data)
-        
-        # Electrodomésticos continuos: análisis de eficiencia
-        elif self.appliance_type == 'fridge':
-            return self._add_continuous_features(data)
-        
-        # Dispositivos de entretenimiento: patrones de uso
-        elif self.appliance_type == 'television':
-            return self._add_entertainment_features(data)
-        
-        return self._add_standard_features(data)
-\end{lstlisting}
+**Electrodomésticos cíclicos:** Para dispositivos como lavadoras y lavavajillas, se implementa detección de inicio y fin de ciclo mediante clasificación binaria seguida de regresión para la predicción de consumo durante el ciclo activo.
+
+**Electrodomésticos continuos:** Dispositivos como frigoríficos requieren análisis de eficiencia energética y detección de patrones de comportamiento térmico mediante modelos de regresión continua con baseline adaptativo.
+
+**Dispositivos de entretenimiento:** Para dispositivos como televisiones, se utilizan modelos de clasificación binaria que consideran patrones temporales y hábitos de uso específicos del usuario.
 
 Los predictores especializados implementan diferentes estrategias según el comportamiento del dispositivo:
 
@@ -251,73 +96,11 @@ Los predictores especializados implementan diferentes estrategias según el comp
 
 La optimización de hiperparámetros constituye un componente crítico que determina el rendimiento final de los modelos. Implementamos una estrategia multi-nivel que combina búsqueda bayesiana, optimización evolutiva y validación temporal específica para datos energéticos.
 
-\subsubsection{Búsqueda bayesiana con validación temporal}
-
-\begin{lstlisting}[language=Python, caption=Optimización bayesiana de hiperparámetros]
-import optuna
-from sklearn.model_selection import TimeSeriesSplit
-import joblib
-
-class EnergyModelOptimizer:
-    """
-    Optimizador avanzado de hiperparámetros para modelos energéticos
-    Utiliza búsqueda bayesiana con validación temporal específica
-    """
-    
-    def __init__(self, model_type='xgboost', optimization_metric='rmse'):
-        self.model_type = model_type
-        self.optimization_metric = optimization_metric
 \subsection{Optimización de hiperparámetros}
 
-La optimización de hiperparámetros utiliza búsqueda bayesiana mediante Optuna para encontrar la configuración óptima de cada modelo. Este enfoque es más eficiente que grid search o random search, especialmente importante dado el coste computacional de entrenar modelos con grandes datasets.
+La optimización de hiperparámetros utiliza búsqueda bayesiana mediante Optuna para encontrar la configuración óptima de cada modelo. Este enfoque es más eficiente que grid search tradicional, especialmente para espacios de hiperparámetros de alta dimensionalidad.
 
-\begin{lstlisting}[language=Python, caption=Sistema de optimización bayesiana]
-class BayesianHyperparameterOptimizer:
-    def __init__(self, model_type, optimization_metric='rmse'):
-        self.model_type = model_type
-        self.optimization_metric = optimization_metric
-        
-    def optimize(self, X_train, y_train, n_trials=100):
-        # Crear estudio Optuna con TPE sampler
-        study = optuna.create_study(direction='minimize')
-        
-        def objective(trial):
-            params = self._suggest_parameters(trial)
-            score = self._cross_validate_temporal(params, X_train, y_train)
-            return score
-        
-        study.optimize(objective, n_trials=n_trials)
-        return study.best_params, study.best_value
-    
-    def _suggest_parameters(self, trial):
-        if self.model_type == 'xgboost':
-            return {
-                'n_estimators': trial.suggest_int('n_estimators', 100, 1500),
-                'max_depth': trial.suggest_int('max_depth', 3, 12),
-                'learning_rate': trial.suggest_float('learning_rate', 0.01, 0.3),
-                'subsample': trial.suggest_float('subsample', 0.5, 1.0),
-                'reg_alpha': trial.suggest_float('reg_alpha', 0.0, 10.0),
-                'reg_lambda': trial.suggest_float('reg_lambda', 0.0, 10.0)
-            }
-        # Configuraciones similares para LightGBM y otros modelos
-    
-    def _cross_validate_temporal(self, params, X_train, y_train):
-        # Validación cruzada temporal para series temporales
-        tscv = TimeSeriesSplit(n_splits=5)
-        scores = []
-        
-        for train_idx, val_idx in tscv.split(X_train):
-            model = self._create_model(params)
-            model.fit(X_train.iloc[train_idx], y_train.iloc[train_idx])
-            
-            y_pred = model.predict(X_train.iloc[val_idx])
-            score = self._calculate_score(y_train.iloc[val_idx], y_pred)
-            scores.append(score)
-        
-        return np.mean(scores)
-\end{lstlisting}
-
-El proceso de optimización utiliza Tree-structured Parzen Estimator (TPE) como sampler, que modela la distribución de parámetros prometedores basándose en trials anteriores. Esto permite convergencia más rápida hacia configuraciones óptimas compared to random search.
+**Búsqueda bayesiana avanzada:** El sistema implementa Tree-structured Parzen Estimator (TPE) como sampler, que modela la distribución de parámetros prometedores basándose en trials anteriores. Esto permite convergencia más rápida hacia configuraciones óptimas comparado con búsqueda aleatoria.
 
 **Métricas de optimización personalizadas:** Se implementan métricas específicas para datos energéticos, como energy-weighted MAE que penaliza más los errores durante períodos de alto consumo, reflejando la importancia práctica de predicciones precisas durante picos de demanda.
 

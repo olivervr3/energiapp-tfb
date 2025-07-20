@@ -66,58 +66,63 @@ El análisis de las necesidades del usuario se ha realizado considerando los dif
     \item[Investigador/Académico:] Profesionales que necesitan acceso a datos detallados y herramientas de análisis para estudios sobre eficiencia energética.
 \end{description}
 
-Las necesidades identificadas incluyen:
+\subsection{Necesidades identificadas}
 
-\begin{itemize}
-    \item Visualización clara y comprensible del consumo energético
-    \item Identificación de dispositivos con mayor consumo
-    \item Predicciones de consumo futuro
-    \item Alertas sobre consumos anómalos
-    \item Recomendaciones para optimizar el uso energético
-    \item Comparativas temporales (día, semana, mes, año)
-    \item Estimación de costes económicos
-    \item Información sobre impacto ambiental
-\end{itemize}
+\begin{table}[H]
+\centering
+\caption{Necesidades principales de usuarios}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Categoría} & \textbf{Necesidades Específicas} \\
+\hline
+\multirow{3}{*}{Visualización} & Visualización clara del consumo energético \\
+\cline{2-2}
+& Identificación de dispositivos con mayor consumo \\
+\cline{2-2}
+& Comparativas temporales (día/semana/mes/año) \\
+\hline
+\multirow{2}{*}{Predicción} & Predicciones de consumo futuro \\
+\cline{2-2}
+& Alertas sobre consumos anómalos \\
+\hline
+\multirow{3}{*}{Optimización} & Recomendaciones para optimizar uso energético \\
+\cline{2-2}
+& Estimación de costes económicos \\
+\cline{2-2}
+& Información sobre impacto ambiental \\
+\hline
+\end{tabular}
+\label{tab:necesidades_usuarios}
+\end{table}
 
 \subsection{Requisitos funcionales}
 
-Los requisitos funcionales definen las funcionalidades específicas que debe proporcionar el sistema:
-
-\begin{enumerate}
-    \item \textbf{RF-001: Gestión de usuarios}
-    \begin{itemize}
-        \item El sistema debe permitir el registro de nuevos usuarios
-        \item El sistema debe autenticar usuarios mediante email y contraseña
-        \item El sistema debe permitir la modificación de perfiles de usuario
-        \item El sistema debe gestionar sesiones de usuario de forma segura
-    \end{itemize}
-    
-    \item \textbf{RF-002: Gestión de dispositivos}
-    \begin{itemize}
-        \item El sistema debe permitir agregar dispositivos domésticos
-        \item El sistema debe categorizar dispositivos por tipo (frigorífico, lavadora, etc.)
-        \item El sistema debe almacenar características técnicas de los dispositivos
-        \item El sistema debe permitir editar y eliminar dispositivos
-    \end{itemize}
-    
-    \item \textbf{RF-003: Simulación de datos IoT}
-    \begin{itemize}
-        \item El sistema debe generar datos realistas de consumo por dispositivo
-        \item El sistema debe considerar patrones temporales (hora, día, estación)
-        \item El sistema debe simular variabilidad estocástica del consumo
-        \item El sistema debe permitir configurar parámetros de simulación
-    \end{itemize}
-    
-    \item \textbf{RF-004: Visualización de datos}
-    \begin{itemize}
-        \item El sistema debe mostrar gráficos de consumo temporal
-        \item El sistema debe proporcionar gráficos de distribución por dispositivo
-        \item El sistema debe permitir filtrar datos por período temporal
-        \item El sistema debe mostrar métricas agregadas (totales, promedios)
-    \end{itemize}
-    
-    \item \textbf{RF-005: Predicciones energéticas}
-    \begin{itemize}
+\begin{table}[H]
+\centering
+\caption{Matriz de requisitos funcionales}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Código} & \textbf{Funcionalidad} & \textbf{Descripción} \\
+\hline
+RF-001 & Gestión de usuarios & Registro, autenticación, perfiles, sesiones \\
+\hline
+RF-002 & Gestión de dispositivos & CRUD dispositivos, categorización, características \\
+\hline
+RF-003 & Simulación IoT & Datos realistas, patrones temporales, variabilidad \\
+\hline
+RF-004 & Visualización & Gráficos temporales, distribución, filtros, métricas \\
+\hline
+RF-005 & Predicciones & Modelos ML, intervalos de confianza, exactitud \\
+\hline
+RF-006 & Recomendaciones & Análisis automático, sugerencias personalizadas \\
+\hline
+RF-007 & Reportes & Exportación datos, informes periódicos \\
+\hline
+RF-008 & Notificaciones & Alertas tiempo real, umbrales configurables \\
+\hline
+\end{tabular}
+\label{tab:requisitos_funcionales}
+\end{table}
         \item El sistema debe predecir consumo futuro a corto plazo (24-48h)
         \item El sistema debe proporcionar intervalos de confianza
         \item El sistema debe utilizar múltiples algoritmos de ML
@@ -205,47 +210,51 @@ Los requisitos no funcionales especifican criterios de calidad y restricciones d
 
 \section{Arquitectura del sistema}
 
+\section{Arquitectura del sistema}
+
 \subsection{Vista general de la arquitectura}
 
-La arquitectura del sistema EnergiApp sigue un patrón de arquitectura de tres capas (3-tier architecture) combinado con principios de microservicios. Esta aproximación proporciona separación de responsabilidades, escalabilidad y mantenibilidad.
+La arquitectura del sistema EnergiApp implementa un patrón de tres capas con separación clara de responsabilidades:
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{figuras/arquitectura_general.png}
-    \caption{Vista general de la arquitectura del sistema}
-    \label{fig:arquitectura_general}
-\end{figure}
+\begin{table}[H]
+\centering
+\caption{Componentes de la arquitectura del sistema}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Capa} & \textbf{Tecnología} & \textbf{Responsabilidad} \\
+\hline
+Presentación & React + TypeScript & Interfaz de usuario, experiencia UX \\
+\hline
+Lógica de Negocio & Node.js + Express & API REST, autenticación, validaciones \\
+\hline
+Datos & SQLite + Cache & Persistencia, consultas, almacenamiento \\
+\hline
+Machine Learning & Python & Predicciones, análisis de patrones \\
+\hline
+\end{tabular}
+\label{tab:arquitectura_componentes}
+\end{table}
 
-Las tres capas principales son:
-
-\begin{description}
-    \item[Capa de presentación (Frontend):] Implementada en React con TypeScript, proporciona la interfaz de usuario y maneja la lógica de presentación.
-    
-    \item[Capa de lógica de negocio (Backend):] Desarrollada en Node.js con Express, contiene la lógica de aplicación y expone APIs RESTful.
-    
-    \item[Capa de datos:] Utiliza PostgreSQL para almacenamiento persistente y Redis para caché en memoria.
-\end{description}
-
-Adicionalmente, se incluye un servicio especializado de Machine Learning desarrollado en Python, que actúa como un microservicio independiente para las funcionalidades predictivas.
+\textbf{Flujo de datos:}
+Frontend React $\rightarrow$ API REST $\rightarrow$ Backend Node.js $\rightarrow$ Base de datos SQLite
 
 \subsection{Componentes del sistema}
 
-\subsubsection{Frontend (Capa de presentación)}
+\subsubsection{Frontend - Capa de presentación}
 
-El frontend está construido como una Single Page Application (SPA) utilizando React 18 con TypeScript. Los componentes principales incluyen:
+Single Page Application (SPA) con React 18 y TypeScript:
 
 \begin{itemize}
-    \item \textbf{Dashboard:} Página principal con métricas generales y gráficos de resumen
-    \item \textbf{Gestión de dispositivos:} Interfaz para agregar, editar y eliminar dispositivos
-    \item \textbf{Análisis de consumo:} Visualizaciones detalladas con filtros temporales
-    \item \textbf{Predicciones:} Gráficos de predicciones con intervalos de confianza
-    \item \textbf{Configuración:} Ajustes de usuario y preferencias del sistema
-    \item \textbf{Autenticación:} Formularios de login, registro y recuperación de contraseña
+    \item \textbf{Dashboard:} Métricas generales y visualizaciones principales
+    \item \textbf{Gestión de dispositivos:} CRUD completo de dispositivos IoT
+    \item \textbf{Análisis de consumo:} Gráficos interactivos con filtros temporales
+    \item \textbf{Predicciones:} Visualización de modelos ML con intervalos de confianza
+    \item \textbf{Autenticación:} Sistema de login/registro con roles diferenciados
 \end{itemize}
 
-\subsubsection{Backend (Capa de lógica de negocio)}
+\subsubsection{Backend - API RESTful}
 
-El backend implementa una API RESTful siguiendo principios REST y patrones de diseño establecidos:
+Implementación Node.js/Express con endpoints especializados:
 
 \begin{itemize}
     \item \textbf{Controladores:} Manejan las peticiones HTTP y coordinan la lógica de negocio
@@ -321,16 +330,7 @@ class DeviceSimulatorFactory {
 
 \subsection{Modelo conceptual}
 
-El modelo conceptual identifica las entidades principales y sus relaciones:
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{figuras/modelo_conceptual.png}
-    \caption{Modelo conceptual de la base de datos}
-    \label{fig:modelo_conceptual}
-\end{figure}
-
-Las entidades principales son:
+El modelo conceptual identifica las entidades principales y sus relaciones. Las entidades principales son:
 
 \begin{itemize}
     \item \textbf{Usuario:} Representa a los usuarios del sistema
@@ -342,14 +342,7 @@ Las entidades principales son:
 
 \subsection{Modelo lógico}
 
-El modelo lógico especifica los atributos de cada entidad y las relaciones entre ellas:
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{figuras/diagrama_er.png}
-    \caption{Diagrama Entidad-Relación de la base de datos}
-    \label{fig:diagrama_er}
-\end{figure}
+El modelo lógico especifica los atributos de cada entidad y las relaciones entre ellas.
 
 \subsubsection{Especificación de entidades}
 

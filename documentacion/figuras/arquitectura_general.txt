@@ -1,0 +1,3 @@
+% Archivo de placeholder para arquitectura_general.png
+% Reemplazar con imagen real del diagrama de arquitectura del sistema
+% Debe mostrar: Frontend React -> API REST -> Backend Node.js -> Base de datos SQLite
