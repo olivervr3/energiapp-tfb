@@ -198,15 +198,15 @@ const LoginForm = ({ onLogin }) => {
         <div className="demo-users">
           <h3>Usuarios de prueba:</h3>
           <div style={{ marginBottom: '10px' }}>
-            <p><strong>Usuario de Prueba:</strong></p>
-            <p>Usuario: test</p>
-            <p>Contraseña: Test123456</p>
+            <p><strong>👤 Usuario Normal:</strong></p>
+            <p>Usuario: usuario1</p>
+            <p>Contraseña: user123</p>
             <p style={{ fontSize: '12px', color: '#666' }}>✓ Incluye 2 dispositivos de ejemplo</p>
           </div>
           <div>
             <p><strong>Administrador:</strong></p>
             <p>Usuario: admin</p>
-            <p>Contraseña: Admin123456</p>
+            <p>Contraseña: admin123</p>
             <p style={{ fontSize: '12px', color: '#666' }}>✓ Acceso completo al sistema</p>
           </div>
         </div>
