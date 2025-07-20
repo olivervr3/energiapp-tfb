@@ -3,11 +3,40 @@ const cors = require('cors');
 const helmet = require('helmet');
 const { spawn } = require('child_process');
 const path = require('path');
-const { users, userDevices, deviceTypes, activeSessions } = require('./database');
+
+// Importar base de datos con manejo de errores
+let users, userDevices, deviceTypes, activeSessions;
+try {
+  const database = require('./database');
+  users = database.users;
+  userDevices = database.userDevices;
+  deviceTypes = database.deviceTypes;
+  activeSessions = database.activeSessions;
+  console.log('✅ Base de datos importada correctamente');
+} catch (error) {
+  console.error('❌ Error al importar base de datos:', error);
+  // Inicializar con valores por defecto si hay error
+  users = [];
+  userDevices = {};
+  deviceTypes = [];
+  activeSessions = {};
+  console.log('⚠️  Usando base de datos vacía como fallback');
+}
+
 require('dotenv').config();
+
+console.log('\n🚀 Iniciando backend EnergiApp...');
+console.log('📋 Variables de entorno:');
+console.log('  NODE_ENV:', process.env.NODE_ENV);
+console.log('  PORT:', process.env.PORT);
+console.log('  CWD:', process.cwd());
+console.log('  __dirname:', __dirname);
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+console.log('✅ Express inicializado');
+console.log('🔧 Puerto configurado:', PORT);
 
 // IoT Simulator Integration
 let iotSimulator = null;
@@ -64,25 +93,59 @@ const callIoTSimulator = async (action, params = {}) => {
 };
 
 // Initialize IoT Simulator at startup
-initializeIoTSimulator();
+try {
+  initializeIoTSimulator();
+  console.log('✅ IoT Simulator inicializado');
+} catch (error) {
+  console.log('⚠️  Error en IoT Simulator (continuando):', error.message);
+}
+
+console.log('🔧 Configurando middleware...');
 
 // Middleware básico
-app.use(helmet());
-app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? [process.env.FRONTEND_URL, 'https://energiapp-tfb.onrender.com'] 
-    : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'http://localhost:3003', 'http://127.0.0.1:3000', 'http://127.0.0.1:3001', 'http://127.0.0.1:3002', 'http://127.0.0.1:3003'],
-  credentials: true
-}));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+try {
+  app.use(helmet());
+  console.log('✅ Helmet configurado');
+} catch (error) {
+  console.error('❌ Error configurando Helmet:', error.message);
+}
+
+try {
+  app.use(cors({
+    origin: process.env.NODE_ENV === 'production' 
+      ? [process.env.FRONTEND_URL, 'https://energiapp-tfb.onrender.com'] 
+      : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'http://localhost:3003', 'http://127.0.0.1:3000', 'http://127.0.0.1:3001', 'http://127.0.0.1:3002', 'http://127.0.0.1:3003'],
+    credentials: true
+  }));
+  console.log('✅ CORS configurado');
+} catch (error) {
+  console.error('❌ Error configurando CORS:', error.message);
+}
+
+try {
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+  console.log('✅ Express parsers configurados');
+} catch (error) {
+  console.error('❌ Error configurando Express parsers:', error.message);
+}
 
 // Servir archivos estáticos del frontend en producción
 if (process.env.NODE_ENV === 'production') {
   const frontendPath = path.join(__dirname, '../frontend/build');
-  app.use(express.static(frontendPath));
+  console.log(`🔍 Verificando directorio frontend: ${frontendPath}`);
   
-  console.log(`Serving static files from: ${frontendPath}`);
+  const fs = require('fs');
+  if (fs.existsSync(frontendPath)) {
+    try {
+      app.use(express.static(frontendPath));
+      console.log(`✅ Archivos estáticos servidos desde: ${frontendPath}`);
+    } catch (error) {
+      console.log(`⚠️  Error sirviendo archivos estáticos: ${error.message}`);
+    }
+  } else {
+    console.log(`⚠️  Directorio frontend no encontrado: ${frontendPath}`);
+  }
 }
 
 // Middleware de autenticación
@@ -1549,10 +1612,34 @@ app.get('/api/iot/dashboard', authenticate, async (req, res) => {
 
 // Ruta catch-all para servir el frontend en producción
 if (process.env.NODE_ENV === 'production') {
-  app.get('*', (req, res) => {
-    const indexPath = path.join(__dirname, '../frontend/build', 'index.html');
-    res.sendFile(indexPath);
-  });
+  const buildPath = path.join(__dirname, '../frontend/build');
+  const indexPath = path.join(buildPath, 'index.html');
+  
+  console.log('🔍 Verificando frontend build:');
+  console.log('  Build path:', buildPath);
+  console.log('  Index path:', indexPath);
+  
+  // Verificar si el archivo index.html existe
+  const fs = require('fs');
+  if (fs.existsSync(indexPath)) {
+    console.log('✅ Frontend build encontrado, sirviendo archivos estáticos');
+    app.use(express.static(buildPath));
+    
+    app.get('*', (req, res) => {
+      console.log('📄 Sirviendo:', req.path);
+      res.sendFile(indexPath);
+    });
+  } else {
+    console.log('⚠️  Frontend build no encontrado, modo API únicamente');
+    app.get('*', (req, res) => {
+      res.status(404).json({ 
+        error: 'Frontend not available', 
+        message: 'API está funcionando en modo backend únicamente',
+        api_status: 'active',
+        frontend_status: 'not_available'
+      });
+    });
+  }
 }
 
 // Iniciar servidor
@@ -1580,10 +1667,37 @@ app.listen(PORT, '0.0.0.0', () => {
 // Manejo de errores del proceso
 process.on('uncaughtException', (error) => {
   console.error('❌ Error no capturado en backend:', error);
-  process.exit(1);
+  console.error('Stack trace:', error.stack);
+  
+  // En producción, no salir inmediatamente para permitir debugging
+  if (process.env.NODE_ENV === 'production') {
+    console.log('⚠️  Continuando ejecución en modo producción...');
+    return;
+  }
+  
+  setTimeout(() => {
+    process.exit(1);
+  }, 1000);
 });
 
 process.on('unhandledRejection', (reason, promise) => {
   console.error('❌ Promesa rechazada en backend:', reason);
-  process.exit(1);
+  console.error('Promise:', promise);
+  
+  // En producción, no salir inmediatamente para permitir debugging
+  if (process.env.NODE_ENV === 'production') {
+    console.log('⚠️  Continuando ejecución en modo producción...');
+    return;
+  }
+  
+  setTimeout(() => {
+    process.exit(1);
+  }, 1000);
 });
+
+// Mantener el proceso vivo en producción
+if (process.env.NODE_ENV === 'production') {
+  setInterval(() => {
+    console.log('💚 Servidor activo:', new Date().toISOString());
+  }, 30000); // Log cada 30 segundos
+}
