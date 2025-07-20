@@ -4,25 +4,25 @@ let users = [
     id: 1,
     username: 'admin',
     email: 'admin@energiapp.com',
-    password: 'Admin123456', // Cambiado para coincidir con la base de datos SQLite
+    password: 'admin123', // Sincronizado con server.js
     role: 'admin',
     created_at: new Date().toISOString(),
     active: true
   },
   {
     id: 2,
-    username: 'test',
-    email: 'test@test.com',
-    password: 'Test123456', // Usuario de prueba principal
+    username: 'usuario1',
+    email: 'usuario1@test.com',
+    password: 'user123', // Sincronizado con server.js
     role: 'user',
     created_at: new Date().toISOString(),
     active: true
   },
   {
     id: 3,
-    username: 'TEST',
-    email: 'TEST@test.com',
-    password: '123456', // Usuario de prueba simple
+    username: 'usuario2',
+    email: 'usuario2@test.com',
+    password: 'user123', // Sincronizado con server.js
     role: 'user',
     created_at: new Date().toISOString(),
     active: true
