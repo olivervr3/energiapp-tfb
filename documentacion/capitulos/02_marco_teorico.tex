@@ -1,0 +1,322 @@
+\chapter{Marco Teórico}
+\label{ch:marco_teorico}
+
+\section{Internet of Things (IoT) y gestión energética}
+
+\subsection{Fundamentos del IoT y su impacto en la gestión energética}
+
+El Internet of Things (IoT) representa un parad\subsubsection{Efectos directos (direct effects)}
+
+El impacto directo de las tecnologías digitales incluye environmental costs que must be considered en cualquier analysis completo de sustainability impact.
+
+El consumo energético de centros de datos y redes de telecomunicaciones represents un growing component del global energy consumption, actualmente accounting for approximately 4\% de global electricity usage y projected to reach 8\% by 2030. Este impacto incluye both operational energy for computation y cooling requirements para maintain optimal performance.
+
+La fabricación y disposición de dispositivos electrónicos genera environmental impacts a través de energy-intensive manufacturing processes, extraction de rare earth materials, y challenges relacionados con electronic waste management. El lifecycle environmental cost de electronic devices often exceeds their operational environmental impact.
+
+El uso de materiales raros y potencialmente peligrosos en electronic devices creates supply chain vulnerabilities y environmental risks associated con mining operations, chemical processing, y waste disposal. Estos materials frecuentemente involve environmentally damaging extraction processes y present challenges for sustainable recycling at end-of-life.ológico que ha transformado radicalmente la gestión energética doméstica en la última década. Definido como una red de objetos físicos interconectados que incorporan sensores, software y tecnologías de comunicación \cite{atzori2010internet}, el IoT ha evolucionado desde un concepto teórico hasta una realidad práctica con impacto medible en la eficiencia energética.
+
+La relevancia del IoT en el contexto energético doméstico radica en su capacidad para abordar tres limitaciones fundamentales de los sistemas tradicionales de gestión energética: la falta de granularidad temporal en las mediciones, la ausencia de visibilidad por dispositivo individual, y la inexistencia de mecanismos de retroalimentación en tiempo real para los usuarios.
+
+Estudios empíricos recientes han demostrado que la implementación de sistemas IoT en hogares puede reducir el consumo energético entre un 10\% y 23\%, dependiendo del nivel de automatización y la participación activa de los usuarios \cite{iea2022digitalization}. Sin embargo, estas cifras contrastan con la baja tasa de adopción real, estimada en menos del 15\% de los hogares en países desarrollados, lo que evidencia la existencia de barreras significativas en la implementación práctica.
+
+\subsubsection{Componentes arquitectónicos de sistemas IoT energéticos}
+
+La arquitectura de un sistema IoT para gestión energética doméstica se estructura en cuatro capas fundamentales, cada una con desafíos técnicos específicos:
+
+\textbf{Capa de percepción:} Integrada por sensores especializados en medición energética (medidores inteligentes, sensores de corriente, detectores de potencia reactiva) que deben cumplir con estándares de precisión del IEC 62053. Esta capa enfrenta desafíos relacionados con la deriva temporal de calibración y la interferencia electromagnética en entornos domésticos.
+
+\textbf{Capa de conectividad:} Utiliza protocolos heterogéneos (WiFi, Zigbee 3.0, LoRaWAN, Thread) con diferentes trade-offs entre consumo energético, alcance y ancho de banda. La selección del protocolo impacta directamente en la viabilidad de despliegue a gran escala y los costes operativos del sistema.
+
+\textbf{Capa de procesamiento:} Implementa algoritmos de análisis distribuido entre edge computing local y cloud computing remoto. Esta distribución debe optimizar la latencia para aplicaciones en tiempo real versus la capacidad computacional para análisis complejos.
+
+\textbf{Capa de aplicación:} Proporciona interfaces de usuario que deben equilibrar la riqueza informativa con la usabilidad para usuarios no técnicos. Estudios de UX han identificado que la complejidad excesiva de interfaces constituye una barrera crítica para la adopción \cite{froehlich2010sensing}.
+
+\subsection{Evolución tecnológica y análisis comparativo}
+
+La evolución del IoT energético puede categorizarse en tres generaciones tecnológicas, cada una respondiendo a limitaciones específicas de la anterior:
+
+\textbf{Primera generación (2008-2015):} Caracterizada por medidores inteligentes básicos con comunicación unidireccional. Limitaciones principales: granularidad temporal baja (15-60 minutos), ausencia de desagregación por dispositivo, y interfaces rudimentarias.
+
+\textbf{Segunda generación (2016-2021):} Introducción de medición sub-métrica y capacidades bidireccionales. Mejoras: granularidad de 1-5 minutos, inicio de técnicas de disaggregation no-intrusiva (NILM), primeras implementaciones de optimización automática.
+
+\textbf{Tercera generación (2022-presente):} Integración de machine learning distribuido y optimización predictiva. Características: medición en tiempo real (<1 segundo), identificación automática de dispositivos mediante deep learning, optimización multi-objetivo considerando coste, confort y sostenibilidad.
+
+Esta evolución tecnológica ha sido impulsada por la convergencia de tres factores: la reducción exponencial del coste de sensores (Factor de 10x en cinco años), el aumento de la potencia computacional en dispositivos edge, y el desarrollo de algoritmos de ML específicamente optimizados para datos energéticos con limitaciones de recursos.
+
+\section{Análisis de datos y machine learning en sistemas energéticos}
+
+\subsection{Desafíos específicos del análisis de datos energéticos}
+
+El análisis de datos energéticos domésticos presenta características únicas que lo distinguen de otros dominios de análisis de datos. Estas particularidades requieren enfoques metodológicos especializados y plantean desafíos técnicos específicos que han sido objeto de investigación intensiva en la última década.
+
+\subsubsection{Características intrínsecas de los datos energéticos}
+
+Los datos de consumo energético doméstico exhiben múltiples patrones temporales superpuestos que complican su análisis \cite{haben2016review}:
+
+\textbf{Estacionalidad múltiple:} Los datos presentan componentes estacionales a diferentes escalas temporales (diaria, semanal, mensual, anual) con interacciones no lineales entre ellas. Por ejemplo, el consumo de climatización muestra patrones diarios variables según la estación del año.
+
+\textbf{Dependencia contextual:} El consumo está fuertemente influenciado por factores externos (meteorología, precios energéticos, eventos sociales) que introducen variabilidad no estacionaria difícil de modelar con técnicas tradicionales.
+
+\textbf{Heteroscedasticidad temporal:} La varianza del consumo no es constante, presentando períodos de alta volatilidad (ej. horarios de comidas) alternados con períodos estables (ej. madrugada).
+
+\textbf{Datos faltantes y outliers:} Los sistemas IoT reales experimentan fallos de conectividad, errores de calibración y eventos excepcionales que resultan en datos faltantes o anómalos que pueden comprometer la validez de los análisis.
+
+\subsubsection{Limitaciones de los enfoques tradicionales}
+
+Los métodos clásicos de análisis de series temporales (ARIMA, Holt-Winters) han demostrado limitaciones significativas cuando se aplican a datos energéticos domésticos:
+
+\textbf{Asunción de linealidad:} Los modelos lineales no capturan adecuadamente las interacciones complejas entre factores que influyen en el consumo (temperatura vs. hora del día vs. ocupación).
+
+\textbf{Estacionariedad requerida:} Los datos energéticos domésticos raramente satisfacen los requisitos de estacionariedad debido a cambios graduales en hábitos de los usuarios y evolución del parque de electrodomésticos.
+
+\textbf{Incapacidad para modelar dependencias a largo plazo:} Los modelos tradicionales tienen dificultades para capturar dependencias que se extienden más allá de unas pocas observaciones previas.
+
+\subsection{Machine learning para predicción energética: análisis comparativo}
+
+La aplicación de técnicas de machine learning en la predicción del consumo energético ha experimentado una evolución significativa, con diferentes familias de algoritmos mostrando ventajas comparativas según el contexto específico de aplicación \cite{ahmad2018review}.
+
+\subsubsection{Enfoques supervisados: análisis de trade-offs}
+
+\textbf{Random Forest y Gradient Boosting:} Han demostrado robustez superior en presencia de outliers y capacidad para capturar relaciones no lineales complejas. Sin embargo, su interpretabilidad limitada los hace menos adecuados para aplicaciones donde la explicabilidad es crítica para la aceptación del usuario.
+
+\textbf{Support Vector Regression (SVR):} Muestra excelente rendimiento en datasets de tamaño medio pero enfrenta limitaciones de escalabilidad en aplicaciones con millones de observaciones típicas de sistemas IoT.
+
+\textbf{Redes neuronales profundas:} Las arquitecturas LSTM y GRU han revolucionado la predicción de series temporales energéticas al capturar dependencias a largo plazo \cite{shi2018deep}. No obstante, requieren grandes volúmenes de datos para entrenamiento y presentan desafíos en términos de interpretabilidad y overfitting.
+
+\subsubsection{Consideraciones metodológicas específicas}
+
+La evaluación de modelos predictivos en el dominio energético requiere métricas especializadas que reflejen las particularidades del problema:
+
+\textbf{Evaluación temporal consistente:} La validación cruzada tradicional es inapropiada debido a la dependencia temporal de los datos. Se requieren esquemas de validación forward-chaining que respeten la cronología.
+
+\textbf{Métricas de error contextualmente relevantes:} Además del RMSE estándar, se utilizan métricas como MAPE (Mean Absolute Percentage Error) para errores relativos y métricas específicas como el Peak Hour Error Rate para evaluar la capacidad predictiva durante períodos críticos.
+
+\textbf{Análisis de incertidumbre:} Los modelos deben proporcionar estimaciones de incertidumbre para las predicciones, especialmente crítico en aplicaciones de optimización energética donde las decisiones erróneas tienen costes económicos directos.
+
+\subsubsection{Modelos de regresión}
+
+Los modelos de regresión constituyen una base fundamental para la predicción de consumo energético debido a su capacidad para establecer relaciones matemáticas explícitas entre variables independientes y el consumo objetivo.
+
+La regresión lineal múltiple representa el enfoque más directo y interpretable, proporcionando un modelo simple pero efectivo para capturar relaciones lineales entre variables predictoras como temperatura, hora del día, día de la semana, y el consumo energético resultante. Su principal ventaja radica en la transparencia matemática que facilita la comprensión del impacto de cada variable.
+
+Las variantes regularizadas Ridge y Lasso introducen términos de penalización que previenen el sobreajuste, especialmente crucial cuando el número de variables predictoras es alto relative al número de observaciones. Ridge regression utiliza penalización L2 que reduce la magnitud de los coeficientes, mientras que Lasso emplea penalización L1 que puede llevar algunos coeficientes exactamente a cero, proporcionando selección automática de características.
+
+Support Vector Regression (SVR) extiende las capacidades predictivas al espacio no lineal mediante el uso de kernels, siendo particularmente efectivo para capturar relaciones complejas entre variables que los modelos lineales no pueden representar adecuadamente. Su robustez frente a outliers lo hace especialmente valioso en datos energéticos reales que frecuentemente contienen mediciones anómalas.
+
+\subsubsection{Modelos de ensemble}
+
+Los métodos de ensemble representan una evolución significativa en el machine learning aplicado a predicción energética, combinando múltiples modelos para mejorar sustancialmente la precisión y robustez de las predicciones compared to single-model approaches.
+
+Random Forest implementa una estrategia de bagging que combina múltiples árboles de decisión entrenados en diferentes subconjuntos de datos y características, reduciendo efectivamente la varianza del modelo final. Esta técnica es particularmente valiosa en datos energéticos debido a su capacidad para manejar relaciones no lineales complejas y su robustez inherente frente a outliers y datos faltantes.
+
+Gradient Boosting adopta un enfoque secuencial donde cada modelo nuevo se construye específicamente para corregir los errores de predicción cometidos por los modelos anteriores. Esta metodología iterativa permite capturar patrones sutiles en los datos energéticos que modelos individuales podrían pasar por alto, resultando en predicciones más precisas.
+
+XGBoost y LightGBM representan implementaciones optimizadas de gradient boosting que incorporan mejoras algorítmicas y de rendimiento significativas. XGBoost utiliza regularización avanzada y optimizaciones de memoria que lo hacen especialmente efectivo para datasets de gran escala típicos en aplicaciones IoT. LightGBM emplea leaf-wise tree growth en lugar del level-wise tradicional, reduciendo significativamente el tiempo de entrenamiento mientras mantiene alta precisión predictiva.
+
+\subsubsection{Redes neuronales}
+
+Las redes neuronales han revolucionado el análisis de series temporales energéticas al proporcionar capacidades de modelado no lineal que superan significativamente los enfoques tradicionales, especialmente en la captura de dependencias complejas a largo plazo características de los patrones de consumo energético.
+
+Las redes LSTM (Long Short-Term Memory) representan un avance fundamental en el procesamiento de secuencias temporales, incorporando mecanismos de memoria selectiva que permiten retener información relevante a través de intervalos temporales extensos mientras olvidan información irrelevante. Esta capacidad es crucial para modelar patrones energéticos que pueden depender de eventos ocurridos días o semanas anteriores, como cambios estacionales o hábitos de usuario establecidos \cite{shi2018deep}.
+
+Las unidades GRU (Gated Recurrent Units) constituyen una variante simplificada pero efectiva de LSTM que reduce la complejidad computacional mediante la combinación de las puertas de olvido y entrada en una sola puerta de actualización. Esta simplificación resulta en menor coste computacional y tiempo de entrenamiento, manteniendo capacidades predictivas comparables, lo que las hace especialmente atractivas para aplicaciones en tiempo real con limitaciones de recursos.
+
+La arquitectura Transformer, inicialmente desarrollada para procesamiento de lenguaje natural, ha emergido como una alternativa prometedora para series temporales energéticas. Su mecanismo de atención permite al modelo identificar y ponderar automáticamente las relaciones más relevantes entre diferentes momentos temporales, independientemente de su distancia en la secuencia, superando las limitaciones de dependencia secuencial de las redes recurrentes tradicionales.
+
+\section{Desarrollo web moderno}
+
+\subsection{Arquitecturas web para aplicaciones IoT}
+
+El desarrollo de aplicaciones web para sistemas IoT requiere arquitecturas robustas y escalables que puedan manejar grandes volúmenes de datos en tiempo real. Las arquitecturas más utilizadas incluyen:
+
+\subsubsection{Arquitectura de microservicios}
+
+La arquitectura de microservicios descompone la aplicación en servicios independientes y especializados, cada uno responsable de una funcionalidad específica del sistema global. Esta aproximación arquitectónica ofrece ventajas significativas en términos de escalabilidad independiente, permitiendo que cada servicio sea escalado según su demanda específica sin afectar otros componentes del sistema.
+
+La flexibilidad tecnológica constituye otro beneficio fundamental, ya que cada microservicio puede implementarse utilizando la tecnología más apropiada para su función específica, permitiendo la optimización tecnológica por dominio. Adicionalmente, la better mantenibilidad emerge de la separación clara de responsabilidades y el menor acoplamiento entre componentes.
+
+Sin embargo, esta arquitectura introduce desafíos significativos en términos de complejidad de gestión, requiriendo herramientas sophisticadas para orquestación, monitoreo y deployment coordinado de múltiples servicios. La comunicación entre servicios requiere consideración cuidadosa de latencia, tolerancia a fallos, y consistencia de datos, mientras que la consistencia de datos across múltiples servicios plantea desafíos conceptuales y técnicos que requieren estrategias como event sourcing o eventual consistency.
+
+\subsubsection{API-First Design}
+
+El diseño API-first prioriza la creación de APIs robustas y bien documentadas como foundation arquitectónica antes del desarrollo de interfaces específicas, estableciendo contratos claros entre diferentes componentes del sistema.
+
+Las APIs RESTful implementan un estilo arquitectónico basado en HTTP que utiliza métodos estándar (GET, POST, PUT, DELETE) y códigos de estado para comunicación cliente-servidor. Este enfoque proporciona simplicidad conceptual, cacheable responses, y stateless communication que facilita la escalabilidad horizontal. La adherencia a principios REST asegura interfaces predecibles y fáciles de consumir.
+
+GraphQL representa una evolución significativa en el diseño de APIs, proporcionando un lenguaje de consulta que permite a los clientes solicitar exactamente los datos que necesitan en una single request. Esta capacidad elimina problemas tradicionales como over-fetching y under-fetching, reduciendo bandwidth usage y mejorando performance, especialmente crucial en aplicaciones IoT con dispositivos de capacidad limitada.
+
+WebSocket implementa un protocolo para comunicación bidireccional en tiempo real que mantiene una conexión persistente entre cliente y servidor. Esta tecnología es fundamental para aplicaciones energéticas que requieren updates inmediatos de consumo, alerts en tiempo real, y interactive dashboards que reflejan cambios instantáneos en el sistema IoT.
+
+\subsection{Tecnologías frontend modernas}
+
+\subsubsection{React y el ecosistema JavaScript}
+
+React es una biblioteca de JavaScript para construir interfaces de usuario, especialmente popular para aplicaciones de una sola página (SPA) debido a su arquitectura component-based y rendering eficiente \cite{banks2017react}.
+
+El Virtual DOM representa una innovación fundamental que mejora significativamente el rendimiento mediante una representación en memoria del DOM real. React utiliza algoritmos de diffing optimizados para identificar cambios mínimos necesarios y actualizar selectivamente solo los elementos que han cambiado, reduciendo substantially las operaciones costosas de manipulación directa del DOM.
+
+Los componentes reutilizables constituyen el core conceptual de React, facilitando el mantenimiento y la escalabilidad del código through modular architecture. Cada componente encapsula su lógica, estado y rendering, permitiendo development teams trabajar independently en diferentes partes de la aplicación while maintaining consistency.
+
+El ecosistema robusto que rodea React incluye una amplia gama de bibliotecas y herramientas especializadas que aceleran el desarrollo, desde state management solutions como Redux hasta UI component libraries como Material-UI, testing frameworks como Jest, y build tools como Webpack, creando un environment completamente integrado para desarrollo profesional.
+
+\subsubsection{TypeScript}
+
+TypeScript añade tipado estático a JavaScript, mejorando significativamente la robustez del código mediante verificación de tipos en tiempo de compilación.
+
+La detección temprana de errores representa una de las ventajas más importantes, ya que el tipado estático permite identificar errores potenciales durante la fase de desarrollo rather than runtime, reduciendo bugs en producción y mejorando la reliability general del sistema. Esta capacidad es especialmente valiosa en aplicaciones complejas donde errores de tipo pueden tener consecuencias cascading.
+
+El mejor soporte de IDE se materializa a través de autocompletado inteligente que sugiere métodos y propiedades disponibles basados en los tipos definidos, refactoring automático que permite cambios seguros across the entire codebase, y navigation features que facilitan el understanding de large codebases.
+
+La documentación implícita emerge naturalmente de los tipos definidos, que sirven como documentación always up-to-date del código, eliminando discrepancies between documentation y implementation que frecuentemente ocurren en proyectos traditional JavaScript.
+
+\subsection{Backend con Node.js}
+
+Node.js permite ejecutar JavaScript en el servidor, ofreciendo ventajas particulares para aplicaciones IoT que requieren handling de múltiples conexiones simultáneas y processing de eventos asíncronos.
+
+La arquitectura event-driven constituye una fortaleza fundamental, siendo ideal para manejar múltiples conexiones concurrentes con minimal overhead. Esta característica es especialmente relevante en aplicaciones IoT donde potentially thousands de dispositivos pueden estar sending data simultaneously, requiring efficient connection management without blocking operations.
+
+El ecosistema NPM proporciona acceso a un amplio repositorio de paquetes especializados que accelerate development significantly. Desde libraries for IoT protocols hasta machine learning frameworks, NPM enables rapid prototyping and integration of complex functionality without requiring development from scratch.
+
+El desarrollo full-stack JavaScript permite usar el mismo lenguaje en frontend y backend, eliminando context switching overhead y enabling shared code and utilities between client and server. Esta uniformidad language simplifica team coordination, reduces learning curve for developers, y facilita code maintenance across the entire application stack.
+
+\section{Sostenibilidad y Objetivos de Desarrollo Sostenible}
+
+\subsection{Marco de los ODS}
+
+Los Objetivos de Desarrollo Sostenible (ODS) establecidos por las Naciones Unidas en 2015 proporcionan un marco global para abordar los desafíos más urgentes del mundo \cite{un2015transforming}. Este proyecto se alinea específicamente con cuatro ODS:
+
+\subsubsection{ODS 7: Energía asequible y no contaminante}
+
+El ODS 7 busca garantizar el acceso a una energía asequible, segura, sostenible y moderna para todos, estableciendo metas específicas que directly align con los objetivos de este proyecto.
+
+La meta de duplicar la tasa mundial de mejora de la eficiencia energética para 2030 requiere herramientas tecnológicas avanzadas que permitan measurement, analysis, y optimization del consumo energético a nivel granular. EnergiApp v2.0 contribuye directamente a este objetivo proporcionando capabilities de monitoreo inteligente y automated optimization.
+
+El aumento considerable de la proporción de energía renovable en el conjunto de fuentes energéticas se facilita through smart consumption management que puede coordinate energy usage con renewable energy availability peaks, maximizing clean energy utilization y minimizing dependency on fossil fuel sources.
+
+La mejora de la cooperación internacional para facilitar el acceso a la investigación y tecnología relativas a la energía limpia se supported por development de open-source solutions que pueden ser adapted y deployed across different cultural and regulatory contexts, promoting knowledge sharing y technological democratization.
+
+\subsubsection{ODS 11: Ciudades y comunidades sostenibles}
+
+Este objetivo se centra en hacer que las ciudades sean inclusivas, seguras, resilientes y sostenibles, estableciendo metas específicas que se alinean directamente con las capacidades de gestión energética inteligente.
+
+La reducción del impacto ambiental negativo per cápita de las ciudades se facilita through tecnologías que permiten el monitoreo y optimización granular del consumo energético urbano. Las plataformas de gestión energética doméstica contribuyen aggregating individual efficiency improvements para generar impacto metropolitano measurable.
+
+El acceso universal a zonas verdes y espacios públicos seguros se beneficia indirectamente de la optimización energética que libera recursos municipales para investment en infraestructura verde y servicios públicos, while smart energy management reduces urban heat island effects.
+
+El soporte a vínculos económicos, sociales y ambientales positivos entre zonas urbanas y rurales se strengthens through distributed energy management que puede coordinate consumption con renewable energy generation often located in rural areas, creating economic interdependencies que benefit both environments.
+
+\subsubsection{ODS 12: Producción y consumo responsables}
+
+El ODS 12 promueve modalidades de consumo y producción sostenibles que directly align con los objectives de intelligent energy management systems.
+
+El logro de gestión sostenible y uso eficiente de los recursos naturales se facilita mediante tecnologías que provide granular visibility into resource consumption patterns, enabling informed decision-making y automated optimization que maximizes resource efficiency without compromising user comfort or productivity.
+
+La reducción considerable de la generación de desechos mediante actividades de prevención, reducción, reciclado y reutilización se supports indirectamente through extended appliance lifespans que result from optimized usage patterns y preventive maintenance enabled by continuous monitoring.
+
+El aliento a las empresas para que adopten prácticas sostenibles e incorporen información sobre la sostenibilidad en su ciclo de presentación de informes se strengthens through open-source platforms que demonstrate practical sustainability implementations y provide frameworks for corporate sustainability reporting based on quantifiable energy efficiency metrics.
+
+\subsubsection{ODS 13: Acción por el clima}
+
+Este objetivo urge a tomar medidas urgentes para combatir el cambio climático y sus efectos, estableciendo priorities que se alinean fundamentalmente con los objetivos de eficiencia energética.
+
+El fortalecimiento de la resistencia y la capacidad de adaptación a los riesgos relacionados con el clima se enables through smart energy systems que pueden respond automatically a climate-related disruptions, optimize consumption during extreme weather events, y maintain energy security durante crisis climáticas.
+
+La incorporación de medidas relativas al cambio climático en las políticas, estrategias y planes nacionales se facilita mediante plataformas tecnológicas que provide quantifiable data sobre carbon footprint reduction y energy efficiency improvements, enabling evidence-based policy development y implementation tracking.
+
+La mejora de la educación, la sensibilización y la capacidad humana e institucional respecto de la mitigación del cambio climático se strengthens through accessible technologies que demonstrate practical climate action mientras educate users sobre el environmental impact de sus decisions energéticas y provide actionable insights para sustainable behavior change.
+
+\subsection{Impacto de las tecnologías digitales en la sostenibilidad}
+
+Las tecnologías digitales tienen un papel dual en la sostenibilidad ambiental. Por un lado, consumen energía y recursos; por otro, pueden ser herramientas poderosas para mejorar la eficiencia y reducir el impacto ambiental \cite{lange2020digitalization}.
+
+\subsubsection{Efectos habilitadores (enabling effects)}
+
+Las tecnologías digitales pueden reducir el consumo energético y las emisiones através de múltiples mechanisms que amplify their environmental benefits beyond their direct impact.
+
+La optimización de procesos representa el enabling effect más directo, donde algoritmos especializados improve la eficiencia de sistemas existentes mediante continuous monitoring, pattern recognition, y automated adjustments que maximize performance while minimizing energy consumption. Esta optimización puede yield improvements de 15-30\% en efficiency without requiring hardware changes.
+
+La desmaterialización constituye un enabling effect transformativo donde productos físicos se sustituyen por servicios digitales equivalentes, eliminando material consumption y transportation requirements. Examples include digital documents replacing paper, video conferencing substituting travel, y cloud services replacing local hardware infrastructure.
+
+Los cambios de comportamiento represent perhaps el most powerful enabling effect, donde information systems provide users con real-time feedback y actionable insights que enable informed decision-making. Studies show que proper feedback systems can achieve 5-15\% energy consumption reductions through purely behavioral modifications without requiring technological investments.
+
+\subsubsection{Efectos directos (direct effects)}
+
+El impacto directo de las tecnologías digitales incluye:
+
+\begin{itemize}
+    \item Consumo energético de centros de datos y redes de telecomunicaciones.
+    \item Fabricación y disposición de dispositivos electrónicos.
+    \item Uso de materiales raros y potencialmente peligrosos.
+\end{itemize}
+
+\section{Estado del arte en plataformas de gestión energética}
+
+\subsection{Soluciones comerciales existentes}
+
+El mercado de soluciones de gestión energética doméstica ha experimentado un crecimiento significativo. Algunas de las plataformas más relevantes incluyen:
+
+\subsubsection{Google Nest}
+
+La plataforma Nest de Google ofrece termostatos inteligentes y otros dispositivos IoT para el hogar, representing one of the most successful commercial implementations de smart home energy management.
+
+Las fortalezas principales incluyen seamless integration con el ecosistema Google, providing unified device management a través de Google Assistant y other Google services. Los algoritmos de aprendizaje automático continuously adapt to user behavior patterns, automatically optimizing temperature schedules para maximize comfort while minimizing energy consumption. La platform también benefits from Google's extensive cloud infrastructure y machine learning expertise.
+
+Sin embargo, las limitaciones significativas incluyen un enfoque principalmente en climatización rather than comprehensive energy management across all household devices. Adicionalmente, existe una strong dependencia del ecosistema Google, which can limit interoperability con devices from other manufacturers y creates vendor lock-in situations que may not align con user preferences for technological diversity o privacy concerns.
+
+\subsubsection{Schneider Electric EcoStruxure}
+
+Plataforma integral para gestión energética en edificios, representing a comprehensive enterprise-focused approach to energy management que extends beyond residential applications.
+
+Las fortalezas distinctive incluyen una solución empresarial robusta que has been tested y validated in large-scale deployments across multiple industries. La plataforma supports una amplia gama de dispositivos compatibles from various manufacturers, providing flexibility y avoiding vendor lock-in. También incorporates advanced analytics capabilities y professional-grade reporting features designed para facility managers y energy professionals.
+
+No obstante, las limitaciones principales incluyen significant complexity para usuarios domésticos que lack technical expertise in building management systems. El coste elevado makes la platform prohibitive para residential users y small businesses. Additionally, la enterprise focus means que user interfaces y workflows are optimized para professional use rather than consumer-friendly residential applications.
+
+\subsubsection{Sense Energy Monitor}
+
+Monitor de energía que utiliza machine learning para identificar dispositivos, offering a consumer-focused approach to residential energy monitoring with advanced analytics capabilities.
+
+Las fortalezas primary incluyen una instalación simple que requires minimal technical expertise, typically involving connection to the electrical panel without requiring individual device modifications. La detección automática de dispositivos using machine learning algorithms eliminates la need para manual device configuration, automatically identifying appliances based on their unique electrical signatures y providing granular consumption insights without requiring smart devices.
+
+Las limitaciones significativas incluyen precisión variable in device identification, particularly para devices con similar power consumption profiles o variable usage patterns. El coste del hardware represents a substantial upfront investment que may not be justified para all users. Additionally, la platform relies on cloud connectivity para full functionality, creating dependency on internet availability y raising potential privacy concerns about detailed home energy usage data.
+
+\subsection{Investigación académica}
+
+La investigación académica en gestión energética doméstica abarca múltiples disciplinas y enfoques:
+
+\subsubsection{Algoritmos de predicción}
+
+Diversos estudios han explorado algoritmos para la predicción del consumo energético, contributing to a growing body of academic knowledge sobre optimal approaches para energy forecasting.
+
+Las redes neuronales artificiales para predicción a corto plazo han demonstrated significant promise en capturing complex non-linear relationships inherent en energy consumption data. Research por Hernandez et al. \cite{hernandez2013artificial} showed que neural networks can achieve prediction accuracy superior to traditional statistical methods, particularly para capturing daily y weekly consumption patterns que exhibit complex interactions between multiple variables.
+
+Los modelos ARIMA para análisis de series temporales provide a foundation para understanding temporal dependencies en energy consumption data. El trabajo por Pao \cite{pao2006forecasting} demonstrated que properly configured ARIMA models can achieve reasonable prediction accuracy para medium-term forecasting, though they struggle con non-linear relationships y sudden pattern changes.
+
+Los algoritmos de ensemble para mejorar la precisión represent a promising direction que combines the strengths of multiple prediction approaches. Tian et al. \cite{tian2018approach} showed que ensemble methods can achieve superior robustness y accuracy compared to individual algorithms, particularly en scenarios con diverse usage patterns y seasonal variations.
+
+\subsubsection{Interfaces de usuario y experiencia}
+
+La investigación en HCI (Human-Computer Interaction) ha explorado cómo diseñar interfaces efectivas para la gestión energética, contributing essential insights sobre user engagement y behavior change mechanisms.
+
+Las visualizaciones que promuevan comportamientos sostenibles han been extensively studied por Froehlich et al. \cite{froehlich2010sensing}, quien demonstrated que specific visualization approaches can significantly influence user behavior. La research showed que real-time feedback combined con historical comparisons y goal-setting features can motivate sustained behavior change toward energy conservation.
+
+La gamificación para incrementar el engagement has emerged como a promising approach para maintaining long-term user interest en energy management systems. Gustafsson y Gyllenswärd \cite{gustafsson2009power} explored como game mechanics como point systems, achievements, y social comparisons can increase user participation y create positive feedback loops que sustain energy-conscious behaviors over extended periods.
+
+El feedback en tiempo real para cambios de comportamiento has been identified por Fischer \cite{fischer2008feedback} como a critical component for effective energy management systems. La research demonstrated que immediate feedback sobre energy consumption combined con actionable recommendations can produce measurable reductions en household energy usage, though la effectiveness depends heavily on feedback design y user interface quality.
+
+\subsection{Brechas identificadas}
+
+A pesar de los avances en el campo, se han identificado varias brechas que este proyecto busca abordar:
+
+\begin{enumerate}
+    \item \textbf{Accesibilidad:} Muchas soluciones requieren hardware costoso o conocimientos técnicos avanzados.
+    
+    \item \textbf{Interoperabilidad:} La falta de estándares comunes limita la integración entre diferentes dispositivos y plataformas.
+    
+    \item \textbf{Privacidad y datos:} Preocupaciones sobre el manejo de datos personales y de consumo.
+    
+    \item \textbf{Adaptabilidad cultural:} Pocas soluciones consideran las diferencias culturales y regulatorias locales.
+    
+    \item \textbf{Educación y concienciación:} Falta de herramientas educativas integradas que ayuden a los usuarios a comprender mejor su consumo energético.
+\end{enumerate}
+
+Este proyecto busca contribuir al estado del arte proporcionando una solución open-source, accesible y educativa que aborde estas brechas identificadas, especialmente en el contexto del mercado español y la regulación europea.

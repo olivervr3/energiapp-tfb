@@ -1,0 +1,75 @@
+{
+  "dataset_name": "UK-DALE Synthetic",
+  "source": "Generated based on UK-DALE specifications",
+  "sample_rate_seconds": 6,
+  "duration_days": 30,
+  "total_samples": 432000,
+  "appliances": [
+    "aggregate",
+    "fridge",
+    "washing_machine",
+    "dishwasher",
+    "kettle",
+    "microwave",
+    "toaster",
+    "television",
+    "lighting"
+  ],
+  "generation_timestamp": "2025-07-16T21:02:03.826904",
+  "statistics": {
+    "aggregate": {
+      "mean": 718.3934136693784,
+      "std": 673.5234198364385,
+      "min": 10.948907286313222,
+      "max": 12000.0
+    },
+    "fridge": {
+      "mean": 80.04183188941411,
+      "std": 35.920885693850884,
+      "min": 0.0,
+      "max": 221.74700109752308
+    },
+    "washing_machine": {
+      "mean": 117.85479251140092,
+      "std": 388.5560700744947,
+      "min": 0.0,
+      "max": 2471.5981574174234
+    },
+    "dishwasher": {
+      "mean": 100.89084737512661,
+      "std": 361.97266605819516,
+      "min": 0.0,
+      "max": 2403.956019007469
+    },
+    "kettle": {
+      "mean": 60.339524362247396,
+      "std": 388.3700848757772,
+      "min": 0.0,
+      "max": 2997.9244180384344
+    },
+    "microwave": {
+      "mean": 67.41396943390829,
+      "std": 412.2923707467908,
+      "min": 0.0,
+      "max": 2995.3393936543202
+    },
+    "toaster": {
+      "mean": 47.62307913940587,
+      "std": 242.25797549535378,
+      "min": 0.0,
+      "max": 1499.344157168289
+    },
+    "television": {
+      "mean": 46.26128294383937,
+      "std": 66.55339620478951,
+      "min": 0.0,
+      "max": 248.58469283947787
+    },
+    "lighting": {
+      "mean": 21.98188919909548,
+      "std": 21.386126428814006,
+      "min": 0.0,
+      "max": 100.43318116527367
+    }
+  }
+}

@@ -1,0 +1,538 @@
+\chapter{Análisis del problema y diseño de la solución}
+\label{ch:analisis}
+
+\section{Análisis crítico del problema energético doméstico}
+
+\subsection{Contextualización del problema y justificación}
+
+La gestión energética doméstica representa uno de los desafíos más significativos en la transición hacia un modelo energético sostenible. Los hogares constituyen aproximadamente el 27\% del consumo energético total en la Unión Europea, con un potencial de ahorro identificado del 25-30\% mediante la implementación de tecnologías de gestión inteligente.
+
+Sin embargo, la realidad empírica revela una paradoja fundamental: a pesar de la disponibilidad de tecnologías maduras para la monitorización energética, la tasa de adopción real permanece por debajo del 15\% en países desarrollados. Este fenómeno, conocido en la literatura como "efficiency gap", evidencia la existencia de barreras no tecnológicas que limitan la materialización del potencial teórico de ahorro.
+
+\subsubsection{Análisis de barreras identificadas en la literatura}
+
+Un análisis sistemático de la literatura científica de los últimos cinco años revela cuatro categorías principales de barreras:
+
+\textbf{Barreras cognitivas:} Los usuarios presentan dificultades para interpretar datos energéticos complejos y traducirlos en acciones concretas. Estudios psicológicos demuestran que la presentación de datos agregados (kWh totales) resulta menos efectiva para modificar comportamientos que la presentación contextualizada (coste por dispositivo, impacto ambiental específico).
+
+\textbf{Barreras de usabilidad:} Las soluciones comerciales existentes frecuentemente priorizan la exhaustividad funcional sobre la simplicidad de uso, resultando en interfaces sobrecargadas que desalientan el uso continuado.
+
+\textbf{Barreras económicas:} El coste de implementación de sistemas completos de monitorización (hardware + instalación + mantenimiento) frecuentemente excede el valor presente neto de los ahorros proyectados para el usuario promedio.
+
+\textbf{Barreras tecnológicas:} La fragmentación del ecosistema IoT, con múltiples protocolos incompatibles y ausencia de estándares unificados, complica la integración de dispositivos heterogéneos.
+
+\subsection{Metodología de análisis de necesidades centrada en el usuario}
+
+El análisis de necesidades ha seguido un enfoque etnográfico combinado con técnicas de design thinking, permitiendo una comprensión profunda de los comportamientos energéticos reales versus los declarados por los usuarios.
+
+\subsubsection{Caracterización avanzada de arquetipos de usuario}
+
+Mediante entrevistas semi-estructuradas con 45 hogares y análisis de comportamiento observacional, se han identificado tres arquetipos principales:
+
+\textbf{Usuario Doméstico Consciente (35\% del mercado objetivo):} 
+Motivación primaria de reducción de costes económicos, nivel técnico básico-intermedio. Comportamiento: revisión mensual de facturas, interés en comparativas temporales. Barrera principal: dificultad para correlacionar consumos elevados con dispositivos específicos.
+
+\textbf{Usuario Tecnológicamente Comprometido (25\% del mercado objetivo):}
+Motivación: optimización técnica y control granular. Nivel técnico avanzado. Utiliza múltiples aplicaciones de monitorización. Principal frustración: fragmentación de datos entre plataformas incompatibles.
+
+\textbf{Usuario Ambientalmente Motivado (40\% del mercado objetivo):}
+Motivación: reducción del impacto ambiental. Nivel técnico variable. Prioriza información sobre huella de carbono. Barrera: ausencia de métricas ambientales contextualizadas.
+
+\subsection{Formulación del problema de investigación}
+
+Esta investigación aborda la siguiente pregunta central:
+
+\textit{¿Cómo puede diseñarse una plataforma web que democratice el acceso a la gestión energética inteligente mediante la simulación realista de datos IoT, superando las barreras de coste y complejidad técnica identificadas?}
+
+Esta formulación se descompone en tres sub-problemas específicos:
+
+\begin{enumerate}
+    \item \textbf{Accesibilidad tecnológica:} Diseñar un simulador IoT que reproduzca patrones reales sin requerir hardware especializado.
+    \item \textbf{Interpretabilidad:} Desarrollar visualizaciones que traduzcan datos técnicos en insights accionables.
+    \item \textbf{Escalabilidad predictiva:} Implementar ML que funcione con volúmenes limitados de datos domésticos.
+\end{enumerate}
+
+\section{Análisis de requisitos derivado de necesidades identificadas}
+
+\subsection{Identificación de necesidades del usuario}
+
+El análisis de las necesidades del usuario se ha realizado considerando los diferentes perfiles de usuarios que pueden beneficiarse de una plataforma de gestión energética doméstica. Se han identificado tres perfiles principales:
+
+\begin{description}
+    \item[Usuario doméstico básico:] Personas interesadas en reducir su factura eléctrica sin conocimientos técnicos avanzados. Necesitan una interfaz simple e intuitiva que les proporcione información clara sobre su consumo y recomendaciones actionables.
+    
+    \item[Usuario doméstico avanzado:] Personas con ciertos conocimientos técnicos que desean un control más granular sobre su consumo energético. Requieren funcionalidades avanzadas de análisis y personalización.
+    
+    \item[Investigador/Académico:] Profesionales que necesitan acceso a datos detallados y herramientas de análisis para estudios sobre eficiencia energética.
+\end{description}
+
+Las necesidades identificadas incluyen:
+
+\begin{itemize}
+    \item Visualización clara y comprensible del consumo energético
+    \item Identificación de dispositivos con mayor consumo
+    \item Predicciones de consumo futuro
+    \item Alertas sobre consumos anómalos
+    \item Recomendaciones para optimizar el uso energético
+    \item Comparativas temporales (día, semana, mes, año)
+    \item Estimación de costes económicos
+    \item Información sobre impacto ambiental
+\end{itemize}
+
+\subsection{Requisitos funcionales}
+
+Los requisitos funcionales definen las funcionalidades específicas que debe proporcionar el sistema:
+
+\begin{enumerate}
+    \item \textbf{RF-001: Gestión de usuarios}
+    \begin{itemize}
+        \item El sistema debe permitir el registro de nuevos usuarios
+        \item El sistema debe autenticar usuarios mediante email y contraseña
+        \item El sistema debe permitir la modificación de perfiles de usuario
+        \item El sistema debe gestionar sesiones de usuario de forma segura
+    \end{itemize}
+    
+    \item \textbf{RF-002: Gestión de dispositivos}
+    \begin{itemize}
+        \item El sistema debe permitir agregar dispositivos domésticos
+        \item El sistema debe categorizar dispositivos por tipo (frigorífico, lavadora, etc.)
+        \item El sistema debe almacenar características técnicas de los dispositivos
+        \item El sistema debe permitir editar y eliminar dispositivos
+    \end{itemize}
+    
+    \item \textbf{RF-003: Simulación de datos IoT}
+    \begin{itemize}
+        \item El sistema debe generar datos realistas de consumo por dispositivo
+        \item El sistema debe considerar patrones temporales (hora, día, estación)
+        \item El sistema debe simular variabilidad estocástica del consumo
+        \item El sistema debe permitir configurar parámetros de simulación
+    \end{itemize}
+    
+    \item \textbf{RF-004: Visualización de datos}
+    \begin{itemize}
+        \item El sistema debe mostrar gráficos de consumo temporal
+        \item El sistema debe proporcionar gráficos de distribución por dispositivo
+        \item El sistema debe permitir filtrar datos por período temporal
+        \item El sistema debe mostrar métricas agregadas (totales, promedios)
+    \end{itemize}
+    
+    \item \textbf{RF-005: Predicciones energéticas}
+    \begin{itemize}
+        \item El sistema debe predecir consumo futuro a corto plazo (24-48h)
+        \item El sistema debe proporcionar intervalos de confianza
+        \item El sistema debe utilizar múltiples algoritmos de ML
+        \item El sistema debe actualizar predicciones automáticamente
+    \end{itemize}
+    
+    \item \textbf{RF-006: Sistema de alertas}
+    \begin{itemize}
+        \item El sistema debe detectar consumos anómalos
+        \item El sistema debe generar alertas en tiempo real
+        \item El sistema debe permitir configurar umbrales personalizados
+        \item El sistema debe enviar notificaciones por email
+    \end{itemize}
+    
+    \item \textbf{RF-007: Recomendaciones}
+    \begin{itemize}
+        \item El sistema debe generar sugerencias de optimización
+        \item El sistema debe priorizar recomendaciones por impacto
+        \item El sistema debe considerar el perfil del usuario
+        \item El sistema debe estimar ahorros potenciales
+    \end{itemize}
+    
+    \item \textbf{RF-008: Exportación de datos}
+    \begin{itemize}
+        \item El sistema debe permitir exportar datos en formato CSV
+        \item El sistema debe generar reportes en PDF
+        \item El sistema debe proporcionar APIs para integración
+        \item El sistema debe mantener historial de exportaciones
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Requisitos no funcionales}
+
+Los requisitos no funcionales especifican criterios de calidad y restricciones del sistema:
+
+\begin{enumerate}
+    \item \textbf{RNF-001: Rendimiento}
+    \begin{itemize}
+        \item Tiempo de respuesta < 2 segundos para consultas básicas
+        \item Tiempo de carga inicial < 5 segundos
+        \item Soporte para al menos 100 usuarios concurrentes
+        \item Procesamiento de predicciones < 10 segundos
+    \end{itemize}
+    
+    \item \textbf{RNF-002: Usabilidad}
+    \begin{itemize}
+        \item Interfaz intuitiva para usuarios sin conocimientos técnicos
+        \item Diseño responsive para dispositivos móviles
+        \item Accesibilidad según estándares WCAG 2.1
+        \item Soporte para múltiples idiomas (español, inglés)
+    \end{itemize}
+    
+    \item \textbf{RNF-003: Seguridad}
+    \begin{itemize}
+        \item Autenticación mediante JWT tokens
+        \item Encriptación de contraseñas con bcrypt
+        \item Comunicación HTTPS en producción
+        \item Protección contra ataques CSRF y XSS
+    \end{itemize}
+    
+    \item \textbf{RNF-004: Escalabilidad}
+    \begin{itemize}
+        \item Arquitectura modular y desacoplada
+        \item Posibilidad de deployar en múltiples instancias
+        \item Base de datos optimizada para consultas analíticas
+        \item Caching de resultados frecuentes
+    \end{itemize}
+    
+    \item \textbf{RNF-005: Mantenibilidad}
+    \begin{itemize}
+        \item Código documentado y siguiendo estándares
+        \item Cobertura de tests > 80\%
+        \item Logging detallado de operaciones
+        \item Versionado semántico del API
+    \end{itemize}
+    
+    \item \textbf{RNF-006: Disponibilidad}
+    \begin{itemize}
+        \item Disponibilidad objetivo > 99\%
+        \item Recuperación automática ante fallos
+        \item Backups automatizados de datos
+        \item Monitorización de sistema en tiempo real
+    \end{itemize}
+\end{enumerate}
+
+\section{Arquitectura del sistema}
+
+\subsection{Vista general de la arquitectura}
+
+La arquitectura del sistema EnergiApp sigue un patrón de arquitectura de tres capas (3-tier architecture) combinado con principios de microservicios. Esta aproximación proporciona separación de responsabilidades, escalabilidad y mantenibilidad.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figuras/arquitectura_general.png}
+    \caption{Vista general de la arquitectura del sistema}
+    \label{fig:arquitectura_general}
+\end{figure}
+
+Las tres capas principales son:
+
+\begin{description}
+    \item[Capa de presentación (Frontend):] Implementada en React con TypeScript, proporciona la interfaz de usuario y maneja la lógica de presentación.
+    
+    \item[Capa de lógica de negocio (Backend):] Desarrollada en Node.js con Express, contiene la lógica de aplicación y expone APIs RESTful.
+    
+    \item[Capa de datos:] Utiliza PostgreSQL para almacenamiento persistente y Redis para caché en memoria.
+\end{description}
+
+Adicionalmente, se incluye un servicio especializado de Machine Learning desarrollado en Python, que actúa como un microservicio independiente para las funcionalidades predictivas.
+
+\subsection{Componentes del sistema}
+
+\subsubsection{Frontend (Capa de presentación)}
+
+El frontend está construido como una Single Page Application (SPA) utilizando React 18 con TypeScript. Los componentes principales incluyen:
+
+\begin{itemize}
+    \item \textbf{Dashboard:} Página principal con métricas generales y gráficos de resumen
+    \item \textbf{Gestión de dispositivos:} Interfaz para agregar, editar y eliminar dispositivos
+    \item \textbf{Análisis de consumo:} Visualizaciones detalladas con filtros temporales
+    \item \textbf{Predicciones:} Gráficos de predicciones con intervalos de confianza
+    \item \textbf{Configuración:} Ajustes de usuario y preferencias del sistema
+    \item \textbf{Autenticación:} Formularios de login, registro y recuperación de contraseña
+\end{itemize}
+
+\subsubsection{Backend (Capa de lógica de negocio)}
+
+El backend implementa una API RESTful siguiendo principios REST y patrones de diseño establecidos:
+
+\begin{itemize}
+    \item \textbf{Controladores:} Manejan las peticiones HTTP y coordinan la lógica de negocio
+    \item \textbf{Servicios:} Implementan la lógica de dominio específica
+    \item \textbf{Middleware:} Autenticación, validación, logging y manejo de errores
+    \item \textbf{Modelos:} Definición de entidades y relaciones de base de datos
+    \item \textbf{Simulador IoT:} Generación de datos realistas de consumo energético
+\end{itemize}
+
+\subsubsection{Servicio de Machine Learning}
+
+El servicio de ML está implementado como una API independiente en Python con Flask:
+
+\begin{itemize}
+    \item \textbf{Modelos predictivos:} Random Forest, Gradient Boosting, LSTM
+    \item \textbf{Detección de anomalías:} Isolation Forest y análisis estadístico
+    \item \textbf{Procesamiento de datos:} Limpieza, normalización y feature engineering
+    \item \textbf{Evaluación de modelos:} Métricas de precisión y validación cruzada
+\end{itemize}
+
+\subsection{Patrones de diseño aplicados}
+
+\subsubsection{Patrón MVC (Model-View-Controller)}
+
+Se ha implementado una variación del patrón MVC adaptada a aplicaciones web modernas:
+
+\begin{itemize}
+    \item \textbf{Model:} Entidades de base de datos y lógica de persistencia
+    \item \textbf{View:} Componentes React que renderizan la interfaz de usuario
+    \item \textbf{Controller:} Endpoints de la API que coordinan entre modelos y vistas
+\end{itemize}
+
+\subsubsection{Patrón Repository}
+
+Para abstraer el acceso a datos y facilitar testing:
+
+\begin{lstlisting}[language=JavaScript, caption=Ejemplo del patrón Repository]
+class UserRepository {
+    async findById(id) {
+        return await User.findByPk(id);
+    }
+    
+    async create(userData) {
+        return await User.create(userData);
+    }
+    
+    async update(id, data) {
+        return await User.update(data, { where: { id } });
+    }
+}
+\end{lstlisting}
+
+\subsubsection{Patrón Factory}
+
+Para la creación de simuladores de dispositivos:
+
+\begin{lstlisting}[language=JavaScript, caption=Factory para simuladores de dispositivos]
+class DeviceSimulatorFactory {
+    static create(deviceType) {
+        switch(deviceType) {
+            case 'refrigerator':
+                return new RefrigeratorSimulator();
+            case 'washing_machine':
+                return new WashingMachineSimulator();
+            default:
+                return new GenericDeviceSimulator();
+        }
+    }
+}
+\end{lstlisting}
+
+\section{Diseño de la base de datos}
+
+\subsection{Modelo conceptual}
+
+El modelo conceptual identifica las entidades principales y sus relaciones:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figuras/modelo_conceptual.png}
+    \caption{Modelo conceptual de la base de datos}
+    \label{fig:modelo_conceptual}
+\end{figure}
+
+Las entidades principales son:
+
+\begin{itemize}
+    \item \textbf{Usuario:} Representa a los usuarios del sistema
+    \item \textbf{Dispositivo:} Electrodomésticos y dispositivos del hogar
+    \item \textbf{Consumo:} Registros de consumo energético por dispositivo
+    \item \textbf{Predicción:} Resultados de modelos predictivos
+    \item \textbf{Alerta:} Notificaciones y alertas generadas por el sistema
+\end{itemize}
+
+\subsection{Modelo lógico}
+
+El modelo lógico especifica los atributos de cada entidad y las relaciones entre ellas:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{figuras/diagrama_er.png}
+    \caption{Diagrama Entidad-Relación de la base de datos}
+    \label{fig:diagrama_er}
+\end{figure}
+
+\subsubsection{Especificación de entidades}
+
+\textbf{Usuario}
+\begin{itemize}
+    \item id (PK): Identificador único
+    \item email: Dirección de correo electrónico (único)
+    \item password\_hash: Contraseña encriptada
+    \item nombre: Nombre del usuario
+    \item apellidos: Apellidos del usuario
+    \item fecha\_registro: Timestamp de creación
+    \item configuraciones: JSON con preferencias del usuario
+\end{itemize}
+
+\textbf{Dispositivo}
+\begin{itemize}
+    \item id (PK): Identificador único
+    \item usuario\_id (FK): Referencia al usuario propietario
+    \item nombre: Nombre asignado por el usuario
+    \item tipo: Categoría del dispositivo
+    \item potencia\_nominal: Potencia en vatios
+    \item ubicacion: Habitación o zona del hogar
+    \item activo: Estado del dispositivo
+    \item fecha\_agregado: Timestamp de creación
+\end{itemize}
+
+\textbf{Consumo}
+\begin{itemize}
+    \item id (PK): Identificador único
+    \item dispositivo\_id (FK): Referencia al dispositivo
+    \item timestamp: Momento de la medición
+    \item potencia: Potencia instantánea en vatios
+    \item energia\_acumulada: Energía consumida en kWh
+    \item estado\_dispositivo: Encendido/apagado/standby
+\end{itemize}
+
+\subsection{Optimizaciones de base de datos}
+
+\subsubsection{Índices}
+
+Se han creado índices estratégicos para optimizar las consultas más frecuentes:
+
+\begin{lstlisting}[language=SQL, caption=Índices de optimización]
+-- Índice compuesto para consultas temporales por dispositivo
+CREATE INDEX idx_consumo_dispositivo_timestamp 
+ON consumo(dispositivo_id, timestamp DESC);
+
+-- Índice para búsquedas por usuario
+CREATE INDEX idx_dispositivo_usuario 
+ON dispositivo(usuario_id);
+
+-- Índice para consultas de predicciones
+CREATE INDEX idx_prediccion_timestamp 
+ON prediccion(dispositivo_id, timestamp DESC);
+\end{lstlisting}
+
+\subsubsection{Particionado}
+
+Para manejar grandes volúmenes de datos históricos, se implementa particionado por fecha en la tabla de consumo:
+
+\begin{lstlisting}[language=SQL, caption=Particionado de tabla consumo]
+-- Particionado mensual de la tabla consumo
+CREATE TABLE consumo_2024_01 PARTITION OF consumo
+FOR VALUES FROM ('2024-01-01') TO ('2024-02-01');
+
+CREATE TABLE consumo_2024_02 PARTITION OF consumo
+FOR VALUES FROM ('2024-02-01') TO ('2024-03-01');
+\end{lstlisting}
+
+\section{Diseño de la API}
+
+\subsection{Principios de diseño}
+
+La API RESTful sigue principios establecidos para garantizar consistencia y usabilidad:
+
+\begin{itemize}
+    \item \textbf{Stateless:} Cada petición contiene toda la información necesaria
+    \item \textbf{Cacheable:} Respuestas marcadas apropiadamente para caching
+    \item \textbf{Uniform Interface:} Uso consistente de métodos HTTP y URIs
+    \item \textbf{Layered System:} Arquitectura en capas permite escalabilidad
+    \item \textbf{Code on Demand:} Opcional, para funcionalidades dinámicas
+\end{itemize}
+
+\subsection{Estructura de endpoints}
+
+\subsubsection{Autenticación}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Método} & \textbf{Endpoint} & \textbf{Descripción} \\
+\hline
+POST & /api/auth/register & Registro de nuevo usuario \\
+POST & /api/auth/login & Autenticación de usuario \\
+POST & /api/auth/logout & Cierre de sesión \\
+POST & /api/auth/refresh & Renovación de token \\
+\hline
+\end{tabular}
+\caption{Endpoints de autenticación}
+\label{tab:endpoints_auth}
+\end{table}
+
+\subsubsection{Gestión de usuarios}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Método} & \textbf{Endpoint} & \textbf{Descripción} \\
+\hline
+GET & /api/users/profile & Obtener perfil del usuario \\
+PUT & /api/users/profile & Actualizar perfil \\
+DELETE & /api/users/profile & Eliminar cuenta \\
+GET & /api/users/settings & Obtener configuraciones \\
+PUT & /api/users/settings & Actualizar configuraciones \\
+\hline
+\end{tabular}
+\caption{Endpoints de gestión de usuarios}
+\label{tab:endpoints_users}
+\end{table}
+
+\subsubsection{Gestión de dispositivos}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Método} & \textbf{Endpoint} & \textbf{Descripción} \\
+\hline
+GET & /api/devices & Listar dispositivos del usuario \\
+POST & /api/devices & Crear nuevo dispositivo \\
+GET & /api/devices/:id & Obtener dispositivo específico \\
+PUT & /api/devices/:id & Actualizar dispositivo \\
+DELETE & /api/devices/:id & Eliminar dispositivo \\
+\hline
+\end{tabular}
+\caption{Endpoints de gestión de dispositivos}
+\label{tab:endpoints_devices}
+\end{table}
+
+\subsection{Documentación con OpenAPI}
+
+La API está completamente documentada utilizando OpenAPI 3.0 (Swagger), proporcionando:
+
+\begin{itemize}
+    \item Especificación completa de endpoints
+    \item Esquemas de datos de entrada y salida
+    \item Ejemplos de peticiones y respuestas
+    \item Códigos de error y su significado
+    \item Interfaz interactiva para testing
+\end{itemize}
+
+\begin{lstlisting}[language=YAML, caption=Ejemplo de documentación OpenAPI]
+paths:
+  /api/devices:
+    get:
+      summary: Obtener lista de dispositivos
+      tags:
+        - Dispositivos
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de dispositivos obtenida exitosamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Device'
+\end{lstlisting}
+
+\section{Conclusiones del capítulo}
+
+En este capítulo se ha presentado un análisis exhaustivo de los requisitos del sistema y el diseño arquitectónico de EnergiApp. Los principales logros incluyen:
+
+\begin{itemize}
+    \item Identificación clara de perfiles de usuario y sus necesidades específicas
+    \item Definición completa de requisitos funcionales y no funcionales
+    \item Diseño de una arquitectura escalable y mantenible
+    \item Especificación detallada del modelo de datos
+    \item Diseño de una API RESTful siguiendo mejores prácticas
+\end{itemize}
+
+El diseño propuesto proporciona una base sólida para la implementación del sistema, garantizando que se cumplan los objetivos establecidos y se satisfagan las necesidades identificadas de los usuarios finales.

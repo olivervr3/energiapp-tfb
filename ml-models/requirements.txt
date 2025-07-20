@@ -1,0 +1,46 @@
+# Dependencias para el módulo de Machine Learning
+# Plataforma de Predicción de Consumo Energético Doméstico
+
+# Flask y API
+Flask==2.3.3
+flask-cors==4.0.0
+gunicorn==21.2.0
+
+# Ciencia de datos y Machine Learning
+pandas==2.1.0
+numpy==1.24.3
+scikit-learn==1.3.0
+scipy==1.11.2
+joblib==1.3.2
+
+# Análisis temporal y fechas
+holidays==0.32
+
+# Visualización (opcional, para desarrollo)
+matplotlib==3.7.2
+seaborn==0.12.2
+plotly==5.16.1
+
+# Utilerías
+python-dotenv==1.0.0
+requests==2.31.0
+
+# Logging y monitoreo
+structlog==23.1.0
+
+# Base de datos (si se necesita conexión directa)
+psycopg2-binary==2.9.7
+sqlalchemy==2.0.20
+
+# Testing
+pytest==7.4.2
+pytest-cov==4.1.0
+pytest-flask==1.2.0
+
+# Desarrollo
+black==23.7.0
+flake8==6.0.0
+isort==5.12.0
+
+# Producción
+waitress==2.1.2

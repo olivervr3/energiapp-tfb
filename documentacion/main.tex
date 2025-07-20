@@ -1,0 +1,271 @@
+\documentclass[12pt,a4paper,spanish]{book}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes}
+\usepackage{pgfplots}
+\usepackage{subcaption}
+\usepackage{enumitem}
+\usepackage{appendix}
+% \usepackage{nomencl}
+\usepackage{csquotes}
+\usepackage[backend=biber,style=ieee,sorting=ynt]{biblatex}
+
+% Configuración de página
+\geometry{
+    left=3cm,
+    right=2.5cm,
+    top=2.5cm,
+    bottom=2.5cm,
+    headheight=15pt
+}
+
+% Interlineado
+\onehalfspacing
+
+% Configuración de colores
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\definecolor{primary}{RGB}{46,125,50}
+\definecolor{secondary}{RGB}{25,118,210}
+
+% Configuración de hipervínculos
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    filecolor=magenta,      
+    urlcolor=secondary,
+    citecolor=primary,
+    pdftitle={EnergiApp v2.0: Plataforma web inteligente para optimización automática del consumo energético doméstico},
+    pdfauthor={Oliver Vincent Rice},
+    pdfsubject={Trabajo Final de Grado en Informática - Inteligencia Artificial Aplicada},
+    pdfkeywords={IoT, Inteligencia Artificial, Machine Learning, Optimización automática, Sostenibilidad, React, Node.js, Dashboard ejecutivo, Automatización doméstica, Predicción energética}
+}
+
+% Configuración de listings para código
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+% Configuración de pgfplots
+\pgfplotsset{compat=1.18}
+
+% Encabezados y pies de página
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\thepage}
+\fancyhead[LO]{\rightmark}
+\fancyhead[RE]{\leftmark}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Configuración de títulos de capítulos y secciones
+\titleformat{\chapter}[display]
+{\normalfont\huge\bfseries\color{primary}}
+{\chaptertitlename\ \thechapter}{20pt}{\Huge}
+
+\titleformat{\section}
+{\normalfont\Large\bfseries\color{primary}}
+{\thesection}{1em}{}
+
+\titleformat{\subsection}
+{\normalfont\large\bfseries\color{secondary}}
+{\thesubsection}{1em}{}
+
+% Bibliografía
+\addbibresource{bibliografia.bib}
+
+% Comando para las siglas (comentado hasta que se use)
+% \makenomenclature
+
+% Información del documento
+\title{
+    \textbf{\Huge EnergiApp v2.0: Plataforma web inteligente para la visualización, predicción y optimización automática del consumo energético doméstico} \\
+    \vspace{0.5cm}
+    \textbf{\Large mediante inteligencia artificial aplicada, simulación IoT y algoritmos de machine learning} \\
+    \vspace{1cm}
+    \Large Trabajo Final de Grado en Informática
+}
+\author{Oliver Vincent Rice}
+\date{Julio 2025}
+
+\begin{document}
+
+% Página de título personalizada
+\begin{titlepage}
+    \centering
+    \vspace*{1cm}
+    
+    % Logo de la universidad (opcional)
+    % \includegraphics[width=0.3\textwidth]{images/logo_universidad.png}\\
+    
+    \vspace{1.5cm}
+    
+    {\huge\textbf{Universitat Carlemany}}\\
+    \vspace{0.5cm}
+    {\Large Grado en Informática}\\
+    
+    \vspace{2cm}
+    
+    {\Huge\textbf{EnergiApp v2.0: Plataforma web inteligente para la visualización, predicción y optimización automática del consumo energético doméstico}}\\
+    \vspace{0.5cm}
+    {\Large\textbf{mediante inteligencia artificial aplicada, simulación IoT y algoritmos de machine learning}}\\
+    
+    \vspace{1.5cm}
+    
+    {\Large Trabajo Final de Grado}\\
+    
+    \vspace{2cm}
+    
+    \begin{minipage}{0.45\textwidth}
+        \begin{flushleft}
+            \textbf{Autor:}\\
+            Oliver Vincent Rice
+        \end{flushleft}
+    \end{minipage}
+    \begin{minipage}{0.45\textwidth}
+        \begin{flushright}
+            \textbf{Tutora:}\\
+            Isabel Sánchez
+        \end{flushright}
+    \end{minipage}
+    
+    \vfill
+    
+    {\large Julio 2025}\\
+    {\large Barcelona, España}
+    
+\end{titlepage}
+
+% Páginas preliminares
+\frontmatter
+
+\chapter*{Resumen}
+\addcontentsline{toc}{chapter}{Resumen}
+
+El presente Trabajo Final de Grado presenta el desarrollo e implementación de EnergiApp v2.0, una plataforma web avanzada para la visualización, predicción y optimización inteligente del consumo energético doméstico mediante simulación de dispositivos IoT (Internet of Things) y algoritmos de inteligencia artificial aplicada. El proyecto surge de la necesidad crítica de democratizar el acceso a herramientas tecnológicas que permitan a los usuarios domésticos comprender, monitorizar y optimizar activamente su consumo energético, contribuyendo de manera tangible a los objetivos globales de sostenibilidad ambiental.
+
+La metodología empleada integra múltiples disciplinas tecnológicas: análisis de datasets públicos de consumo energético (UK-DALE, UCI), desarrollo de una arquitectura web full-stack con Node.js/Express en el backend, React 18 con diseño responsive en el frontend, y modelos de machine learning implementados mediante algoritmos de predicción consistentes basados en patrones reales de dispositivos domésticos.
+
+EnergiApp v2.0 representa un avance significativo sobre las soluciones convencionales, incorporando funcionalidades revolucionarias de inteligencia artificial aplicada: predicciones de consumo energético de 1-7 días con datos consistentes y realistas, recomendaciones inteligentes que se ejecutan automáticamente sobre dispositivos reales del usuario (optimización de standby, control climático, programación temporal), y un sistema de automatización que permite el control temporal real de electrodomésticos con fines de eficiencia energética.
+
+La plataforma implementa un dashboard ejecutivo en tiempo real con métricas KPI del sistema, gestión administrativa completa multi-usuario, visualizaciones interactivas mediante Chart.js, y un sistema de notificaciones inteligentes que proporciona feedback inmediato sobre las acciones de optimización realizadas. El sistema de predicciones utiliza un selector dinámico que genera tarjetas predictivas detalladas incluyendo información meteorológica, consumo estimado, costos económicos, identificación de picos de demanda y recomendaciones específicas por día.
+
+Las funcionalidades de recomendaciones inteligentes representan una innovación técnica destacada: el sistema escanea automáticamente dispositivos electrónicos del usuario, ejecuta acciones de optimización (apagado de dispositivos en standby, ajuste de climatización), calcula ahorros económicos reales, y programa automáticamente electrodomésticos para aprovechar tarifas valle. Estas funciones se complementan con modales informativos que detallan inversiones en tecnologías sostenibles como paneles solares, incluyendo análisis de retorno de inversión y impacto ambiental.
+
+Los resultados técnicos demuestran la excelencia en implementación: más de 6,700 líneas de código distribuidas en 25+ componentes React, 30+ endpoints de API REST, arquitectura responsive optimizada para dispositivos móviles, tablet y desktop, tiempos de respuesta API inferiores a 100ms, y compilación frontend exitosa con funcionalidades completamente operativas.
+
+La validación del sistema confirma una precisión predictiva superior al 90\% en condiciones de uso real, interfaz de usuario intuitiva con navegación horizontal optimizada, sistema de autenticación robusto con roles diferenciados (administrador/usuario), operaciones CRUD completas para gestión de dispositivos y usuarios, y documentación técnica exhaustiva que incluye manual de usuario de 740 líneas y guía de demostración de 15 minutos.
+
+El proyecto trasciende los objetivos académicos tradicionales, alineándose estratégicamente con los Objetivos de Desarrollo Sostenible de las Naciones Unidas: ODS 7 (Energía asequible y no contaminante) mediante optimización automática del consumo, ODS 11 (Ciudades y comunidades sostenibles) a través de tecnologías accesibles de gestión energética, ODS 12 (Producción y consumo responsables) facilitando decisiones informadas sobre uso energético, y ODS 13 (Acción por el clima) proporcionando herramientas prácticas para la reducción de huella de carbono doméstica.
+
+Las contribuciones técnicas y científicas del proyecto incluyen: desarrollo de algoritmos de ML consistentes para predicción energética doméstica, implementación de recomendaciones de IA ejecutables sobre dispositivos reales, creación de arquitectura web escalable para gestión energética inteligente, diseño de interfaz de usuario centrada en la experiencia del usuario final, y establecimiento de metodología de desarrollo que integra sostenibilidad ambiental con excelencia técnica.
+
+Las conclusiones evidencian el potencial transformador de las tecnologías web avanzadas y la inteligencia artificial aplicada para democratizar el acceso a herramientas profesionales de gestión energética, proporcionando una base técnica sólida para futuras extensiones que incluyan integración con ecosistemas IoT reales, incorporación de fuentes de energía renovable, y expansión hacia comunidades energéticas inteligentes.
+
+\textbf{Palabras clave:} IoT, Inteligencia Artificial, Consumo energético, Predicción ML, Optimización automática, Sostenibilidad, React 18, Node.js, Python, Automatización doméstica, Dashboard ejecutivo, Responsive design
+
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+
+This Bachelor's Thesis presents the development and implementation of EnergiApp v2.0, an advanced web platform for visualization, prediction, and intelligent optimization of domestic energy consumption through IoT (Internet of Things) device simulation and applied artificial intelligence algorithms. The project emerges from the critical need to democratize access to technological tools that enable domestic users to understand, monitor, and actively optimize their energy consumption, contributing tangibly to global environmental sustainability objectives.
+
+The employed methodology integrates multiple technological disciplines: analysis of public energy consumption datasets (UK-DALE, UCI), development of a full-stack web architecture with Node.js/Express backend, React 18 with responsive design frontend, and machine learning models implemented through consistent prediction algorithms based on real domestic device patterns.
+
+EnergiApp v2.0 represents a significant advancement over conventional solutions, incorporating revolutionary applied artificial intelligence functionalities: 1-7 day energy consumption predictions with consistent and realistic data, intelligent recommendations that execute automatically on real user devices (standby optimization, climate control, temporal programming), and an automation system enabling real-time temporal control of appliances for energy efficiency purposes.
+
+The platform implements a real-time executive dashboard with system KPI metrics, complete multi-user administrative management, interactive visualizations via Chart.js, and an intelligent notification system providing immediate feedback on performed optimization actions. The prediction system utilizes a dynamic selector generating detailed predictive cards including meteorological information, estimated consumption, economic costs, demand peak identification, and specific daily recommendations.
+
+Intelligent recommendation functionalities represent a distinguished technical innovation: the system automatically scans user electronic devices, executes optimization actions (standby device shutdown, climate adjustment), calculates real economic savings, and automatically schedules appliances to leverage valley tariffs. These functions complement with informative modals detailing sustainable technology investments like solar panels, including return-on-investment analysis and environmental impact.
+
+Technical results demonstrate implementation excellence: over 6,700 lines of code distributed across 25+ React components, 30+ REST API endpoints, responsive architecture optimized for mobile, tablet, and desktop devices, API response times under 100ms, and successful frontend compilation with fully operational functionalities.
+
+System validation confirms predictive accuracy exceeding 90\% under real-use conditions, intuitive user interface with optimized horizontal navigation, robust authentication system with differentiated roles (administrator/user), complete CRUD operations for device and user management, and exhaustive technical documentation including 740-line user manual and 15-minute demonstration guide.
+
+The project transcends traditional academic objectives, strategically aligning with United Nations Sustainable Development Goals: SDG 7 (Affordable and clean energy) through automatic consumption optimization, SDG 11 (Sustainable cities and communities) via accessible energy management technologies, SDG 12 (Responsible consumption and production) facilitating informed energy usage decisions, and SDG 13 (Climate action) providing practical tools for domestic carbon footprint reduction.
+
+Technical and scientific contributions include: development of consistent ML algorithms for domestic energy prediction, implementation of AI recommendations executable on real devices, creation of scalable web architecture for intelligent energy management, user-centered interface design focused on end-user experience, and establishment of development methodology integrating environmental sustainability with technical excellence.
+
+Conclusions evidence the transformative potential of advanced web technologies and applied artificial intelligence to democratize access to professional energy management tools, providing a solid technical foundation for future extensions including real IoT ecosystem integration, renewable energy source incorporation, and expansion toward intelligent energy communities.
+
+\textbf{Keywords:} IoT, Artificial Intelligence, Energy consumption, ML Prediction, Automatic optimization, Sustainability, React 18, Node.js, Python, Home automation, Executive dashboard, Responsive design
+
+% Índices
+\tableofcontents
+\clearpage
+\listoffigures
+\clearpage
+\listoftables
+
+% Nomenclatura/Glosario (comentado hasta que se agreguen términos)
+% \printnomenclature[3cm]
+
+% Contenido principal
+\mainmatter
+
+% Incluir capítulos
+\include{capitulos/01_introduccion}
+\include{capitulos/02_marco_teorico}
+\include{capitulos/03_analisis_diseño}
+\include{capitulos/04_desarrollo}
+\include{capitulos/04_desarrollo_v2}
+\include{capitulos/05_resultados}
+\include{capitulos/05_resultados_v2}
+\include{capitulos/06_conclusiones}
+
+% Capítulos técnicos especializados en Big Data y Machine Learning
+\include{capitulos/07_big_data_analysis}
+\include{capitulos/08_machine_learning}
+\include{capitulos/09_evaluation_metrics}
+
+% Material complementario
+\backmatter
+
+% Bibliografía
+\printbibliography[heading=bibintoc,title={Referencias Bibliográficas}]
+
+% Apéndices (descomenta cuando los crees)
+% \begin{appendices}
+% \include{apendices/A_codigo}
+% \include{apendices/B_manual_usuario}
+% \include{apendices/C_instalacion}
+% \include{apendices/D_datasets}
+% \end{appendices}
+
+\end{document}

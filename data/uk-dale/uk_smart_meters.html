@@ -1,0 +1,184 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Smart meters in London | Kaggle</title>
+  <meta charset="utf-8" />
+    <meta name="robots" content="index, follow" />
+  <meta name="description" content="Smart meter data from London area" />
+    <meta name="keywords" content="software,electronics,energy,weather and climate,demographics" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0">
+  <meta name="theme-color" content="#008ABC" />
+  <script nonce="hxYrayU336eMyWoV/xLW9Q==" type="text/javascript">
+    window["pageRequestStartTime"] = 1752692369851;
+    window["pageRequestEndTime"] = 1752692369946;
+    window["initialPageLoadStartTime"] = new Date().getTime();
+  </script>
+  <script nonce="hxYrayU336eMyWoV/xLW9Q==" id="gsi-client" src="https://accounts.google.com/gsi/client" async defer></script>
+  <script nonce="hxYrayU336eMyWoV/xLW9Q==">window.KAGGLE_JUPYTERLAB_PATH = "/static/assets/jupyterlab-v4/jupyterlab-index-b1a75a465574ddd690ad.html";</script>
+  <link rel="preconnect" href="https://www.google-analytics.com" crossorigin="anonymous" /><link rel="preconnect" href="https://stats.g.doubleclick.net" /><link rel="preconnect" href="https://storage.googleapis.com" /><link rel="preconnect" href="https://apis.google.com" />
+    <link href="/static/images/favicon.ico" rel="shortcut icon" type="image/x-icon" id="dynamic-favicon" />
+  <link rel="manifest" href="/static/json/manifest.json" crossorigin="use-credentials">
+
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <link href="https://fonts.googleapis.com/css?family=Inter:400,400i,500,500i,600,600i,700,700i&display=swap"
+    rel="preload" as="style" />
+  <link href="https://fonts.googleapis.com/css2?family=Google+Symbols:FILL@0..1&display=block"
+    rel="preload" as="style" />
+  <link href="https://fonts.googleapis.com/css?family=Inter:400,400i,500,500i,600,600i,700,700i&display=swap"
+    rel="stylesheet" media="print" id="async-google-font-1" />
+  <link href="https://fonts.googleapis.com/css2?family=Google+Symbols:FILL@0..1&display=block"
+    rel="stylesheet" media="print" id="async-google-font-2" />
+  <script nonce="hxYrayU336eMyWoV/xLW9Q==" type="text/javascript">
+    const styleSheetIds = ["async-google-font-1", "async-google-font-2"];
+    styleSheetIds.forEach(function (id) {
+      document.getElementById(id).addEventListener("load", function() {
+        this.media = "all";
+      });
+    });
+  </script>
+
+
+    <link rel="canonical" href="https://www.kaggle.com/datasets/jeanmidev/smart-meters-in-london" />
+    <link rel="stylesheet" type="text/css" href="/static/assets/app.css?v=2d4e7ec4eb689d926191" />
+
+  
+    
+ 
+      <script nonce="hxYrayU336eMyWoV/xLW9Q==">
+        try{(function(a,s,y,n,c,h,i,d,e){d=s.createElement("style");
+        d.appendChild(s.createTextNode(""));s.head.appendChild(d);d=d.sheet;
+        y=y.map(x => d.insertRule(x + "{ opacity: 0 !important }"));
+        h.start=1*new Date;h.end=i=function(){y.forEach(x => x<d.cssRules.length ? d.deleteRule(x) : {})};
+        (a[n]=a[n]||[]).hide=h;setTimeout(function(){i();h.end=null},c);h.timeout=c;
+        })(window,document,['.site-header-react__nav'],'dataLayer',2000,{'GTM-52LNT9S':true});}catch(ex){}
+    </script>
+    <script nonce="hxYrayU336eMyWoV/xLW9Q==">
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-T7QHS60L4Q', {
+            'optimize_id': 'GTM-52LNT9S',
+            'displayFeaturesTask': null,
+            'send_page_view': false,
+            'content_group1': 'Datasets'
+        });
+    </script>
+    <script nonce="hxYrayU336eMyWoV/xLW9Q==" async src="https://www.googletagmanager.com/gtag/js?id=G-T7QHS60L4Q"></script>
+
+  
+    
+    <meta property="og:url" content="https://www.kaggle.com/datasets/jeanmidev/smart-meters-in-london" />
+    <meta property="og:title" content="Smart meters in London" />
+    <meta property="og:description" content="Smart meter data from London area" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://storage.googleapis.com/kaggle-datasets-images/4021/3684057/2a44ea57ef007e518a9ea514d5cb5a0f/dataset-card.png?t=2024-10-30-18-45-21" />
+    <meta property="fb:app_id" content="2665027677054710" />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@kaggledatasets" />
+
+
+  <meta name="twitter:site" content="@Kaggle" /> 
+  
+    
+            <script nonce="hxYrayU336eMyWoV/xLW9Q==" type="application/ld+json">{"@context":"http://schema.org/","@type":"Dataset","name":"Smart meters in London","description":"### Context\n\nTo better follow the energy consumption, the government wants energy suppliers to install smart meters in every home in England, Wales and Scotland. There are more than 26 million homes for the energy suppliers to get to, with the goal of every home having a smart meter by 2020.\n\nThis roll out of meter is lead by the European Union who asked all member governments to look at smart meters as part of measures to upgrade our energy supply and tackle climate change. After an initial study, the British government decided to adopt smart meters as part of their plan to update our ageing energy system.\n\nIn this dataset, you will find a [refactorised version of the data][1] from the London data store, that contains the energy consumption readings for a sample of 5,567 London Households that took part in the UK Power Networks led Low Carbon London project between November 2011 and February 2014. The data from the smart meters seems associated only to the electrical consumption.\n\nThere is infomations on the ACORN classification details that you can find in this [report][2] or the website of CACI.\n\nI added weather data for London area, I used the [darksky api][3] to collect this data.\n\n### Content\nThere is 19 files in this dataset :\n\n - informations_households.csv : this file that contains all the information on the households in the panel (their acorn group, their tariff) and in which block.csv.gz file their data are stored\n\n - halfhourly_dataset.zip: Zip file that contains the block files with the half-hourly smart meter measurement\n\n - daily_dataset.zip: Zip file that contains the block files with the daily information like the number of measures, minimum, maximum, mean, median, sum and std.\n\n - acorn_details.csv : Details on the acorn groups and their profile of the people in the group, it's come from this [xlsx spreadsheet][4].The first three columns are the attributes studied, the ACORN-X is the index of the attribute. At a national scale, the index is 100 if for one column the value is 150 it means that there are 1.5 times more people with this attribute in the ACORN group than at the national scale. You can find an explanation on the [CACI website][5]\n\n - weather_daily_darksky.csv : that contains the daily data from [darksky api][6]. You can find more details about the parameters in [the documentation of the api][7]\n\n - weather_hourly_darksky.csv : that contains the hourly data from [darksky api][8]. You can find more details about the parameters in [the documentation of the api][9]\n\n### Acknowledgements\nAll the big work of data collection has been done by the [UK power networks][10] for the smart meter data.\n\nThe details related at the acorn group are provided by the CACI.\n\nThe weather data are from [darksky][11].\n\n### Inspiration\nFor me some ideas to analyze the data:\n\n - Segmentation of the consumption daily pattern\n - Disaggregation of the electricity load curve\n - Cross the consumption result and the acorn information\n - Forecast the electricity consumption of a household, I wrote [an article][12] on this subject\n - What if I add electrical heating system ? an EV battery system ?\n - Forecast at a global scale (London consumption)\n\n\n  [1]: https://data.london.gov.uk/dataset/smartmeter-energy-use-data-in-london-households\n  [2]: https://acorn.caci.co.uk/downloads/Acorn-User-guide.pdf\n  [3]: https://darksky.net/dev\n  [4]: https://acorn.caci.co.uk/what-is-acorn\n  [5]: https://acorn.caci.co.uk/what-is-acorn\n  [6]: https://darksky.net/dev\n  [7]: https://darksky.net/dev/docs#response-format\n  [8]: https://darksky.net/dev\n  [9]: https://darksky.net/dev/docs#response-format\n  [10]: http://www.ukpowernetworks.co.uk/\n  [11]: https://darksky.net/dev\n  [12]: http://jmdaignan.com/2017/10/20/Maka-a-forecast-system-of-the-national-energy-consumption/","url":"https://www.kaggle.com/jeanmidev/smart-meters-in-london","version":21,"keywords":["subject, science and technology, computer science, software","subject, science and technology, electronics","subject, science and technology, energy","subject, earth and nature, environment, weather and climate","subject, people and society, social science, demographics"],"license":{"@type":"CreativeWork","name":"Database: Open Database, Contents: © Original Authors","url":"http://opendatacommons.org/licenses/odbl/1.0/"},"identifier":["4021"],"includedInDataCatalog":{"@type":"DataCatalog","name":"Kaggle","url":"https://www.kaggle.com"},"creator":{"@type":"Person","name":"Jean-Michel D.","url":"https://www.kaggle.com/jeanmidev","image":"https://storage.googleapis.com/kaggle-avatars/thumbnails/872208-kg.png"},"distribution":[{"@type":"DataDownload","requiresSubscription":true,"encodingFormat":"zip","fileFormat":"zip","contentUrl":"https://www.kaggle.com/datasets/jeanmidev/smart-meters-in-london/download?datasetVersionNumber=21","contentSize":"1251594914 bytes"}],"commentCount":22,"dateModified":"2022-05-23T16:12:30.94Z","discussionUrl":"https://www.kaggle.com/jeanmidev/smart-meters-in-london/discussion","alternateName":"Smart meter data from London area","isAccessibleForFree":true,"thumbnailUrl":"https://storage.googleapis.com/kaggle-datasets-images/4021/3684057/2a44ea57ef007e518a9ea514d5cb5a0f/dataset-card.png?t=2024-10-30-18-45-21","interactionStatistic":[{"@type":"InteractionCounter","interactionType":"http://schema.org/CommentAction","userInteractionCount":22},{"@type":"InteractionCounter","interactionType":"http://schema.org/DownloadAction","userInteractionCount":35552},{"@type":"InteractionCounter","interactionType":"http://schema.org/ViewAction","userInteractionCount":255475},{"@type":"InteractionCounter","interactionType":"http://schema.org/LikeAction","userInteractionCount":563}]}</script>
+        
+
+  
+    
+
+  
+    
+
+
+    <script nonce="hxYrayU336eMyWoV/xLW9Q==">window['useKaggleAnalytics'] = true;</script>
+
+  <script id="gapi-target" nonce="hxYrayU336eMyWoV/xLW9Q==" src="https://apis.google.com/js/api.js" defer
+    async></script>
+  <script nonce="hxYrayU336eMyWoV/xLW9Q==" src="/static/assets/runtime.js?v=efdbf55ff2fbd6e78c24"></script>
+  <script nonce="hxYrayU336eMyWoV/xLW9Q==" src="/static/assets/vendor.js?v=6d226e4a372be1c4af4e"></script>
+  <script nonce="hxYrayU336eMyWoV/xLW9Q==" src="/static/assets/app.js?v=f39ea716b1506020686a"></script>
+    <script nonce="hxYrayU336eMyWoV/xLW9Q==" type="text/javascript">
+      window.kaggleStackdriverConfig = {
+        key: 'AIzaSyA4eNqUdRRskJsCZWVz-qL655Xa5JEMreE',
+        projectId: 'kaggle-161607',
+        service: 'web-fe',
+        version: 'ci',
+        userId: '0'
+      }
+    </script>
+</head>
+<body>
+  <div id="root">
+    
+
+
+
+
+
+
+
+
+<script nonce="hxYrayU336eMyWoV/xLW9Q==" type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    jax: ['input/TeX', 'output/SVG'],
+    "HTML-CSS": {
+    preferredFont: "TeX",
+    availableFonts: ["STIX", "TeX"],
+    linebreaks: {
+    automatic: true
+    },
+    EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+    inlineMath: [["\\(", "\\)"], ["\\\\(", "\\\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true,
+    ignoreClass: "tex2jax_ignore|dno"
+    },
+    TeX: {
+    noUndefined: {
+    attributes: {
+    mathcolor: "red",
+    mathbackground: "#FFEEEE",
+    mathsize: "90%"
+    }
+    }
+    },
+    Macros: {
+    href: "{}"
+    },
+    skipStartupTypeset: true,
+    messageStyle: "none",
+    extensions: ["Safe.js"],
+    });
+</script>
+<script type="text/javascript" nonce="hxYrayU336eMyWoV/xLW9Q==">
+  window.addEventListener("DOMContentLoaded", () => {
+    const head = document.getElementsByTagName("head")[0];
+    const lib = document.createElement("script");
+    lib.type = "text/javascript";
+    // Always use the production asset in local dev, which is served from GCS. We tried to proxy and / or serve this
+    // in a better way in localhost, but it didn't work out. See b/328073416#comment8 for details.
+    const forceProdHost = window.location.hostname === "localhost";
+    lib.src = `${forceProdHost ? "https://www.kaggle.com" : ""}/static/mathjax/2.7.9/MathJax.js?config=TeX-AMS_SVG`;
+    head.appendChild(lib);
+  });
+</script>
+
+
+
+
+
+
+
+
+
+  </div>
+</body>
+</html>

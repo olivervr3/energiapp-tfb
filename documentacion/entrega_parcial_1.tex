@@ -1,0 +1,637 @@
+\documentclass[12pt,a4paper,spanish]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{enumitem}
+
+% Configuración de página
+\geometry{
+    left=3cm,
+    right=2.5cm,
+    top=2.5cm,
+    bottom=2.5cm,
+    headheight=15pt
+}
+
+% Interlineado
+\onehalfspacing
+
+% Configuración de colores
+\definecolor{primary}{RGB}{46,125,50}
+\definecolor{secondary}{RGB}{25,118,210}
+
+% Configuración de hipervínculos
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    filecolor=magenta,      
+    urlcolor=secondary,
+    citecolor=primary,
+    pdftitle={Entrega Parcial 1 - EnergiApp v1.0},
+    pdfauthor={Oliver Vincent Rice},
+    pdfsubject={Trabajo Final de Grado - Entrega Parcial 1},
+    pdfkeywords={EnergiApp, Machine Learning, React, Node.js, Gestión Energética}
+}
+
+% Encabezados y pies de página
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\thepage}
+\fancyhead[LO]{EnergiApp v1.0 - Entrega Parcial 1}
+\fancyhead[RE]{Oliver Vincent Rice}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Configuración de títulos
+\titleformat{\section}
+{\normalfont\Large\bfseries\color{primary}}
+{\thesection}{1em}{}
+
+\titleformat{\subsection}
+{\normalfont\large\bfseries\color{secondary}}
+{\thesubsection}{1em}{}
+
+\begin{document}
+
+% Página de título
+\begin{titlepage}
+\centering
+\vspace*{2cm}
+
+{\Huge\bfseries ENTREGA PARCIAL 1}\\[0.5cm]
+{\Large TRABAJO FINAL DE BACHELOR}\\[1.5cm]
+
+{\LARGE\bfseries EnergiApp v1.0: Plataforma Web para la Visualización y Predicción del Consumo Energético Doméstico mediante Simulación de IoT y Análisis de Datos}\\[2cm]
+
+{\large
+\textbf{Estudiante:} Oliver Vincent Rice\\[0.3cm]
+\textbf{Tutor:} Isabel Sánchez\\[0.3cm]
+\textbf{Universidad:} Universitat Carlemany\\[0.3cm]
+\textbf{Grado:} Bachelor en Informática\\[0.3cm]
+\textbf{Fecha:} 16 de julio de 2025\\[0.3cm]
+}
+
+\vfill
+
+{\large Universidad Carlemany\\
+Bachelor en Informática\\
+Julio 2025}
+
+\end{titlepage}
+
+% Índice
+\tableofcontents
+\newpage
+
+\section{Información del Proyecto}
+
+\subsection{Datos del Estudiante y Supervisor}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{Campo} & \textbf{Información} \\
+\midrule
+Estudiante & Oliver Vincent Rice \\
+Tutor & Isabel Sánchez \\
+Universidad & Universitat Carlemany \\
+Grado & Bachelor en Informática \\
+Asignatura & Trabajo Final de Grado \\
+Fecha de Entrega & 16 de julio de 2025 \\
+\bottomrule
+\end{tabular}
+\caption{Información del proyecto}
+\end{table}
+
+\section{Título del Proyecto}
+
+\subsection{Título Principal}
+
+\textbf{``EnergiApp v1.0: Plataforma Web para la Visualización y Predicción del Consumo Energético Doméstico mediante Simulación de IoT y Análisis de Datos''}
+
+\subsection{Título Alternativo}
+
+\textbf{``Sistema Full-Stack de Optimización del Consumo Energético mediante Algoritmos Predictivos y Recomendaciones Inteligentes''}
+
+\section{Objetivos}
+
+\subsection{Objetivo General}
+
+Desarrollar una plataforma web (EnergiApp v1.0) que permita a los usuarios visualizar y predecir su consumo energético doméstico a través del análisis de datos simulados representativos de dispositivos IoT, utilizando algoritmos de Machine Learning, recomendaciones automatizadas y un dashboard interactivo con visualizaciones en tiempo real, con el fin de fomentar la sostenibilidad energética en el hogar y apoyar la toma de decisiones responsables.
+
+\subsection{Objetivos Específicos}
+
+\subsubsection{Objetivos de Desarrollo Técnico}
+
+\begin{enumerate}
+    \item \textbf{Analizar datasets de consumo energético} representativos de dispositivos IoT domésticos para entrenar y validar algoritmos durante el desarrollo, preparando el sistema para procesar datos reales de dispositivos IoT en producción.
+
+    \item \textbf{Diseñar e implementar una API RESTful} con Node.js y Express.js para gestionar y almacenar los datos de consumo energético y usuarios.
+
+    \item \textbf{Desarrollar un modelo predictivo} de consumo energético a corto plazo (1-7 días) usando técnicas de Machine Learning y análisis de patrones.
+
+    \item \textbf{Crear una interfaz web moderna} con React 18 que muestre el consumo histórico, predicciones en tiempo real y recomendaciones personalizadas.
+
+    \item \textbf{Implementar sistema de recomendaciones} automatizadas para optimización energética (control de standby, programación temporal, etc.).
+\end{enumerate}
+
+\subsubsection{Objetivos de Funcionalidad y UX}
+
+\begin{enumerate}[resume]
+    \item \textbf{Alinear la solución con los Objetivos de Desarrollo Sostenible} (ODS) 7, 11, 12 y 13, promoviendo el uso responsable de la energía.
+
+    \item \textbf{Implementar dashboard multi-usuario} con diferentes niveles de acceso y visualizaciones interactivas con Chart.js.
+
+    \item \textbf{Desarrollar sistema de simulación IoT} que genere datos realistas durante la fase de desarrollo basados en datasets como UK-DALE y UCI Machine Learning Repository, replicando el comportamiento que tendría con dispositivos reales.
+
+    \item \textbf{Crear panel administrativo completo} para gestión de usuarios, dispositivos simulados y generación de reportes energéticos.
+
+    \item \textbf{Optimizar experiencia responsive} con diseño móvil-first para smartphone, tablet y desktop.
+\end{enumerate}
+
+\subsubsection{Objetivos de Impacto y Innovación}
+
+\begin{enumerate}[resume]
+    \item \textbf{Demostrar viabilidad práctica} del sistema mediante funcionalidades ejecutables que controlen dispositivos reales del usuario.
+
+    \item \textbf{Lograr interfaz profesional} con estándares de calidad empresarial, animaciones fluidas y UX excepcional.
+
+    \item \textbf{Establecer arquitectura escalable} preparada para expansión a sistemas de producción y integración con dispositivos IoT.
+
+    \item \textbf{Generar documentación exhaustiva} con manuales de usuario, guías técnicas y documentación académica completa.
+
+    \item \textbf{Validar algoritmos ML} para garantizar predicciones consistentes y útiles basadas en patrones reales, no aleatorios.
+\end{enumerate}
+
+\section{Justificación de la Propuesta}
+
+\subsection{Relevancia Social y Ambiental}
+
+Durante mis años de estudio en informática, he tenido varias experiencias que me han llevado a desarrollar este proyecto. En mi casa, por ejemplo, nunca sabíamos realmente qué electrodomésticos estaban gastando más luz hasta que empezamos a prestar atención después de una factura especialmente alta. Mi madre siempre se quejaba de que el frigorífico viejo consumía mucho, pero no teníamos forma de comprobarlo.
+
+Esta situación me hizo reflexionar sobre un problema más amplio. Investigando un poco, descubrí que las familias españolas pagamos de media unos 950 euros al año por la electricidad. Lo más sorprendente fue enterarme de que aproximadamente un 15\% o 20\% de ese dinero se va en dispositivos que están en standby o que simplemente no usamos de forma eficiente.
+
+Fue entonces cuando me topé con datasets como UK-DALE. Me di cuenta de que estos conjuntos de datos serían perfectos para desarrollar y probar los algoritmos de Machine Learning durante la fase de desarrollo, ya que yo mismo no tengo acceso a dispositivos IoT reales para generar datos de prueba.
+
+\subsubsection{Problemática Actual}
+
+Después de hablar con amigos y familiares, me di cuenta de que el problema que vivíamos en casa no era único. Muchas personas simplemente no saben qué aparatos les están costando más dinero. Yo mismo, hasta hace poco, no tenía ni idea de cuándo era más caro usar la lavadora o si realmente valía la pena desenchufar el televisor por las noches.
+
+Lo más frustrante es que las opciones comerciales existentes tienen barreras de entrada significativas. Por ejemplo, sistemas como Schneider Electric's EcoStruxure o Siemens Building Technologies requieren inversiones iniciales considerables y conocimientos técnicos especializados para su instalación y mantenimiento. Estas soluciones, aunque efectivas, están orientadas principalmente al sector empresarial y viviendas de alta gama.
+
+Las facturas que recibimos cada mes tampoco ayudan mucho. Solo te dicen cuánto has gastado en total, pero no te explican nada sobre qué aparatos han consumido más o en qué momentos del día. Es como si te dijeran que has gastado mucho dinero en el supermercado, pero sin darte el ticket de compra.
+
+\subsubsection{Oportunidad de Impacto}
+
+Por eso pensé en desarrollar EnergiApp v1.0. Durante el desarrollo del proyecto, utilizaré datasets existentes como UK-DALE para entrenar y validar los algoritmos de Machine Learning. Sin embargo, en un entorno de producción real, la plataforma estaría diseñada para recibir datos directamente de dispositivos IoT instalados en los hogares de los usuarios, generando así datasets personalizados y específicos para cada familia.
+
+Mi objetivo es crear una interfaz intuitiva que sea accesible para usuarios sin conocimientos técnicos especializados. La idea es que desde dispositivos móviles, tablets o ordenadores, los usuarios puedan visualizar los patrones de consumo de sus propios dispositivos y recibir recomendaciones prácticas basadas en sus hábitos reales de uso energético.
+
+Si los resultados del proyecto son positivos, esto podría contribuir a que las familias reduzcan su consumo energético. Estudios previos sugieren que mejoras en la gestión doméstica pueden generar ahorros del 15\% al 25\% en las facturas eléctricas, lo que representaría entre 140 y 240 euros anuales para una familia media.
+
+\subsection{Innovación Tecnológica}
+
+\subsubsection{Convergencia de Tendencias Actuales}
+
+Para el desarrollo técnico, he seleccionado React 18 junto con Node.js como tecnologías base, ya que son las que mejor domino actualmente. Durante el desarrollo de proyectos universitarios previos con React, pude apreciar su rendimiento y la calidad del código que se puede conseguir. La abundante documentación disponible también facilita la resolución de dudas durante el desarrollo.
+
+Node.js me parece una elección apropiada para el desarrollo de APIs, y el hecho de poder utilizar JavaScript tanto en frontend como backend simplifica la arquitectura del proyecto.
+
+La implementación de Machine Learning es el aspecto que más me motiva del proyecto. El objetivo es desarrollar algoritmos que analicen patrones reales de consumo energético, basándose en los conocimientos de estadística y análisis de datos adquiridos durante la carrera.
+
+También considero fundamental que la aplicación tenga una experiencia de usuario óptima. He observado que muchas aplicaciones técnicamente sólidas fallan en usabilidad. Por ello, el diseño será responsive y priorizará la simplicidad de uso tanto en dispositivos móviles como de escritorio.
+
+\subsubsection{Diferenciación Competitiva}
+
+He estado comparando mi idea con lo que ya existe en el mercado, y creo que podría tener algunas ventajas interesantes:
+
+Los sistemas comerciales existentes tienen costes considerables y barreras de entrada altas. Mi propuesta buscaría ser más accesible económicamente. Para este TFG académico, utilizaré datos simulados para desarrollar y validar el sistema, pero en un entorno de producción real, la plataforma estaría diseñada para trabajar con dispositivos IoT que los usuarios tendrían instalados en sus hogares, procesando datos reales de consumo.
+
+También he revisado aplicaciones móviles que ofrecen servicios similares, pero muchas se limitan a mostrar información básica de consumo. Mi planteamiento es intentar ir más allá: no solo mostrar datos, sino proporcionar recomendaciones prácticas que los usuarios puedan implementar.
+
+Una característica que me parece valiosa de este enfoque es la transparencia del código. Al desarrollarse como proyecto académico con posible orientación open-source, permitiría adaptaciones y mejoras por parte de la comunidad, algo que no es posible con los sistemas comerciales propietarios.
+
+\subsection{Viabilidad Técnica y Económica}
+
+\subsubsection{Madurez Tecnológica}
+
+Respecto a la viabilidad técnica, tengo confianza en el proyecto basándome en mi experiencia con las tecnologías seleccionadas. React 18 y Node.js son tecnologías maduras, ampliamente adoptadas en la industria y con ecosistemas de desarrollo consolidados.
+
+Para la visualización de datos utilizaré Chart.js, una librería que he empleado en proyectos anteriores y que ofrece buena estabilidad. Express.js para el backend cuenta con documentación extensa y una comunidad activa. En caso de encontrar dificultades técnicas durante el desarrollo, existe abundante material de referencia y recursos de apoyo disponibles.
+
+La elección de tecnologías populares y bien establecidas reduce significativamente los riesgos técnicos del proyecto, ya que cuentan con comunidades de desarrolladores que han resuelto problemas similares previamente.
+
+\subsubsection{Impacto Económico Proyectado}
+
+Desde el punto de vista económico, los costes de desarrollo son favorables. Al tratarse de un proyecto académico que utiliza tecnologías open-source, los gastos directos de desarrollo son mínimos.
+
+Para un eventual despliegue más amplio, servicios de hosting básicos comenzarían desde aproximadamente 5 euros mensuales, lo que contrasta favorablemente con los costes de los sistemas comerciales especializados.
+
+El valor potencial para los usuarios finales es considerable. Si el sistema logra optimizaciones del 15\% al 25\% en el consumo eléctrico, como sugieren estudios del sector, esto representaría ahorros de 140 a 240 euros anuales para una familia media. Este beneficio económico directo podría justificar la adopción de la herramienta.
+
+\section{Propuesta de Índice}
+
+La estructura completa del Trabajo Final se organizará en las siguientes partes y capítulos:
+
+\subsection{Parte I: Fundamentos y Contexto}
+
+\textbf{Capítulo 1: Introducción} \textit{(Entrega Parcial 1)}
+\begin{itemize}
+    \item 1.1. Presentación del problema energético doméstico
+    \item 1.2. Justificación del proyecto EnergiApp v1.0
+    \item 1.3. Objetivos generales y específicos
+    \item 1.4. Estructura del documento
+    \item 1.5. Metodología de desarrollo ágil
+\end{itemize}
+
+\textbf{Capítulo 2: Marco Teórico y Estado del Arte} \textit{(Entrega Parcial 2)}
+\begin{itemize}
+    \item 2.1. Fundamentos de gestión energética doméstica
+    \item 2.2. Machine Learning aplicado a predicción de consumo
+    \item 2.3. Desarrollo web moderno (React 18, Node.js, Express)
+    \item 2.4. Técnicas de visualización de datos (Chart.js)
+    \item 2.5. Revisión de aplicaciones de gestión energética existentes
+    \item 2.6. Análisis comparativo y brechas identificadas
+\end{itemize}
+
+\subsection{Parte II: Análisis y Diseño}
+
+\textbf{Capítulo 3: Análisis de Requisitos} \textit{(Entrega Parcial 2)}
+\begin{itemize}
+    \item 3.1. Requisitos funcionales del sistema
+    \item 3.2. Requisitos no funcionales (rendimiento, usabilidad, escalabilidad)
+    \item 3.3. Casos de uso y historias de usuario
+    \item 3.4. Perfiles de usuario (administrador, usuario estándar)
+    \item 3.5. Restricciones técnicas y limitaciones
+\end{itemize}
+
+\textbf{Capítulo 4: Diseño del Sistema} \textit{(Entrega Parcial 2)}
+\begin{itemize}
+    \item 4.1. Arquitectura full-stack de la aplicación
+    \item 4.2. Diseño de la base de datos y modelos de datos
+    \item 4.3. Diseño de APIs RESTful y endpoints
+    \item 4.4. Diseño de algoritmos de Machine Learning
+    \item 4.5. Diseño de interfaz de usuario y UX/UI
+    \item 4.6. Arquitectura de seguridad y autenticación
+\end{itemize}
+
+\subsection{Parte III: Implementación y Desarrollo}
+
+\textbf{Capítulo 5: Desarrollo del Backend} \textit{(Entrega Parcial 3)}
+\begin{itemize}
+    \item 5.1. Configuración del entorno Node.js y Express.js
+    \item 5.2. Implementación del sistema de autenticación
+    \item 5.3. Desarrollo de APIs RESTful (30+ endpoints)
+    \item 5.4. Sistema de logging con Winston
+    \item 5.5. Middleware de seguridad (CORS, Helmet)
+    \item 5.6. Implementación de algoritmos ML predictivos
+\end{itemize}
+
+\textbf{Capítulo 6: Desarrollo del Frontend} \textit{(Entrega Parcial 3)}
+\begin{itemize}
+    \item 6.1. Configuración de React 18 y arquitectura de componentes
+    \item 6.2. Implementación de dashboards interactivos
+    \item 6.3. Sistema de visualizaciones con Chart.js
+    \item 6.4. Interfaces responsivas y móvil-first
+    \item 6.5. Gestión de estado y comunicación con backend
+    \item 6.6. Optimización de rendimiento y experiencia de usuario
+\end{itemize}
+
+\textbf{Capítulo 7: Funcionalidades Inteligentes} \textit{(Entrega Parcial 3)}
+\begin{itemize}
+    \item 7.1. Motor de predicciones ML (1-7 días)
+    \item 7.2. Sistema de recomendaciones automatizadas
+    \item 7.3. Control y automatización de dispositivos
+    \item 7.4. Panel administrativo multi-usuario
+    \item 7.5. Sistema de notificaciones y feedback
+    \item 7.6. Integración de datos meteorológicos
+\end{itemize}
+
+\subsection{Parte IV: Validación y Resultados}
+
+\textbf{Capítulo 8: Pruebas y Validación} \textit{(Entrega Final)}
+\begin{itemize}
+    \item 8.1. Metodología de testing y QA
+    \item 8.2. Pruebas unitarias y de integración
+    \item 8.3. Pruebas de rendimiento y carga
+    \item 8.4. Validación de algoritmos ML y precisión
+    \item 8.5. Testing de usabilidad y experiencia de usuario
+    \item 8.6. Pruebas de compatibilidad móvil y responsive
+\end{itemize}
+
+\textbf{Capítulo 9: Análisis de Resultados} \textit{(Entrega Final)}
+\begin{itemize}
+    \item 9.1. Métricas de rendimiento del sistema
+    \item 9.2. Evaluación de precisión de predicciones ML
+    \item 9.3. Análisis de ahorro energético simulado
+    \item 9.4. Evaluación de experiencia de usuario
+    \item 9.5. Comparativa con soluciones existentes
+    \item 9.6. Validación de objetivos propuestos
+\end{itemize}
+
+\subsection{Parte V: Conclusiones y Proyección}
+
+\textbf{Capítulo 10: Conclusiones} \textit{(Entrega Final)}
+\begin{itemize}
+    \item 10.1. Cumplimiento de objetivos académicos
+    \item 10.2. Contribuciones técnicas principales
+    \item 10.3. Lecciones aprendidas en el desarrollo
+    \item 10.4. Limitaciones identificadas y superadas
+\end{itemize}
+
+\textbf{Capítulo 11: Trabajo Futuro y Escalabilidad} \textit{(Entrega Final)}
+\begin{itemize}
+    \item 11.1. Mejoras propuestas para versión 2.0
+    \item 11.2. Integración con dispositivos IoT reales
+    \item 11.3. Expansión a redes comunitarias inteligentes
+    \item 11.4. Potencial comercial y modelo de negocio
+\end{itemize}
+
+\subsection{Anexos}
+
+\begin{itemize}
+    \item \textbf{Anexo A:} Código fuente completo (6700+ líneas)
+    \item \textbf{Anexo B:} Documentación técnica de APIs
+    \item \textbf{Anexo C:} Manual de usuario y administrador
+    \item \textbf{Anexo D:} Capturas de pantalla y demos
+    \item \textbf{Anexo E:} Métricas de rendimiento y testing
+\end{itemize}
+
+\section{Alcance del Proyecto}
+
+\subsection{Alcance Incluido (Funcionalidades Principales)}
+
+\subsubsection{Aplicación Frontend React}
+
+\textbf{Dashboard Principal:}
+\begin{itemize}
+    \item Métricas en tiempo real (consumo, costo, estado del sistema)
+    \item Visualizaciones interactivas con Chart.js
+    \item Análisis comparativo con días anteriores
+    \item Control de dispositivos domésticos simulados
+    \item Diseño responsive perfecto (móvil, tablet, desktop)
+\end{itemize}
+
+\textbf{Módulo de Predicciones ML:}
+\begin{itemize}
+    \item Selector dinámico de 1-7 días de predicción
+    \item Tarjetas predictivas con información meteorológica
+    \item Algoritmos basados en patrones reales de consumo
+    \item Datos consistentes y no aleatorios
+    \item Recomendaciones específicas por día
+\end{itemize}
+
+\textbf{Sistema de Recomendaciones:}
+\begin{itemize}
+    \item ``Optimizar Standby'' - Control automático de dispositivos en standby
+    \item ``Programar Lavadora'' - Automatización temporal con demo funcional
+    \item ``Información Paneles Solares'' - Cálculos de ROI e inversión
+    \item Notificaciones con feedback inmediato
+    \item Validación previa de dispositivos disponibles
+\end{itemize}
+
+\subsubsection{Backend Node.js + Express}
+
+\textbf{API RESTful Completa:}
+\begin{itemize}
+    \item 30+ endpoints para gestión completa del sistema
+    \item Autenticación con sistema de tokens JWT-like
+    \item Middleware de seguridad (CORS, Helmet)
+    \item Sistema de logging con Winston
+    \item Gestión de usuarios y dispositivos
+\end{itemize}
+
+\textbf{Sistema de Datos:}
+\begin{itemize}
+    \item Base de datos in-memory optimizada para desarrollo
+    \item Modelos de usuarios, dispositivos, y consumo energético
+    \item Simulación realista de datos energéticos
+    \item Analytics y métricas del sistema
+\end{itemize}
+
+\subsection{Limitaciones y Exclusiones}
+
+\subsubsection{Limitaciones Técnicas}
+
+\textbf{Infraestructura:}
+\begin{itemize}
+    \item Base de datos persistente (usa almacenamiento en memoria)
+    \item Autenticación OAuth2 avanzada (implementa sistema básico)
+    \item Cifrado TLS/SSL para producción
+    \item Balanceador de carga para alta disponibilidad
+\end{itemize}
+
+\textbf{Integración Hardware:}
+\begin{itemize}
+    \item Conexión con dispositivos IoT físicos reales
+    \item Medidores inteligentes certificados
+    \item Control de electrodomésticos de alta potencia
+    \item Sensores ambientales reales
+\end{itemize}
+
+\subsubsection{Funcionalidades Fuera de Alcance}
+
+\textbf{Análisis Avanzado:}
+\begin{itemize}
+    \item Redes neuronales profundas para ML
+    \item Integración con APIs meteorológicas comerciales
+    \item Análisis predictivo con datos históricos reales de años
+    \item Optimización de tarifas eléctricas en tiempo real
+\end{itemize}
+
+\textbf{Despliegue Comercial:}
+\begin{itemize}
+    \item Infraestructura de producción escalable
+    \item Sistema de facturación comercial
+    \item Soporte técnico 24/7
+    \item Integración con sistemas domóticos comerciales
+\end{itemize}
+
+\section{Planificación y Cronograma}
+
+\subsection{Metodología de Desarrollo}
+
+\subsubsection{Enfoque Metodológico}
+
+Para organizar el trabajo he pensado en usar una metodología más o menos ágil. Me gusta la idea de trabajar por sprints semanales porque me ayuda a no procrastinar y a tener siempre algo concreto que hacer cada semana.
+
+Mi plan es ir validando las cosas a medida que las hago, en lugar de programar todo y al final descubrir que algo no funciona. Es especialmente importante en este proyecto porque quiero que sea muy fácil de usar, y eso solo lo sabes probándolo.
+
+\subsubsection{Herramientas de Gestión y Desarrollo}
+
+Las herramientas que voy a usar son las típicas que ya conozco:
+
+Git para el control de versiones, que ya uso en todos mis proyectos de la uni. Visual Studio Code como editor, con los plugins de React y Node.js que hacen que programar sea mucho más cómodo.
+
+Para hacer pruebas de las APIs usaré Postman, que es muy intuitivo, y para depurar el frontend las herramientas que trae el navegador de serie.
+
+La documentación técnica la haré en Markdown porque es rápido y limpio, y la memoria académica en LaTeX porque queda más profesional.
+
+\subsection{Cronograma de Entregas Oficiales}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|l|}
+\hline
+\textbf{Entrega} & \textbf{Inicio} & \textbf{Fin} & \textbf{Días} & \textbf{Contenido} \\
+\hline
+\textbf{Entrega 1} & 07/07/2025 & 20/07/2025 & 14 & 
+\begin{tabular}[c]{@{}l@{}}
+Fundamentos de la propuesta\\
+Título, objetivos, justificación\\
+Propuesta de índice, alcance\\
+Planificación y cronograma
+\end{tabular} \\
+\hline
+\textbf{Entrega 2} & 21/07/2025 & 03/08/2025 & 14 & 
+\begin{tabular}[c]{@{}l@{}}
+Análisis de requisitos del software\\
+Especificaciones técnicas\\
+Diagramas de estructura y diseño\\
+Modelo de persistencia de datos\\
+Primer prototipo funcional\\
+Feedback de Entrega 1
+\end{tabular} \\
+\hline
+\textbf{Entrega 3} & 04/08/2025 & 17/08/2025 & 14 & 
+\begin{tabular}[c]{@{}l@{}}
+Presentación parcial del 60\%\\
+del contenido del proyecto
+\end{tabular} \\
+\hline
+\textbf{Entrega 4} & 18/08/2025 & 07/09/2025 & 21 & 
+\begin{tabular}[c]{@{}l@{}}
+DEPÓSITO FINAL\\
+TFB completo (100\%)
+\end{tabular} \\
+\hline
+\end{tabular}
+\caption{Cronograma oficial de entregas}
+\end{table}
+
+\subsection{Estado Actual del Proyecto}
+
+\subsubsection{Enfoque de Desarrollo}
+
+Mi estrategia va a ser empezar por lo básico: primero el backend con las APIs principales, después el frontend básico, y al final las funcionalidades más avanzadas de Machine Learning.
+
+Lo que me parece súper importante es que cada entrega tenga algo que realmente funcione y que se pueda tocar. No quiero presentar solo documentos o código que no se ejecuta. Prefiero tener algo simple pero que funcione a algo súper complicado que está a medias.
+
+Mi objetivo es que al final de cada sprint pueda enseñar algo concreto, aunque sea pequeño. Creo que así voy a aprender más y el tutor va a poder darme feedback útil antes de que sea demasiado tarde para cambiar cosas.
+
+\subsubsection{Preparación para las Siguientes Entregas}
+
+El proyecto está estructurado para facilitar el desarrollo ordenado de las siguientes entregas según los requisitos académicos:
+
+\begin{itemize}
+    \item \textbf{Entrega 2:} Fundamentos de la propuesta incorporando análisis de requisitos del software, especificaciones técnicas, diagramas de estructura y diseño, modelo de persistencia de datos y primer prototipo funcional.
+    
+    \item \textbf{Entrega 3:} Memoria con avance del 60\% incluyendo pruebas y depuraciones de software, evaluación y validación, documentación de resultados. Contendrá todas las correcciones y comentarios del tutor/a hasta ese momento, respetando aspectos formales requeridos.
+    
+    \item \textbf{Entrega Final:} Depósito del TFB con versión final incorporando todos los comentarios del tutor/a. Documento PDF definitivo con anexos y recursos adjuntos no modificables.
+\end{itemize}
+
+\section{Recursos y Herramientas}
+
+\subsection{Recursos Tecnológicos}
+
+\subsubsection{Hardware de Desarrollo}
+\begin{itemize}
+    \item \textbf{Equipo Principal:} PC Windows con 16GB RAM, procesador i7
+    \item \textbf{Testing:} Dispositivos móviles y tablets para pruebas responsive
+    \item \textbf{Networking:} Conexión estable para desarrollo y testing de APIs
+    \item \textbf{Backup:} Almacenamiento en la nube para respaldo de código
+\end{itemize}
+
+\subsubsection{Stack Tecnológico Completo}
+
+\textbf{Frontend (React Ecosystem):}
+\begin{itemize}
+    \item React 18 con Hooks y gestión de estado moderna
+    \item Chart.js para visualizaciones interactivas
+    \item CSS Grid/Flexbox para diseño responsive
+    \item Axios para comunicación HTTP
+    \item Create React App para configuración optimizada
+\end{itemize}
+
+\textbf{Backend (Node.js Stack):}
+\begin{itemize}
+    \item Node.js 18+ con Express.js framework
+    \item Winston para logging profesional
+    \item Helmet y CORS para seguridad
+    \item Sistema de autenticación JWT-like
+    \item APIs RESTful con validación de datos
+\end{itemize}
+
+\textbf{Herramientas de Desarrollo:}
+\begin{itemize}
+    \item Visual Studio Code con extensiones especializadas
+    \item Git para control de versiones
+    \item Postman para testing de APIs
+    \item DevTools de navegador para debugging
+    \item NPM para gestión de dependencias
+\end{itemize}
+
+\subsection{Recursos Humanos}
+
+\subsubsection{Equipo del Proyecto}
+\begin{itemize}
+    \item \textbf{Desarrollador Full-Stack:} Oliver Vincent Rice (dedicación completa)
+    \item \textbf{Tutor Académico:} Isabel Sánchez
+    \item \textbf{Recursos de Consulta:} Documentación oficial, Stack Overflow, GitHub
+\end{itemize}
+
+\subsubsection{Competencias Técnicas Aplicadas}
+En cuanto a las competencias que voy a aplicar, creo que tengo bastante claro lo que necesito:
+
+Para el frontend, domino React 18, JavaScript moderno, CSS con Grid y Flexbox, y tengo nociones básicas de diseño UX/UI que he aprendido en algunas asignaturas.
+
+En el backend me manejo bien con Node.js, Express.js, el diseño de APIs RESTful y sistemas básicos de autenticación web.
+
+La parte de Machine Learning es donde más tengo que aprender, pero tengo una base sólida de algoritmos y análisis de patrones de las asignaturas de estadística.
+
+Y las herramientas de desarrollo como Git, testing y debugging las uso casi a diario desde hace un par de años.
+
+% Bibliografía básica
+\begin{thebibliography}{99}
+
+\bibitem{iot_energy}
+Pérez-Chacón, R., Luna-Romera, J.M., Troncoso, A., Martínez-Álvarez, F., \& Riquelme, J.C. \textit{Big data analytics for discovering electricity consumption patterns and energy savings}. 
+Energies, 11(3), 683, 2018.
+
+\bibitem{uk_dale}
+Jack Kelly and William Knottenbelt. \textit{The UK-DALE dataset: Domestic appliance-level electricity demand and whole-house demand from five UK homes}. 
+Scientific data, 2:150007, 2015.
+
+\bibitem{uci_dataset}
+UCI Machine Learning Repository. \textit{Individual household electric power consumption data set}. 
+\url{https://archive.ics.uci.edu/ml/datasets/individual+household+electric+power+consumption}, 2007.
+
+\bibitem{react18}
+Meta Open Source Team. \textit{React 18 Documentation}. 
+\url{https://react.dev/}, 2024.
+
+\bibitem{nodejs}
+OpenJS Foundation. \textit{Node.js Documentation}. 
+\url{https://nodejs.org/docs/}, 2024.
+
+\end{thebibliography}
+
+\end{document}
