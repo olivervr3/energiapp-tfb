@@ -3,7 +3,10 @@ const path = require('path');
 const cors = require('cors');
 const helmet = require('helmet');
 const { initializeDatabase } = require('./init-db');
-require('dotenv').config({ path: '.env.production' });
+
+// Cargar variables de entorno según el modo
+const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
+require('dotenv').config({ path: envFile });
 
 // Importar la app del backend
 const backendApp = require('./backend/src/app');
@@ -17,18 +20,28 @@ const startServer = async () => {
     // Inicializar base de datos con usuarios por defecto
     await initializeDatabase();
     
-    // Middleware de seguridad para producción
-    app.use(helmet({
-      contentSecurityPolicy: {
-        directives: {
-          defaultSrc: ["'self'"],
-          styleSrc: ["'self'", "'unsafe-inline'", "https:"],
-          scriptSrc: ["'self'"],
-          imgSrc: ["'self'", "data:", "https:"],
-          connectSrc: ["'self'"]
+    // Middleware de seguridad adaptado al entorno
+    if (process.env.NODE_ENV === 'production') {
+      app.use(helmet({
+        contentSecurityPolicy: {
+          directives: {
+            defaultSrc: ["'self'"],
+            styleSrc: ["'self'", "'unsafe-inline'", "https:", "fonts.googleapis.com"],
+            scriptSrc: ["'self'"],
+            imgSrc: ["'self'", "data:", "https:"],
+            connectSrc: ["'self'"],
+            fontSrc: ["'self'", "https:", "data:", "fonts.gstatic.com"],
+            objectSrc: ["'none'"]
+          }
         }
-      }
-    }));
+      }));
+    } else {
+      // Configuración más permisiva para desarrollo
+      app.use(helmet({
+        contentSecurityPolicy: false,
+        crossOriginEmbedderPolicy: false
+      }));
+    }
 
     // CORS
     app.use(cors({

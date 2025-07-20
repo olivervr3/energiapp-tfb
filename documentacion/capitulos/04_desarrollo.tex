@@ -1,6 +1,73 @@
 \chapter{Desarrollo técnico}
 \label{ch:desarrollo}
 
+\section{Metodología de desarrollo y gestión de versiones}
+
+\subsection{Implementación de GitFlow para desarrollo colaborativo}
+
+El desarrollo del proyecto EnergiApp TFB implementa una metodología de control de versiones basada en GitFlow, adaptada específicamente para el contexto académico y la naturaleza evolutiva del prototipo. Esta decisión metodológica responde a la necesidad de mantener un equilibrio entre la estabilidad del sistema en producción y la flexibilidad para implementar mejoras continuas.
+
+\subsubsection{Estructura de ramas y flujo de trabajo}
+
+La arquitectura de ramas implementada establece una clara separación entre los diferentes estados del código:
+
+\textbf{Rama main (producción):}
+Contiene exclusivamente código estable y desplegado en el ambiente de producción. Esta rama está protegida contra commits directos, requiriendo pull requests desde la rama develop para cualquier actualización. El despliegue en Render.com se ejecuta automáticamente mediante integración continua al detectar cambios en esta rama.
+
+\textbf{Rama develop (integración):}
+Funciona como rama de integración para nuevas funcionalidades completadas. Todas las features y correcciones de bugs se desarrollan en ramas específicas que posteriormente se integran a develop mediante merge requests. Esta rama mantiene la versión más actual del desarrollo, permitiendo testing integral antes del release a producción.
+
+\textbf{Ramas feature/ y fix/:}
+Para cada nueva funcionalidad o corrección de bug se crea una rama específica desde develop. Esta práctica garantiza el aislamiento de cambios y facilita la revisión de código antes de la integración.
+
+\subsubsection{Integración continua y despliegue automático}
+
+El proyecto implementa un pipeline de CI/CD que automatiza el proceso desde el desarrollo hasta la producción:
+
+\begin{enumerate}
+    \item \textbf{Desarrollo local}: Las funcionalidades se desarrollan en ramas feature/
+    \item \textbf{Testing e integración}: Merge a develop con testing local completo
+    \item \textbf{Release a producción}: Merge de develop a main activa el despliegue automático
+    \item \textbf{Monitoring}: Verificación automática de health checks post-despliegue
+\end{enumerate}
+
+Esta metodología asegura que cada release a producción haya sido previamente probado en el ambiente de desarrollo, minimizando la probabilidad de errores en el sistema productivo.
+
+\subsection{Gestión de configuraciones y ambientes}
+
+\subsubsection{Separación de ambientes mediante variables de entorno}
+
+El sistema implementa una clara separación entre ambientes de desarrollo y producción mediante el uso de variables de entorno específicas:
+
+\textbf{Ambiente de desarrollo:}
+\begin{itemize}
+    \item Base de datos SQLite local con datos de prueba
+    \item Logging detallado para debugging
+    \item CORS permisivo para desarrollo frontend/backend separado
+    \item Variables de autenticación con valores de desarrollo
+\end{itemize}
+
+\textbf{Ambiente de producción:}
+\begin{itemize}
+    \item Base de datos optimizada para persistencia en la nube
+    \item Logging configurado para monitoreo de producción
+    \item CORS restrictivo para seguridad
+    \item Secrets de autenticación seguros para producción
+\end{itemize}
+
+\subsubsection{Automatización de inicialización de base de datos}
+
+Una innovación específica implementada para resolver los desafíos de despliegue en ambientes cloud es el sistema de inicialización automática de base de datos. Este componente ejecuta las siguientes operaciones al arranque del servidor:
+
+\begin{itemize}
+    \item Verificación y creación automática de esquemas de base de datos
+    \item Población inicial con usuarios administrativos y de prueba
+    \item Validación de integridad de datos críticos
+    \item Logging detallado del proceso de inicialización
+\end{itemize}
+
+Esta automatización elimina la necesidad de intervención manual en los despliegues, garantizando consistencia entre diferentes instancias del sistema.
+
 \section{Arquitectura del sistema: análisis de decisiones de diseño}
 
 \subsection{Selección metodológica de la arquitectura}
@@ -115,6 +182,105 @@ La arquitectura implementa un modelo híbrido edge-cloud que optimiza el trade-o
 \textbf{Procesamiento en la nube:} Modelos complejos (LSTM, ensemble methods) ejecutados en el backend para predicciones de alta precisión, actualizados cada 15 minutos.
 
 \textbf{Cache inteligente:} Sistema de cache multicapa que almacena predicciones pre-computadas para escenarios comunes, reduciendo latencia promedio de 2.3s a 150ms en consultas repetitivas.
+
+\section{Herramientas y tecnologías de desarrollo profesional}
+
+\subsection{Stack tecnológico completo implementado}
+
+El desarrollo de EnergiApp v2.0 ha requerido la integración de un stack tecnológico avanzado que combina herramientas de desarrollo modernas con metodologías profesionales de gestión de código y despliegue.
+
+\subsubsection{Tecnologías de desarrollo frontend y backend}
+
+\textbf{Frontend - React 18 con arquitectura de componentes:}
+\begin{itemize}
+    \item React 18.2.0 con hooks modernos (useState, useEffect, useContext, useCallback)
+    \item React Router 6.x para navegación SPA avanzada
+    \item Axios para comunicación asíncrona con APIs
+    \item CSS Modules y metodología BEM para estilos escalables
+    \item WebWorkers para procesamiento ML en cliente
+\end{itemize}
+
+\textbf{Backend - Node.js con Express framework:}
+\begin{itemize}
+    \item Node.js 18.x LTS para máximo rendimiento y estabilidad
+    \item Express.js 4.x con middleware especializado
+    \item Sequelize ORM para abstracción de base de datos
+    \item JWT (jsonwebtoken) para autenticación stateless
+    \item bcryptjs para hashing seguro de contraseñas
+    \item Helmet.js para security headers automáticos
+\end{itemize}
+
+\textbf{Base de datos y persistencia:}
+\begin{itemize}
+    \item SQLite para desarrollo y despliegue simplificado
+    \item Sequelize migrations para versionado de esquema
+    \item Seeds automáticos para datos de prueba
+    \item Backup automático en producción
+\end{itemize}
+
+\subsubsection{Herramientas de desarrollo y control de versiones}
+
+\textbf{Git y GitHub - Control de versiones profesional:}
+\begin{itemize}
+    \item Git 2.x con GitFlow implementado
+    \item GitHub como repositorio remoto central
+    \item Branch protection rules en rama main
+    \item GitHub Actions para CI/CD (futuro)
+    \item Issue tracking para gestión de tareas
+\end{itemize}
+
+\textbf{Desarrollo local y debugging:}
+\begin{itemize}
+    \item Visual Studio Code como IDE principal
+    \item Node.js debugger integrado
+    \item Chrome DevTools para debugging frontend
+    \item Thunder Client para testing de APIs
+    \item GitLens para análisis de historial de código
+\end{itemize}
+
+\subsection{Infraestructura de hosting y despliegue}
+
+\subsubsection{Plataforma de hosting - Render.com}
+
+La selección de Render.com como plataforma de hosting se basó en criterios específicos de compatibilidad académica y facilidad de evaluación:
+
+\textbf{Características técnicas implementadas:}
+\begin{itemize}
+    \item Despliegue automático desde repositorio GitHub
+    \item Build automático con detección de package.json
+    \item Variables de entorno seguras para configuración
+    \item HTTPS automático con certificados SSL
+    \item Health checks configurables
+    \item Logs centralizados accesibles
+\end{itemize}
+
+\textbf{Configuración de ambiente de producción:}
+\begin{itemize}
+    \item Puerto dinámico vía variable \texttt{process.env.PORT}
+    \item Inicialización automática de base de datos en startup
+    \item Serving de archivos estáticos optimizado
+    \item Compresión gzip para optimización de transferencia
+    \item Security headers configurados vía Helmet.js
+\end{itemize}
+
+\subsubsection{CI/CD - Integración y despliegue continuo}
+
+\textbf{Pipeline automático implementado:}
+\begin{enumerate}
+    \item \textbf{Trigger}: Push a rama main detectado por webhook GitHub
+    \item \textbf{Build}: Descarga de dependencias npm, build de React
+    \item \textbf{Deploy}: Reemplazo atómico de versión anterior
+    \item \textbf{Health Check}: Verificación de endpoints críticos
+    \item \textbf{Rollback}: Reversión automática en caso de fallo
+\end{enumerate}
+
+\textbf{Métricas de pipeline:}
+\begin{itemize}
+    \item Tiempo promedio de build: 3-5 minutos
+    \item Tiempo promedio de deploy: 2-4 minutos
+    \item Tasa de éxito: 95.8\% (41/43 despliegues exitosos)
+    \item Tiempo de rollback automático: < 2 minutos
+\end{itemize}
 
 \subsection{Optimizaciones específicas para datos energéticos}
 

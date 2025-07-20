@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext, useContext } from 'react';
+import React, { useState, useEffect, createContext } from 'react';
 import axios from 'axios';
 import './App_new.css';
 import {
@@ -370,6 +370,9 @@ function AuthenticatedApp({ user, token, onLogout }) {
           device.name.toLowerCase().includes('lavavajillas') &&
           device.controllable
         );
+        break;
+      default:
+        availableDevices = [];
         break;
     }
     
@@ -1292,6 +1295,7 @@ function AuthenticatedApp({ user, token, onLogout }) {
   const [mlPredictions, setMlPredictions] = useState(null);
   const [loadingPredictions, setLoadingPredictions] = useState(false);
   const [mlRecommendations, setMlRecommendations] = useState(null);
+  // eslint-disable-next-line no-unused-vars
   const [loadingRecommendations, setLoadingRecommendations] = useState(false);
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [refreshInterval, setRefreshInterval] = useState(30); // segundos
@@ -2241,10 +2245,10 @@ function AuthenticatedApp({ user, token, onLogout }) {
       {/* Professional Header */}
       <header className="header">
         <div className="header-content">
-          <a href="#" className="logo">
+          <div className="logo">
             <FaBolt className="logo-icon" />
             <span>EnergiApp</span>
-          </a>
+          </div>
           <div className="user-menu">
             <div className="user-info">
               <FaUser />
