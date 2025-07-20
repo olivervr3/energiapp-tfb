@@ -2,9 +2,9 @@
   "name": "energiapp-tfb-production",
   "version": "2.0.0",
   "description": "Plataforma integrada de análisis de consumo energético doméstico - Servidor de Producción",
-  "main": "server.js",
+  "main": "backend/server-simple.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node backend/server-simple.js",
     "dev": "nodemon backend/server.js",
     "build": "npm run build:frontend && npm run build:backend",
     "build:frontend": "cd frontend && npm run build",
@@ -46,8 +46,6 @@
     "node": ">=16.0.0",
     "npm": ">=8.0.0"
   },
-  "buildCommand": "npm install",
-  "startCommand": "npm start",
   "keywords": [
     "energia",
     "iot",
@@ -61,6 +59,6 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tu-usuario/energiapp-tfb.git"
+    "url": "https://github.com/olivervr3/energiapp-tfb.git"
   }
 }
