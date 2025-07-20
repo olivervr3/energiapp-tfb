@@ -1556,20 +1556,34 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // Iniciar servidor
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log('\n====================================');
   console.log('EnergiApp Backend API v2.0');
   console.log('====================================');
-  console.log(`Servidor: http://localhost:${PORT}`);
-  console.log(`Dashboard: http://localhost:${PORT}/api/dashboard`);
-  console.log(`Login: POST http://localhost:${PORT}/api/auth/login`);
-  console.log(`Registro: POST http://localhost:${PORT}/api/auth/register`);
-  console.log(`Admin: GET http://localhost:${PORT}/api/admin/stats`);
-  console.log(`Estado: http://localhost:${PORT}/api/health`);
+  console.log(`Servidor: http://0.0.0.0:${PORT}`);
+  console.log(`Dashboard: http://0.0.0.0:${PORT}/api/dashboard`);
+  console.log(`Login: POST http://0.0.0.0:${PORT}/api/auth/login`);
+  console.log(`Registro: POST http://0.0.0.0:${PORT}/api/auth/register`);
+  console.log(`Admin: GET http://0.0.0.0:${PORT}/api/admin/stats`);
+  console.log(`Estado: http://0.0.0.0:${PORT}/api/health`);
   console.log('====================================');
   console.log('Usuarios de prueba:');
   console.log('   Admin: admin / admin123');
   console.log('   User1: usuario1 / user123');
   console.log('   User2: usuario2 / user123');
   console.log('====================================\n');
+}).on('error', (error) => {
+  console.error('❌ Error al iniciar el servidor:', error);
+  process.exit(1);
+});
+
+// Manejo de errores del proceso
+process.on('uncaughtException', (error) => {
+  console.error('❌ Error no capturado en backend:', error);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('❌ Promesa rechazada en backend:', reason);
+  process.exit(1);
 });
