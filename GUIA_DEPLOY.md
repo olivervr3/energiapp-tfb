@@ -221,18 +221,13 @@ app.get('/api/health', (req, res) => {
 
 ### ⚡ OPCIÓN RECOMENDADA: Railway
 ```bash
-# 1. Crear repositorio en GitHub
-# Ve a github.com → New repository → "energiapp-tfb"
+# 1. ✅ CÓDIGO YA SUBIDO A GITHUB
+# Repositorio: https://github.com/olivervr3/energiapp-tfb
 
-# 2. Subir código
-git remote add origin https://github.com/[TU-USUARIO]/energiapp-tfb.git
-git branch -M main
-git push -u origin main
-
-# 3. Ir a railway.app
+# 2. Ir a railway.app
 # → Login con GitHub
 # → New Project → Deploy from GitHub repo
-# → Seleccionar "energiapp-tfb"
+# → Seleccionar "olivervr3/energiapp-tfb"
 # → Variables de entorno:
 #   NODE_ENV=production
 #   JWT_SECRET=tu_jwt_secret_super_seguro_para_produccion_2024
@@ -247,7 +242,10 @@ git push -u origin main
 ```bash
 # 1. Crear cuenta en heroku.com
 # 2. Instalar Heroku CLI
-# 3. En el proyecto:
+# 3. Clonar tu repo y configurar Heroku:
+
+git clone https://github.com/olivervr3/energiapp-tfb.git
+cd energiapp-tfb
 
 heroku create energiapp-tfb-[tu-nombre]
 heroku config:set NODE_ENV=production
