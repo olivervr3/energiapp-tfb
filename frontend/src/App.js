@@ -71,7 +71,10 @@ ChartJS.register(
   ArcElement
 );
 
-const API_BASE = 'http://localhost:3001';
+// API Base URL - detecta automáticamente el entorno
+const API_BASE = process.env.NODE_ENV === 'production' 
+  ? 'https://energiapp-tfb.onrender.com'
+  : 'http://localhost:3001';
 
 // Context para manejo de autenticación
 const AuthContext = createContext();
