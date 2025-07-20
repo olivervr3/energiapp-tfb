@@ -19,13 +19,13 @@ const initializeIoTSimulator = () => {
   
   try {
     const simulatorPath = path.join(__dirname, 'iot_simulator.py');
-    console.log('🔌 Initializing IoT Simulator...');
+    console.log('Initializing IoT Simulator...');
     
     // Initialize Python simulator (we'll create a bridge function)
     simulatorInitialized = true;
-    console.log('✅ IoT Simulator ready');
+    console.log('IoT Simulator ready');
   } catch (error) {
-    console.error('❌ Failed to initialize IoT Simulator:', error);
+    console.error('Failed to initialize IoT Simulator:', error);
   }
 };
 
@@ -115,7 +115,7 @@ app.use((req, res, next) => {
 // Ruta principal con información de la API
 app.get('/', (req, res) => {
   res.json({
-    message: '🚀 EnergiApp - API de Gestión Energética Multi-Usuario',
+    message: 'EnergiApp - API de Gestión Energética Multi-Usuario',
     version: '2.0.0',
     features: [
       'Sistema multi-usuario',
@@ -168,7 +168,7 @@ app.post('/api/auth/login', (req, res) => {
   const token = `token_${user.id}_${Date.now()}`;
   activeSessions[token] = user;
   
-  console.log(`✅ Login exitoso: ${user.username} (${user.role})`);
+  console.log(`Login exitoso: ${user.username} (${user.role})`);
   
   res.json({
     success: true,
@@ -217,7 +217,7 @@ app.post('/api/auth/register', (req, res) => {
   users.push(newUser);
   userDevices[newUser.id] = []; // Inicializar array de dispositivos vacío
   
-  console.log(`👤 Nuevo usuario registrado: ${username}`);
+  console.log(`Nuevo usuario registrado: ${username}`);
   
   res.json({
     success: true,
@@ -258,7 +258,7 @@ app.post('/api/auth/logout', authenticate, (req, res) => {
   const token = req.headers.authorization?.replace('Bearer ', '');
   delete activeSessions[token];
   
-  console.log(`👋 Logout: ${req.user.username}`);
+  console.log(`Logout: ${req.user.username}`);
   
   res.json({
     success: true,
@@ -319,7 +319,7 @@ app.post('/api/dispositivos', authenticate, (req, res) => {
   
   userDevices[req.user.id].push(newDevice);
   
-  console.log(`➕ Nuevo dispositivo creado por ${req.user.username}: ${name}`);
+  console.log(`Nuevo dispositivo creado por ${req.user.username}: ${name}`);
   
   res.json({
     success: true,
@@ -351,7 +351,7 @@ app.put('/api/dispositivos/:id', authenticate, (req, res) => {
   if (efficiency) devices[deviceIndex].efficiency = efficiency;
   if (controllable !== undefined) devices[deviceIndex].controllable = controllable;
   
-  console.log(`✏️ Dispositivo actualizado por ${req.user.username}: ${devices[deviceIndex].name}`);
+  console.log(`Dispositivo actualizado por ${req.user.username}: ${devices[deviceIndex].name}`);
   
   res.json({
     success: true,
@@ -375,7 +375,7 @@ app.delete('/api/dispositivos/:id', authenticate, (req, res) => {
   
   const deletedDevice = devices.splice(deviceIndex, 1)[0];
   
-  console.log(`🗑️ Dispositivo eliminado por ${req.user.username}: ${deletedDevice.name}`);
+  console.log(`Dispositivo eliminado por ${req.user.username}: ${deletedDevice.name}`);
   
   res.json({
     success: true,
@@ -408,7 +408,7 @@ app.post('/api/dispositivos/:id/toggle', authenticate, (req, res) => {
   const newStatus = action === 'on' ? 'active' : 'inactive';
   device.status = newStatus;
   
-  console.log(`🔄 ${req.user.username} ${newStatus === 'active' ? 'ENCENDIÓ' : 'APAGÓ'} ${device.name}`);
+  console.log(`${req.user.username} ${newStatus === 'active' ? 'ENCENDIÓ' : 'APAGÓ'} ${device.name}`);
   
   res.json({
     success: true,
@@ -486,12 +486,13 @@ app.get('/api/admin/devices', authenticate, requireAdmin, (req, res) => {
 
 // ==================== DASHBOARD PÚBLICO (PARA DEMOSTRACIÓN) ====================
 
-app.get('/api/dashboard', (req, res) => {
-  // Dashboard público con datos agregados (sin autenticación para demostración)
-  const totalActiveDevices = Object.values(userDevices).flat().filter(d => d.status === 'active').length;
-  const totalConsumption = Object.values(userDevices).flat()
-    .filter(d => d.status === 'active')
-    .reduce((sum, device) => sum + (device.power || 0), 0);
+app.get('/api/dashboard', authenticate, (req, res) => {
+  // Dashboard básico con datos del usuario autenticado
+  const userId = req.user.id;
+  const userDevicesArray = userDevices[userId] || [];
+  const activeDevices = userDevicesArray.filter(d => d.status === 'active');
+  const totalActiveDevices = activeDevices.length;
+  const totalConsumption = activeDevices.reduce((sum, device) => sum + (device.power || 0), 0);
   
   res.json({
     success: true,
@@ -1538,19 +1539,19 @@ app.get('/api/iot/dashboard', authenticate, async (req, res) => {
 
 // Iniciar servidor
 app.listen(PORT, () => {
-  console.log('\n🚀 ====================================');
-  console.log('🌟 EnergiApp Backend API v2.0');
-  console.log('🚀 ====================================');
-  console.log(`📡 Servidor: http://localhost:${PORT}`);
-  console.log(`📊 Dashboard: http://localhost:${PORT}/api/dashboard`);
-  console.log(`🔐 Login: POST http://localhost:${PORT}/api/auth/login`);
-  console.log(`👤 Registro: POST http://localhost:${PORT}/api/auth/register`);
-  console.log(`⚙️  Admin: GET http://localhost:${PORT}/api/admin/stats`);
-  console.log(`🛠️  Estado: http://localhost:${PORT}/api/health`);
-  console.log('🚀 ====================================');
-  console.log('👤 Usuarios de prueba:');
+  console.log('\n====================================');
+  console.log('EnergiApp Backend API v2.0');
+  console.log('====================================');
+  console.log(`Servidor: http://localhost:${PORT}`);
+  console.log(`Dashboard: http://localhost:${PORT}/api/dashboard`);
+  console.log(`Login: POST http://localhost:${PORT}/api/auth/login`);
+  console.log(`Registro: POST http://localhost:${PORT}/api/auth/register`);
+  console.log(`Admin: GET http://localhost:${PORT}/api/admin/stats`);
+  console.log(`Estado: http://localhost:${PORT}/api/health`);
+  console.log('====================================');
+  console.log('Usuarios de prueba:');
   console.log('   Admin: admin / admin123');
   console.log('   User1: usuario1 / user123');
   console.log('   User2: usuario2 / user123');
-  console.log('🚀 ====================================\n');
+  console.log('====================================\n');
 });

@@ -4,25 +4,25 @@ let users = [
     id: 1,
     username: 'admin',
     email: 'admin@energiapp.com',
-    password: 'admin123', // En producción esto estaría hasheado
+    password: 'Admin123456', // Cambiado para coincidir con la base de datos SQLite
     role: 'admin',
     created_at: new Date().toISOString(),
     active: true
   },
   {
     id: 2,
-    username: 'usuario1',
-    email: 'usuario1@email.com',
-    password: 'user123',
+    username: 'test',
+    email: 'test@test.com',
+    password: 'Test123456', // Usuario de prueba principal
     role: 'user',
     created_at: new Date().toISOString(),
     active: true
   },
   {
     id: 3,
-    username: 'usuario2',
-    email: 'usuario2@email.com',
-    password: 'user123',
+    username: 'TEST',
+    email: 'TEST@test.com',
+    password: '123456', // Usuario de prueba simple
     role: 'user',
     created_at: new Date().toISOString(),
     active: true
@@ -48,7 +48,7 @@ let userDevices = {
       name: 'Aire Acondicionado LG',
       type: 'air_conditioning',
       location: 'Salón',
-      power: 2200,
+      power: 1800, // Reducido de 2200W a 1800W (más realista)
       status: 'active',
       efficiency: 'A+',
       controllable: true,
