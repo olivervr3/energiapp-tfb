@@ -1,5 +1,5 @@
 const express = require('express');
-const { sequelize } = require('../backend/src/config/database');
+const { sequelize } = require('./backend/src/config/database');
 const router = express.Router();
 
 // Health check con verificación de base de datos
