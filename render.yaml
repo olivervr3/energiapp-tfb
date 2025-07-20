@@ -2,5 +2,7 @@ version: "2"
 build:
   commands:
     - npm install
+    - cd backend && npm install && cd ..
+    - cd frontend && npm install && cd ..
 start:
   command: npm start

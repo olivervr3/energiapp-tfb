@@ -1,84 +1,49 @@
-# 🚀 PASOS PARA HOSTEAR TU TFB EN LA NUBE
+# INSTRUCCIONES FINALES DE DESPLIEGUE
 
-## ⚡ OPCIÓN 1: Railway (RECOMENDADO - MÁS RÁPIDO)
+## ESTADO ACTUAL
+- Repositorio configurado: https://github.com/olivervr3/energiapp-tfb
+- Archivos de Render creados
+- Todo listo para deploy
 
-### Paso 1: Crear repositorio en GitHub
-```bash
-# Ve a github.com y crea un nuevo repositorio llamado "energiapp-tfb"
-# Luego ejecuta:
+## PASOS FINALES
 
-git remote add origin https://github.com/[TU-USUARIO]/energiapp-tfb.git
-git branch -M main
-git push -u origin main
-```
+### 1. Hacer repositorio público
+En la página de settings de GitHub que se abrió:
+- Scroll down hasta "Danger Zone"
+- Click "Change repository visibility"
+- Seleccionar "Make public"
+- Confirmar
 
-### Paso 2: Desplegar en Railway
-1. **Ve a [railway.app](https://railway.app)**
-2. **Regístrate/Login** con tu cuenta de GitHub
-3. **Click en "New Project"**
-4. **Selecciona "Deploy from GitHub repo"**
-5. **Conecta tu repositorio** `energiapp-tfb`
-6. **Railway detectará automáticamente** que es una app Node.js
-7. **Configura variables de entorno:**
-   ```
-   NODE_ENV=production
-   JWT_SECRET=tu_jwt_secret_super_seguro_para_produccion_2024
-   PORT=3001
-   ```
-8. **Deploy automático** - ¡Estará listo en 3-5 minutos!
+### 2. Configurar Render
+En la página de Render que se abrió:
+- Click "Get Started for Free"
+- Login con GitHub
+- Autorizar Render
+- Click "New Web Service"
+- Conectar tu repositorio: olivervr3/energiapp-tfb
+- Configuración:
+  - Build Command: npm install
+  - Start Command: npm start
+  - Variables de entorno:
+    NODE_ENV=production
+    JWT_SECRET=tu_jwt_secret_super_seguro_para_produccion_2024
 
-### Tu URL será algo como:
-**https://energiapp-tfb-production.up.railway.app**
+### 3. Deploy
+- Click "Create Web Service"
+- Render comenzará el build automáticamente
+- En 5-10 minutos tendrás tu URL
 
----
+## RESULTADO
+URL final: https://energiapp-tfb-[random].onrender.com
 
-## 🌐 OPCIÓN 2: Heroku (Alternativa)
+## CREDENCIALES PARA TUTORA
+Usuario: test@test.com / Test123456
+Admin: admin@energiapp.com / Admin123456
 
-### Paso 1: Crear cuenta y CLI
-```bash
-# Instalar Heroku CLI desde: https://devcenter.heroku.com/articles/heroku-cli
-heroku login
-```
-
-### Paso 2: Crear app y deploy
-```bash
-heroku create energiapp-tfb-[tu-nombre]
-heroku config:set NODE_ENV=production
-heroku config:set JWT_SECRET=tu_jwt_secret_super_seguro_para_produccion_2024
-
-git push heroku main
-```
-
-### Tu URL será:
-**https://energiapp-tfb-[tu-nombre].herokuapp.com**
-
----
-
-## ✅ RESULTADO FINAL
-
-### Para tu tutora:
-- **URL Demo**: https://tu-app-hosteada.com
-- **Usuario**: test@test.com / Test123456
-- **Admin**: admin@energiapp.com / Admin123456
-
-### Workflow de desarrollo:
-```bash
-# Hacer cambios en local
+## DESARROLLO CONTINUO
 git add .
-git commit -m "Nueva feature agregada"
+git commit -m "cambios"
 git push origin main
+(Render redespliega automáticamente)
 
-# Railway redesplegará automáticamente en 2-3 minutos
-```
-
----
-
-## 🎯 RAILWAY ES LA MEJOR OPCIÓN PORQUE:
-- ✅ **Despliegue automático** desde GitHub
-- ✅ **Más recursos gratuitos** (500h/mes vs 550h/mes de Heroku)
-- ✅ **Mejor rendimiento**
-- ✅ **SSL automático**
-- ✅ **Domain personalizado gratuito**
-- ✅ **CI/CD integrado**
-
-**Tiempo total de setup: 5-10 minutos** ⚡
+## TIEMPO ESTIMADO: 10 minutos total
