@@ -1,20 +1,45 @@
+console.log('🎯 BACKEND SERVER INICIANDO - Línea 1');
+console.log('📍 CWD inicial:', process.cwd());
+console.log('📍 __dirname inicial:', __dirname);
+
 const express = require('express');
+console.log('✅ Express importado');
+
 const cors = require('cors');
+console.log('✅ CORS importado');
+
 const helmet = require('helmet');
+console.log('✅ Helmet importado');
+
 const { spawn } = require('child_process');
+console.log('✅ Child process importado');
+
 const path = require('path');
+console.log('✅ Path importado');
+
+console.log('🔍 Intentando importar base de datos...');
 
 // Importar base de datos con manejo de errores
 let users, userDevices, deviceTypes, activeSessions;
 try {
+  console.log('📁 Verificando archivo database.js...');
+  const fs = require('fs');
+  const dbPath = path.join(__dirname, 'database.js');
+  console.log('📍 Ruta database.js:', dbPath);
+  console.log('📄 ¿Existe database.js?', fs.existsSync(dbPath));
+  
   const database = require('./database');
+  console.log('✅ Database.js importado correctamente');
+  
   users = database.users;
   userDevices = database.userDevices;
   deviceTypes = database.deviceTypes;
   activeSessions = database.activeSessions;
   console.log('✅ Base de datos importada correctamente');
+  console.log('📊 Usuarios cargados:', users ? users.length : 0);
 } catch (error) {
   console.error('❌ Error al importar base de datos:', error);
+  console.error('❌ Stack trace:', error.stack);
   // Inicializar con valores por defecto si hay error
   users = [];
   userDevices = {};
@@ -24,6 +49,19 @@ try {
 }
 
 require('dotenv').config();
+console.log('✅ Dotenv configurado');
+
+// Verificar dependencias críticas
+console.log('🔍 Verificando dependencias críticas...');
+const criticalDeps = ['jsonwebtoken', 'bcryptjs', 'axios'];
+for (const dep of criticalDeps) {
+  try {
+    require.resolve(dep);
+    console.log(`✅ ${dep} disponible`);
+  } catch (error) {
+    console.error(`❌ ${dep} NO disponible:`, error.message);
+  }
+}
 
 console.log('\n🚀 Iniciando backend EnergiApp...');
 console.log('📋 Variables de entorno:');
@@ -32,11 +70,12 @@ console.log('  PORT:', process.env.PORT);
 console.log('  CWD:', process.cwd());
 console.log('  __dirname:', __dirname);
 
+console.log('🔧 Creando aplicación Express...');
 const app = express();
-const PORT = process.env.PORT || 3001;
+console.log('✅ Aplicación Express creada');
 
-console.log('✅ Express inicializado');
-console.log('🔧 Puerto configurado:', PORT);
+const PORT = process.env.PORT || 3001;
+console.log('✅ Puerto configurado:', PORT);
 
 // IoT Simulator Integration
 let iotSimulator = null;
@@ -182,6 +221,8 @@ app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} ${user} - ${req.method} ${req.path}`);
   next();
 });
+
+console.log('🛣️  Configurando rutas de la API...');
 
 // ==================== RUTAS DE AUTENTICACIÓN ====================
 
@@ -1641,6 +1682,9 @@ if (process.env.NODE_ENV === 'production') {
     });
   }
 }
+
+console.log('🎯 Todas las rutas configuradas correctamente');
+console.log('🚀 Iniciando servidor HTTP...');
 
 // Iniciar servidor
 app.listen(PORT, '0.0.0.0', () => {
