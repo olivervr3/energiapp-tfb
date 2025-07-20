@@ -5,4 +5,4 @@ build:
     - cd backend && npm install && cd ..
     - cd frontend && npm install && cd ..
 start:
-  command: npm start
+  command: node backend/server.js
