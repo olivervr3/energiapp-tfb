@@ -31,6 +31,8 @@
     "node": ">=16.0.0",
     "npm": ">=8.0.0"
   },
+  "buildCommand": "npm install",
+  "startCommand": "npm start",
   "keywords": [
     "energia",
     "iot",
