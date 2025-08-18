@@ -1,6 +1,5 @@
 import React from 'react';
 import { useTheme } from '../contexts/ThemeContext';
-import backgroundImage from '../assets/images/backgrounds/Theme-background.jpg';
 
 const LoginBackground = ({ children }) => {
   const { isDarkMode } = useTheme();
@@ -10,7 +9,7 @@ const LoginBackground = ({ children }) => {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundImage: `url(${backgroundImage})`,
+    backgroundImage: `url(${process.env.PUBLIC_URL}/assets/images/backgrounds/Theme-background.jpg)`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
