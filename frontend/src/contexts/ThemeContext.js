@@ -17,8 +17,8 @@ export const ThemeProvider = ({ children }) => {
     if (saved) {
       return saved === 'dark';
     }
-    // Si no hay preferencia guardada, usar preferencia del sistema
-    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    // Si no hay preferencia guardada, usar modo claro por defecto
+    return false; // false = modo claro por defecto
   });
 
   useEffect(() => {
