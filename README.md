@@ -1,8 +1,11 @@
 # EnergiApp - Plataforma Inteligente de Gestión Energética
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)]()
+🚀 **PRODUCCIÓN ACTIVA** - https://energiapp-tfb.onrender.com
+
+[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)]()
 [![React](https://img.shields.io/badge/React-18.2.0-61dafb.svg)](https://reactjs.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-18.0+-green.svg)](https://nodejs.org/)
+[![Status](https://img.shields.io/badge/status-PRODUCTION-success.svg)](https://energiapp-tfb.onrender.com)
 [![Python](https://img.shields.io/badge/Python-3.8+-yellow.svg)](https://python.org/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
