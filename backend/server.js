@@ -19,33 +19,24 @@ console.log('✅ Path importado');
 
 console.log('🔍 Intentando importar base de datos...');
 
-// Importar base de datos con manejo de errores
-let users, userDevices, deviceTypes, activeSessions;
+// Importar base de datos SQLite persistente
+let dbAPI;
 try {
-  console.log('📁 Verificando archivo database.js...');
+  console.log('📁 Verificando archivo database_sqlite.js...');
   const fs = require('fs');
-  const dbPath = path.join(__dirname, 'database.js');
-  console.log('📍 Ruta database.js:', dbPath);
-  console.log('📄 ¿Existe database.js?', fs.existsSync(dbPath));
+  const dbPath = path.join(__dirname, 'database_sqlite.js');
+  console.log('📍 Ruta database_sqlite.js:', dbPath);
+  console.log('📄 ¿Existe database_sqlite.js?', fs.existsSync(dbPath));
   
-  const database = require('./database');
-  console.log('✅ Database.js importado correctamente');
+  const database = require('./database_sqlite');
+  console.log('✅ Database_sqlite.js importado correctamente');
   
-  users = database.users;
-  userDevices = database.userDevices;
-  deviceTypes = database.deviceTypes;
-  activeSessions = database.activeSessions;
-  console.log('✅ Base de datos importada correctamente');
-  console.log('📊 Usuarios cargados:', users ? users.length : 0);
+  dbAPI = database.dbAPI;
+  console.log('✅ Base de datos SQLite configurada correctamente');
 } catch (error) {
-  console.error('❌ Error al importar base de datos:', error);
+  console.error('❌ Error al importar base de datos SQLite:', error);
   console.error('❌ Stack trace:', error.stack);
-  // Inicializar con valores por defecto si hay error
-  users = [];
-  userDevices = {};
-  deviceTypes = [];
-  activeSessions = {};
-  console.log('⚠️  Usando base de datos vacía como fallback');
+  process.exit(1);
 }
 
 require('dotenv').config();
@@ -76,6 +67,20 @@ console.log('✅ Aplicación Express creada');
 
 const PORT = process.env.PORT || 3001;
 console.log('✅ Puerto configurado:', PORT);
+
+// Variables globales para el servidor
+const activeSessions = {}; // Para almacenar sesiones activas
+
+// Tipos de dispositivos
+const deviceTypes = [
+  { id: 'refrigerator', name: 'Refrigerador', icon: '🧊', typical_power: '100-200W' },
+  { id: 'air_conditioning', name: 'Aire Acondicionado', icon: '❄️', typical_power: '1500-3000W' },
+  { id: 'lighting', name: 'Iluminación', icon: '💡', typical_power: '10-100W' },
+  { id: 'entertainment', name: 'Entretenimiento', icon: '📺', typical_power: '50-300W' },
+  { id: 'kitchen', name: 'Electrodomésticos Cocina', icon: '🍳', typical_power: '500-2000W' },
+  { id: 'heating', name: 'Calefacción', icon: '🔥', typical_power: '1000-3000W' },
+  { id: 'washing', name: 'Lavado', icon: '👕', typical_power: '500-2500W' }
+];
 
 // IoT Simulator Integration
 let iotSimulator = null;
@@ -266,39 +271,47 @@ app.get('/', (req, res) => {
 });
 
 // Login
-app.post('/api/auth/login', (req, res) => {
+app.post('/api/auth/login', async (req, res) => {
   const { username, password } = req.body;
   
-  const user = users.find(u => u.username === username && u.password === password && u.active);
-  
-  if (!user) {
-    return res.status(401).json({
+  try {
+    const user = await dbAPI.getUserByUsername(username);
+    
+    if (!user || !(await dbAPI.verifyPassword(password, user.password)) || !user.active) {
+      return res.status(401).json({
+        success: false,
+        message: 'Credenciales inválidas'
+      });
+    }
+    
+    // Generar token simple (en producción sería JWT real)
+    const token = `token_${user.id}_${Date.now()}`;
+    activeSessions[token] = user;
+    
+    console.log(`Login exitoso: ${user.username} (${user.role})`);
+    
+    res.json({
+      success: true,
+      message: 'Login exitoso',
+      token: token,
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role
+      }
+    });
+  } catch (error) {
+    console.error('Error en login:', error);
+    res.status(500).json({
       success: false,
-      message: 'Credenciales inválidas'
+      message: 'Error interno del servidor'
     });
   }
-  
-  // Generar token simple (en producción sería JWT real)
-  const token = `token_${user.id}_${Date.now()}`;
-  activeSessions[token] = user;
-  
-  console.log(`Login exitoso: ${user.username} (${user.role})`);
-  
-  res.json({
-    success: true,
-    message: 'Login exitoso',
-    token: token,
-    user: {
-      id: user.id,
-      username: user.username,
-      email: user.email,
-      role: user.role
-    }
-  });
 });
 
 // Registro
-app.post('/api/auth/register', (req, res) => {
+app.post('/api/auth/register', async (req, res) => {
   const { username, email, password } = req.body;
   
   // Validaciones básicas
@@ -309,62 +322,76 @@ app.post('/api/auth/register', (req, res) => {
     });
   }
   
-  // Verificar si el usuario ya existe
-  if (users.find(u => u.username === username || u.email === email)) {
-    return res.status(409).json({
+  try {
+    // Verificar si el usuario ya existe
+    const existingUser = await dbAPI.getUserByUsername(username);
+    const existingEmail = await dbAPI.getUserByEmail(email);
+    
+    if (existingUser || existingEmail) {
+      return res.status(409).json({
+        success: false,
+        message: 'El usuario o email ya existe'
+      });
+    }
+    
+    // Crear nuevo usuario
+    const newUser = await dbAPI.createUser({
+      username,
+      email,
+      password,
+      role: 'user',
+      active: 1
+    });
+    
+    console.log(`Nuevo usuario registrado: ${username}`);
+    
+    res.json({
+      success: true,
+      message: 'Usuario registrado exitosamente',
+      user: {
+        id: newUser.id,
+        username: newUser.username,
+        email: newUser.email,
+        role: newUser.role
+      }
+    });
+  } catch (error) {
+    console.error('Error en registro:', error);
+    res.status(500).json({
       success: false,
-      message: 'El usuario o email ya existe'
+      message: 'Error interno del servidor'
     });
   }
-  
-  // Crear nuevo usuario
-  const newUser = {
-    id: users.length + 1,
-    username,
-    email,
-    password, // En producción esto estaría hasheado
-    role: 'user',
-    created_at: new Date().toISOString(),
-    active: true
-  };
-  
-  users.push(newUser);
-  userDevices[newUser.id] = []; // Inicializar array de dispositivos vacío
-  
-  console.log(`Nuevo usuario registrado: ${username}`);
-  
-  res.json({
-    success: true,
-    message: 'Usuario registrado exitosamente',
-    user: {
-      id: newUser.id,
-      username: newUser.username,
-      email: newUser.email,
-      role: newUser.role
-    }
-  });
 });
 
 // Perfil del usuario actual
-app.get('/api/auth/profile', authenticate, (req, res) => {
-  const userDeviceCount = userDevices[req.user.id]?.length || 0;
-  const activeDevices = userDevices[req.user.id]?.filter(d => d.status === 'active').length || 0;
-  
-  res.json({
-    success: true,
-    user: {
-      id: req.user.id,
-      username: req.user.username,
-      email: req.user.email,
-      role: req.user.role,
-      created_at: req.user.created_at,
-      stats: {
-        total_devices: userDeviceCount,
-        active_devices: activeDevices,
-        registered_days: Math.floor((new Date() - new Date(req.user.created_at)) / (1000 * 60 * 60 * 24))
+app.get('/api/auth/profile', authenticate, async (req, res) => {
+  try {
+    const userDevices = await dbAPI.getUserDevices(req.user.id);
+    const activeDevices = userDevices.filter(d => d.status === 'active').length;
+    
+    res.json({
+      success: true,
+      user: {
+        id: req.user.id,
+        username: req.user.username,
+        email: req.user.email,
+        role: req.user.role,
+        created_at: req.user.created_at,
+        stats: {
+          total_devices: userDevices.length,
+          active_devices: activeDevices,
+          registered_days: Math.floor((new Date() - new Date(req.user.created_at)) / (1000 * 60 * 60 * 24))
+        }
       }
-    }
-  });
+    });
+  } catch (error) {
+    console.error('Error obteniendo perfil:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor'
+    });
+  }
 });
 
 // Logout
@@ -383,28 +410,36 @@ app.post('/api/auth/logout', authenticate, (req, res) => {
 // ==================== RUTAS DE DISPOSITIVOS POR USUARIO ====================
 
 // Listar dispositivos del usuario actual
-app.get('/api/dispositivos', authenticate, (req, res) => {
-  const devices = userDevices[req.user.id] || [];
-  
-  // Simular datos de consumo en tiempo real
-  const devicesWithConsumption = devices.map(device => ({
-    ...device,
-    current_consumption: device.status === 'active' ? device.power + Math.random() * 50 : 0,
-    daily_consumption: device.status === 'active' ? 
-      ((device.power / 1000) * (16 + Math.random() * 8)).toFixed(2) : '0.00',
-    last_reading: new Date().toISOString()
-  }));
-  
-  res.json({
-    success: true,
-    devices: devicesWithConsumption,
-    total: devicesWithConsumption.length,
-    device_types: deviceTypes
-  });
+app.get('/api/dispositivos', authenticate, async (req, res) => {
+  try {
+    const devices = await dbAPI.getUserDevices(req.user.id);
+    
+    // Simular datos de consumo en tiempo real
+    const devicesWithConsumption = devices.map(device => ({
+      ...device,
+      current_consumption: device.status === 'active' ? device.power + Math.random() * 50 : 0,
+      daily_consumption: device.status === 'active' ? 
+        ((device.power / 1000) * (16 + Math.random() * 8)).toFixed(2) : '0.00',
+      last_reading: new Date().toISOString()
+    }));
+    
+    res.json({
+      success: true,
+      devices: devicesWithConsumption,
+      total: devicesWithConsumption.length,
+      device_types: deviceTypes
+    });
+  } catch (error) {
+    console.error('Error obteniendo dispositivos:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor'
+    });
+  }
 });
 
 // Crear nuevo dispositivo
-app.post('/api/dispositivos', authenticate, (req, res) => {
+app.post('/api/dispositivos', authenticate, async (req, res) => {
   const { name, type, location, power, efficiency, controllable } = req.body;
   
   if (!name || !type || !location || !power) {
@@ -414,222 +449,287 @@ app.post('/api/dispositivos', authenticate, (req, res) => {
     });
   }
   
-  if (!userDevices[req.user.id]) {
-    userDevices[req.user.id] = [];
+  try {
+    const newDevice = await dbAPI.createDevice({
+      name,
+      type,
+      location,
+      power: parseInt(power),
+      status: 'active',
+      efficiency: efficiency || 'A',
+      controllable: controllable !== false ? 1 : 0,
+      user_id: req.user.id
+    });
+    
+    console.log(`Nuevo dispositivo creado por ${req.user.username}: ${name}`);
+    
+    res.json({
+      success: true,
+      message: 'Dispositivo creado exitosamente',
+      device: newDevice
+    });
+  } catch (error) {
+    console.error('Error creando dispositivo:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor'
+    });
   }
-  
-  const newDevice = {
-    id: Date.now(), // ID único simple
-    name,
-    type,
-    location,
-    power: parseInt(power),
-    status: 'active',
-    efficiency: efficiency || 'A',
-    controllable: controllable !== false,
-    created_at: new Date().toISOString(),
-    user_id: req.user.id
-  };
-  
-  userDevices[req.user.id].push(newDevice);
-  
-  console.log(`Nuevo dispositivo creado por ${req.user.username}: ${name}`);
-  
-  res.json({
-    success: true,
-    message: 'Dispositivo creado exitosamente',
-    device: newDevice
-  });
 });
 
 // Actualizar dispositivo
-app.put('/api/dispositivos/:id', authenticate, (req, res) => {
+app.put('/api/dispositivos/:id', authenticate, async (req, res) => {
   const deviceId = parseInt(req.params.id);
-  const devices = userDevices[req.user.id] || [];
-  const deviceIndex = devices.findIndex(d => d.id === deviceId);
   
-  if (deviceIndex === -1) {
-    return res.status(404).json({
+  try {
+    const device = await dbAPI.getDeviceById(deviceId);
+    
+    if (!device || device.user_id !== req.user.id) {
+      return res.status(404).json({
+        success: false,
+        message: 'Dispositivo no encontrado'
+      });
+    }
+    
+    const { name, type, location, power, efficiency, controllable } = req.body;
+    
+    const updatedDevice = await dbAPI.updateDevice(deviceId, {
+      name: name || device.name,
+      type: type || device.type,
+      location: location || device.location,
+      power: power ? parseInt(power) : device.power,
+      efficiency: efficiency || device.efficiency,
+      controllable: controllable !== undefined ? (controllable ? 1 : 0) : device.controllable
+    });
+    
+    console.log(`Dispositivo actualizado por ${req.user.username}: ${updatedDevice.name}`);
+    
+    res.json({
+      success: true,
+      message: 'Dispositivo actualizado exitosamente',
+      device: updatedDevice
+    });
+  } catch (error) {
+    console.error('Error actualizando dispositivo:', error);
+    res.status(500).json({
       success: false,
-      message: 'Dispositivo no encontrado'
+      message: 'Error interno del servidor'
     });
   }
-  
-  const { name, type, location, power, efficiency, controllable } = req.body;
-  
-  // Actualizar campos proporcionados
-  if (name) devices[deviceIndex].name = name;
-  if (type) devices[deviceIndex].type = type;
-  if (location) devices[deviceIndex].location = location;
-  if (power) devices[deviceIndex].power = parseInt(power);
-  if (efficiency) devices[deviceIndex].efficiency = efficiency;
-  if (controllable !== undefined) devices[deviceIndex].controllable = controllable;
-  
-  console.log(`Dispositivo actualizado por ${req.user.username}: ${devices[deviceIndex].name}`);
-  
-  res.json({
-    success: true,
-    message: 'Dispositivo actualizado exitosamente',
-    device: devices[deviceIndex]
-  });
 });
 
 // Eliminar dispositivo
-app.delete('/api/dispositivos/:id', authenticate, (req, res) => {
+app.delete('/api/dispositivos/:id', authenticate, async (req, res) => {
   const deviceId = parseInt(req.params.id);
-  const devices = userDevices[req.user.id] || [];
-  const deviceIndex = devices.findIndex(d => d.id === deviceId);
   
-  if (deviceIndex === -1) {
-    return res.status(404).json({
+  try {
+    const device = await dbAPI.getDeviceById(deviceId);
+    
+    if (!device || device.user_id !== req.user.id) {
+      return res.status(404).json({
+        success: false,
+        message: 'Dispositivo no encontrado'
+      });
+    }
+    
+    await dbAPI.deleteDevice(deviceId);
+    
+    console.log(`Dispositivo eliminado por ${req.user.username}: ${device.name}`);
+    
+    res.json({
+      success: true,
+      message: 'Dispositivo eliminado exitosamente',
+      device: device
+    });
+  } catch (error) {
+    console.error('Error eliminando dispositivo:', error);
+    res.status(500).json({
       success: false,
-      message: 'Dispositivo no encontrado'
+      message: 'Error interno del servidor'
     });
   }
-  
-  const deletedDevice = devices.splice(deviceIndex, 1)[0];
-  
-  console.log(`Dispositivo eliminado por ${req.user.username}: ${deletedDevice.name}`);
-  
-  res.json({
-    success: true,
-    message: 'Dispositivo eliminado exitosamente',
-    device: deletedDevice
-  });
 });
 
 // Controlar dispositivo (encender/apagar)
-app.post('/api/dispositivos/:id/toggle', authenticate, (req, res) => {
+app.post('/api/dispositivos/:id/toggle', authenticate, async (req, res) => {
   const deviceId = parseInt(req.params.id);
   const { action } = req.body;
-  const devices = userDevices[req.user.id] || [];
-  const device = devices.find(d => d.id === deviceId);
   
-  if (!device) {
-    return res.status(404).json({
+  try {
+    const device = await dbAPI.getDeviceById(deviceId);
+    
+    if (!device || device.user_id !== req.user.id) {
+      return res.status(404).json({
+        success: false,
+        message: 'Dispositivo no encontrado'
+      });
+    }
+    
+    if (!device.controllable) {
+      return res.status(400).json({
+        success: false,
+        message: 'Este dispositivo no se puede controlar remotamente'
+      });
+    }
+    
+    const newStatus = action === 'on' ? 'active' : 'inactive';
+    const updatedDevice = await dbAPI.updateDevice(deviceId, { status: newStatus });
+    
+    console.log(`${req.user.username} ${newStatus === 'active' ? 'ENCENDIÓ' : 'APAGÓ'} ${device.name}`);
+    
+    res.json({
+      success: true,
+      message: `Dispositivo ${newStatus === 'active' ? 'encendido' : 'apagado'} correctamente`,
+      device: updatedDevice
+    });
+  } catch (error) {
+    console.error('Error controlando dispositivo:', error);
+    res.status(500).json({
       success: false,
-      message: 'Dispositivo no encontrado'
+      message: 'Error interno del servidor'
     });
   }
-  
-  if (!device.controllable) {
-    return res.status(400).json({
-      success: false,
-      message: 'Este dispositivo no se puede controlar remotamente'
-    });
-  }
-  
-  const newStatus = action === 'on' ? 'active' : 'inactive';
-  device.status = newStatus;
-  
-  console.log(`${req.user.username} ${newStatus === 'active' ? 'ENCENDIÓ' : 'APAGÓ'} ${device.name}`);
-  
-  res.json({
-    success: true,
-    message: `Dispositivo ${newStatus === 'active' ? 'encendido' : 'apagado'} correctamente`,
-    device: device
-  });
 });
 
 // ==================== RUTAS DE ADMINISTRACIÓN ====================
 
 // Dashboard del administrador
-app.get('/api/admin/stats', authenticate, requireAdmin, (req, res) => {
-  const totalUsers = users.filter(u => u.active).length;
-  const totalDevices = Object.values(userDevices).flat().length;
-  const activeDevices = Object.values(userDevices).flat().filter(d => d.status === 'active').length;
-  const totalConsumption = Object.values(userDevices).flat()
-    .filter(d => d.status === 'active')
-    .reduce((sum, device) => sum + device.power, 0);
-  
-  res.json({
-    success: true,
-    stats: {
-      total_users: totalUsers,
-      total_devices: totalDevices,
-      active_devices: activeDevices,
-      total_consumption_watts: totalConsumption,
-      total_consumption_kwh: (totalConsumption / 1000).toFixed(2),
-      device_types_usage: deviceTypes.map(type => ({
-        type: type.name,
-        count: Object.values(userDevices).flat().filter(d => d.type === type.id).length
-      }))
-    }
-  });
+app.get('/api/admin/stats', authenticate, requireAdmin, async (req, res) => {
+  try {
+    const allUsers = await dbAPI.getAllUsers();
+    const totalUsers = allUsers.filter(u => u.active).length;
+    
+    const allDevices = await dbAPI.getAllDevices();
+    const totalDevices = allDevices.length;
+    const activeDevices = allDevices.filter(d => d.status === 'active').length;
+    const totalConsumption = allDevices
+      .filter(d => d.status === 'active')
+      .reduce((sum, device) => sum + device.power, 0);
+    
+    res.json({
+      success: true,
+      stats: {
+        total_users: totalUsers,
+        total_devices: totalDevices,
+        active_devices: activeDevices,
+        total_consumption_watts: totalConsumption,
+        total_consumption_kwh: (totalConsumption / 1000).toFixed(2),
+        device_types_usage: deviceTypes.map(type => ({
+          type: type.name,
+          count: allDevices.filter(d => d.type === type.id).length
+        }))
+      }
+    });
+  } catch (error) {
+    console.error('Error obteniendo estadísticas admin:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor'
+    });
+  }
 });
 
 // Gestión de usuarios (solo admin)
-app.get('/api/admin/users', authenticate, requireAdmin, (req, res) => {
-  const usersWithStats = users.map(user => ({
-    id: user.id,
-    username: user.username,
-    email: user.email,
-    role: user.role,
-    created_at: user.created_at,
-    active: user.active,
-    device_count: userDevices[user.id]?.length || 0,
-    active_devices: userDevices[user.id]?.filter(d => d.status === 'active').length || 0
-  }));
-  
-  res.json({
-    success: true,
-    users: usersWithStats
-  });
+app.get('/api/admin/users', authenticate, requireAdmin, async (req, res) => {
+  try {
+    const allUsers = await dbAPI.getAllUsers();
+    
+    const usersWithStats = await Promise.all(allUsers.map(async (user) => {
+      const userDevices = await dbAPI.getUserDevices(user.id);
+      return {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        created_at: user.created_at,
+        active: user.active,
+        device_count: userDevices.length,
+        active_devices: userDevices.filter(d => d.status === 'active').length
+      };
+    }));
+    
+    res.json({
+      success: true,
+      users: usersWithStats,
+      total: usersWithStats.length
+    });
+  } catch (error) {
+    console.error('Error obteniendo usuarios admin:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor'
+    });
+  }
 });
 
 // Todos los dispositivos (solo admin)
-app.get('/api/admin/devices', authenticate, requireAdmin, (req, res) => {
-  const allDevices = [];
-  
-  Object.entries(userDevices).forEach(([userId, devices]) => {
-    const user = users.find(u => u.id === parseInt(userId));
-    devices.forEach(device => {
-      allDevices.push({
+app.get('/api/admin/devices', authenticate, requireAdmin, async (req, res) => {
+  try {
+    const allDevices = await dbAPI.getAllDevices();
+    const allUsers = await dbAPI.getAllUsers();
+    
+    const devicesWithOwner = allDevices.map(device => {
+      const user = allUsers.find(u => u.id === device.user_id);
+      return {
         ...device,
         owner: user ? user.username : 'Usuario eliminado'
-      });
+      };
     });
-  });
-  
-  res.json({
-    success: true,
-    devices: allDevices,
-    total: allDevices.length
-  });
+    
+    res.json({
+      success: true,
+      devices: devicesWithOwner,
+      total: devicesWithOwner.length
+    });
+  } catch (error) {
+    console.error('Error obteniendo dispositivos admin:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor'
+    });
+  }
 });
 
 // ==================== DASHBOARD PÚBLICO (PARA DEMOSTRACIÓN) ====================
 
-app.get('/api/dashboard', authenticate, (req, res) => {
-  // Dashboard básico con datos del usuario autenticado
-  const userId = req.user.id;
-  const userDevicesArray = userDevices[userId] || [];
-  const activeDevices = userDevicesArray.filter(d => d.status === 'active');
-  const totalActiveDevices = activeDevices.length;
-  const totalConsumption = activeDevices.reduce((sum, device) => sum + (device.power || 0), 0);
-  
-  res.json({
-    success: true,
-    timestamp: new Date().toISOString(),
-    current: {
-      consumption: (totalConsumption / 1000).toFixed(2),
-      cost_per_hour: ((totalConsumption / 1000) * 0.15).toFixed(3),
-      status: totalConsumption > 3000 ? 'high' : totalConsumption > 1500 ? 'normal' : 'low',
-      active_devices: totalActiveDevices
-    },
-    today: {
-      consumption: ((totalConsumption / 1000) * (18 + Math.random() * 6)).toFixed(2),
-      cost: ((totalConsumption / 1000) * (18 + Math.random() * 6) * 0.15).toFixed(2),
-      vs_yesterday: `${(Math.random() * 20 - 10).toFixed(1)}%`
-    },
-    recommendations: [
-      {
-        id: 1,
-        message: `Tienes ${totalActiveDevices} dispositivos activos. Considera apagar los que no uses.`,
-        potential_saving: `€${((totalConsumption / 1000) * 0.15 * 0.2).toFixed(2)}/día`
-      }
-    ]
-  });
+app.get('/api/dashboard', authenticate, async (req, res) => {
+  try {
+    // Dashboard básico con datos del usuario autenticado
+    const userId = req.user.id;
+    const userDevicesArray = await dbAPI.getUserDevices(userId);
+    const activeDevices = userDevicesArray.filter(d => d.status === 'active');
+    const totalActiveDevices = activeDevices.length;
+    const totalConsumption = activeDevices.reduce((sum, device) => sum + (device.power || 0), 0);
+    
+    res.json({
+      success: true,
+      timestamp: new Date().toISOString(),
+      current: {
+        consumption: (totalConsumption / 1000).toFixed(2),
+        cost_per_hour: ((totalConsumption / 1000) * 0.15).toFixed(3),
+        status: totalConsumption > 3000 ? 'high' : totalConsumption > 1500 ? 'normal' : 'low',
+        active_devices: totalActiveDevices
+      },
+      today: {
+        consumption: ((totalConsumption / 1000) * (18 + Math.random() * 6)).toFixed(2),
+        cost: ((totalConsumption / 1000) * (18 + Math.random() * 6) * 0.15).toFixed(2),
+        vs_yesterday: `${(Math.random() * 20 - 10).toFixed(1)}%`
+      },
+      recommendations: [
+        {
+          id: 1,
+          message: `Tienes ${totalActiveDevices} dispositivos activos. Considera apagar los que no uses.`,
+          potential_saving: `€${((totalConsumption / 1000) * 0.15 * 0.2).toFixed(2)}/día`
+        }
+      ]
+    });
+  } catch (error) {
+    console.error('Error obteniendo dashboard:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor'
+    });
+  }
 });
 
 // ==================== RUTAS DE ADMINISTRACIÓN AVANZADAS ====================
@@ -1092,15 +1192,25 @@ app.get('/api/admin/energy-reports', authenticate, requireAdmin, (req, res) => {
   });
 });
 
-app.get('/api/health', (req, res) => {
-  res.json({
-    status: 'OK',
-    timestamp: new Date().toISOString(),
-    version: '2.0.0',
-    active_sessions: Object.keys(activeSessions).length,
-    total_users: users.filter(u => u.active).length,
-    total_devices: Object.values(userDevices).flat().length
-  });
+app.get('/api/health', async (req, res) => {
+  try {
+    const stats = await dbAPI.getAdminStats();
+    res.json({
+      status: 'OK',
+      timestamp: new Date().toISOString(),
+      version: '2.0.0',
+      active_sessions: Object.keys(activeSessions).length,
+      total_users: stats.total_users,
+      total_devices: stats.total_devices,
+      active_devices: stats.active_devices
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'ERROR',
+      timestamp: new Date().toISOString(),
+      error: 'Database connection failed'
+    });
+  }
 });
 
 // ==================== RUTAS DE MACHINE LEARNING ====================
