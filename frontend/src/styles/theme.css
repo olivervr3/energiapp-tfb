@@ -65,7 +65,7 @@ body {
 /* ===== THEME TOGGLE BUTTON MEJORADO ===== */
 .theme-toggle {
   position: fixed;
-  top: 20px;
+  top: 80px; /* Movido más abajo para no solaparse con el header */
   right: 20px;
   background: var(--bg-card);
   border: 2px solid var(--border-color);
@@ -77,7 +77,7 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 1000;
+  z-index: 1500; /* Z-index más alto para estar por encima del header */
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: var(--shadow-lg);
   backdrop-filter: blur(12px);
@@ -371,10 +371,99 @@ tr:hover {
   box-shadow: var(--shadow);
 }
 
+/* ===== NAVEGACIÓN Y HEADER MEJORADOS ===== */
+.header {
+  background: var(--color-primary) !important;
+  color: white !important;
+  box-shadow: var(--shadow-lg);
+}
+
+.nav-tabs {
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.nav-tab {
+  color: var(--text-secondary) !important;
+  background: transparent !important;
+  border-color: transparent !important;
+}
+
+.nav-tab:hover {
+  color: var(--color-primary) !important;
+  background: var(--bg-surface) !important;
+}
+
+.nav-tab.active {
+  color: var(--color-primary) !important;
+  border-bottom-color: var(--color-primary) !important;
+  background: var(--bg-surface) !important;
+}
+
+/* ===== MEJORAS PARA BADGES Y ELEMENTOS ESPECÍFICOS ===== */
+.ml-badge, .status-badge, .device-count-badge {
+  background: var(--color-primary) !important;
+  color: white !important;
+}
+
+.status-badge.active {
+  background: var(--color-success) !important;
+  color: white !important;
+}
+
+.status-badge.loading {
+  background: var(--text-muted) !important;
+  color: var(--bg-card) !important;
+}
+
+.user-menu, .user-info {
+  color: white !important;
+}
+
+/* ===== CONTENIDO PRINCIPAL ===== */
+main, .main-content {
+  background: var(--bg-body);
+  color: var(--text-primary);
+  min-height: calc(100vh - 140px);
+}
+
+/* ===== TARJETAS Y COMPONENTES ===== */
+.stat-card, .device-card, .prediction-card, .analysis-card, .recommendation-card-main {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+.stat-card h3, .device-card h3, .prediction-card h3 {
+  color: var(--text-secondary) !important;
+}
+
+.stat-card .value {
+  color: var(--color-primary) !important;
+  font-weight: 700;
+}
+
+/* ===== ELEMENTOS DE TEXTO ESPECÍFICOS ===== */
+.page-title, .section-title {
+  color: var(--text-primary) !important;
+}
+
+.text-muted, .muted {
+  color: var(--text-muted) !important;
+}
+
+.text-primary {
+  color: var(--color-primary) !important;
+}
+
+.text-secondary {
+  color: var(--text-secondary) !important;
+}
+
 /* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 768px) {
   .theme-toggle {
-    top: 10px;
+    top: 70px; /* Ajustado para móviles también */
     right: 10px;
     width: 40px;
     height: 40px;
