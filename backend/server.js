@@ -19,22 +19,32 @@ console.log('✅ Path importado');
 
 console.log('🔍 Intentando importar base de datos...');
 
-// Importar base de datos SQLite persistente
+// Detectar entorno y usar base de datos apropiada
+const isProduction = process.env.NODE_ENV === 'production' || process.env.RENDER;
+console.log(`🔧 Entorno detectado: ${isProduction ? 'PRODUCCIÓN (Render)' : 'DESARROLLO (Local)'}`);
+
 let dbAPI;
 try {
-  console.log('📁 Verificando archivo database_sqlite.js...');
-  const fs = require('fs');
-  const dbPath = path.join(__dirname, 'database_sqlite.js');
-  console.log('📍 Ruta database_sqlite.js:', dbPath);
-  console.log('📄 ¿Existe database_sqlite.js?', fs.existsSync(dbPath));
-  
-  const database = require('./database_sqlite');
-  console.log('✅ Database_sqlite.js importado correctamente');
-  
-  dbAPI = database.dbAPI;
-  console.log('✅ Base de datos SQLite configurada correctamente');
+  if (isProduction) {
+    console.log('📁 Cargando base de datos de producción (en memoria)...');
+    const database = require('./database_production');
+    dbAPI = database.dbAPI;
+    console.log('✅ Base de datos de producción configurada correctamente');
+  } else {
+    console.log('📁 Verificando archivo database_sqlite.js...');
+    const fs = require('fs');
+    const dbPath = path.join(__dirname, 'database_sqlite.js');
+    console.log('📍 Ruta database_sqlite.js:', dbPath);
+    console.log('📄 ¿Existe database_sqlite.js?', fs.existsSync(dbPath));
+    
+    const database = require('./database_sqlite');
+    console.log('✅ Database_sqlite.js importado correctamente');
+    
+    dbAPI = database.dbAPI;
+    console.log('✅ Base de datos SQLite configurada correctamente');
+  }
 } catch (error) {
-  console.error('❌ Error al importar base de datos SQLite:', error);
+  console.error('❌ Error al importar base de datos:', error);
   console.error('❌ Stack trace:', error.stack);
   process.exit(1);
 }
