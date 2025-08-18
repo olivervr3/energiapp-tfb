@@ -225,19 +225,19 @@ const HousePlan = ({ devices = [] }) => {
           <line 
             x1="8" y1="34" x2="15" y2="34" 
             stroke="url(#electricFlow)" 
-            strokeWidth="2"
+            strokeWidth="1"
             className="main-cable"
           />
           <line 
             x1="15" y1="34" x2="15" y2="25" 
             stroke="url(#electricFlow)" 
-            strokeWidth="2"
+            strokeWidth="1"
             className="main-cable"
           />
           <line 
             x1="15" y1="25" x2="95" y2="25" 
             stroke="url(#electricFlow)" 
-            strokeWidth="2"
+            strokeWidth="1"
             className="main-cable"
           />
 
@@ -263,8 +263,8 @@ const HousePlan = ({ devices = [] }) => {
                       x2={position.x}
                       y2={position.y}
                       stroke="url(#electricFlow)"
-                      strokeWidth="1"
-                      opacity="0.6"
+                      strokeWidth="0.5"
+                      opacity="0.7"
                       className="device-cable"
                     />
                   )}
@@ -414,7 +414,7 @@ const HousePlan = ({ devices = [] }) => {
             <div>
               <span className="stat-label">Costo/Hora</span>
               <span className="stat-value">
-                €{(devices.filter(d => d.status === 'active').reduce((sum, d) => sum + d.power, 0) * 0.00015).toFixed(3)}
+                €{(devices.filter(d => d.status === 'active').reduce((sum, d) => sum + d.power, 0) * 0.15 / 1000).toFixed(3)}
               </span>
             </div>
           </div>

@@ -1038,6 +1038,9 @@ Con subvenciones: ROI 5-6 años`;
         fetchDevices();
         // Actualizar dashboard después de añadir dispositivo
         fetchDashboardData();
+        // Actualizar predicciones ML con los nuevos dispositivos
+        fetchMLPredictions(24);
+        fetchMLRecommendations();
       } catch (error) {
         alert('Error al añadir dispositivo');
       }
