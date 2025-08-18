@@ -5,6 +5,7 @@ import './styles/theme.css';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import ThemeToggle from './components/ThemeToggle';
 import LoginBackground from './components/LoginBackground';
+import HousePlan from './components/HousePlan';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -3051,6 +3052,13 @@ Con subvenciones: ROI 5-6 años`;
                 <span>Análisis</span>
               </button>
               <button 
+                className={`nav-tab ${activeTab === 'housePlan' ? 'active' : ''}`}
+                onClick={() => handleTabChange('housePlan')}
+              >
+                <FaHome />
+                <span>Plano Casa</span>
+              </button>
+              <button 
                 className={`nav-tab ${activeTab === 'recommendations' ? 'active' : ''}`}
                 onClick={() => handleTabChange('recommendations')}
               >
@@ -3097,6 +3105,7 @@ Con subvenciones: ROI 5-6 años`;
             {activeTab === 'add-device' && renderAddDevice()}
             {activeTab === 'predictions' && renderPredictions()}
             {activeTab === 'analysis' && renderAnalysis()}
+            {activeTab === 'housePlan' && <HousePlan devices={data.devices || []} />}
             {activeTab === 'recommendations' && renderRecommendations()}
             {activeTab === 'admin' && renderAdminPanel()}
             {activeTab === 'users' && renderUserManagement()}

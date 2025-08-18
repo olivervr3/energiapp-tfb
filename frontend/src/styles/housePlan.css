@@ -1,0 +1,403 @@
+/* ===== HOUSE PLAN STYLES ===== */
+.house-plan-container {
+  padding: 2rem;
+  min-height: 100vh;
+  background: var(--bg-body);
+  color: var(--text-primary);
+}
+
+.house-plan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.house-plan-header h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-primary);
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.header-icon {
+  color: var(--color-primary);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* ===== LEYENDA ===== */
+.legend {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.legend-color.low { background: #10b981; }
+.legend-color.medium { background: #f59e0b; }
+.legend-color.high { background: #ef4444; }
+.legend-color.very-high { background: #dc2626; }
+
+/* ===== CONTENEDOR DEL PLANO ===== */
+.house-plan-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 2rem;
+  align-items: start;
+}
+
+.house-plan-svg {
+  width: 100%;
+  height: auto;
+  background: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  padding: 1rem;
+  transition: all 0.3s ease;
+}
+
+.house-plan-svg:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* ===== ELEMENTOS DEL SVG ===== */
+.room-area {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.room-area:hover {
+  fill-opacity: 0.7;
+  stroke-width: 2;
+}
+
+.room-label {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.electrical-panel {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.electrical-panel:hover {
+  transform: scale(1.1);
+}
+
+.main-cable {
+  stroke-dasharray: 4 2;
+  animation: dash 3s linear infinite;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+.device-cable {
+  stroke-dasharray: 2 1;
+  animation: deviceFlow 2s linear infinite;
+}
+
+@keyframes deviceFlow {
+  to {
+    stroke-dashoffset: -10;
+  }
+}
+
+.device-group {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.device-group:hover {
+  transform: scale(1.1);
+}
+
+.device-circle.active {
+  animation: devicePulse 2s ease-in-out infinite;
+}
+
+@keyframes devicePulse {
+  0%, 100% { 
+    filter: brightness(1);
+  }
+  50% { 
+    filter: brightness(1.3);
+  }
+}
+
+.device-circle.inactive {
+  opacity: 0.5;
+}
+
+.device-icon {
+  font-family: 'Inter', sans-serif;
+  font-weight: bold;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.device-info text {
+  font-family: 'Inter', sans-serif;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.room-stats rect {
+  transition: all 0.3s ease;
+}
+
+.room-stats:hover rect {
+  transform: scale(1.05);
+}
+
+/* ===== PANEL DE ESTADÍSTICAS ===== */
+.house-stats {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  height: fit-content;
+  position: sticky;
+  top: 2rem;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.stat-item:last-child {
+  border-bottom: none;
+}
+
+.stat-icon {
+  font-size: 1.5rem;
+  color: var(--color-primary);
+  min-width: 24px;
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.25rem;
+}
+
+.stat-value {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* ===== MENSAJE SIN DISPOSITIVOS ===== */
+.no-devices-message {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-muted);
+  background: var(--bg-card);
+  border: 2px dashed var(--border-color);
+  border-radius: 12px;
+  margin-top: 2rem;
+}
+
+.no-devices-message svg {
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.no-devices-message h3 {
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.no-devices-message p {
+  max-width: 400px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ===== ANIMACIONES ESPECIALES ===== */
+@keyframes electricFlow {
+  0% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: 20; }
+}
+
+@keyframes deviceGlow {
+  0%, 100% { 
+    filter: drop-shadow(0 0 3px currentColor);
+  }
+  50% { 
+    filter: drop-shadow(0 0 8px currentColor);
+  }
+}
+
+/* Efectos especiales para dispositivos activos */
+.device-group.high-consumption .device-circle {
+  animation: deviceGlow 1s ease-in-out infinite;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 1024px) {
+  .house-plan-wrapper {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .house-stats {
+    position: static;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  
+  .stat-item {
+    padding: 0.75rem 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .house-plan-container {
+    padding: 1rem;
+  }
+  
+  .house-plan-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .legend {
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .house-plan-svg {
+    padding: 0.5rem;
+  }
+  
+  .house-stats {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+  }
+  
+  .stat-item {
+    padding: 0.5rem 0;
+  }
+  
+  .stat-value {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .legend {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .legend-item {
+    justify-content: center;
+  }
+}
+
+/* ===== TEMA OSCURO ESPECÍFICO ===== */
+.house-plan-container.dark .house-plan-svg {
+  background: var(--bg-surface);
+}
+
+.house-plan-container.dark .main-cable {
+  stroke: url(#electricFlow);
+  filter: drop-shadow(0 0 3px #3b82f6);
+}
+
+.house-plan-container.dark .device-cable {
+  filter: drop-shadow(0 0 2px currentColor);
+}
+
+.house-plan-container.dark .electrical-panel rect {
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+}
+
+/* ===== TEMA CLARO ESPECÍFICO ===== */
+.house-plan-container.light .house-plan-svg {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+}
+
+.house-plan-container.light .room-area {
+  fill: rgba(59, 130, 246, 0.05);
+}
+
+.house-plan-container.light .main-cable {
+  stroke: #3b82f6;
+  filter: drop-shadow(0 1px 2px rgba(59, 130, 246, 0.2));
+}
+
+/* ===== EFECTOS HOVER MEJORADOS ===== */
+.device-group:hover .device-info text {
+  font-weight: bold;
+}
+
+.electrical-panel:hover text {
+  animation: bounce 0.5s ease-in-out;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-1px); }
+}
+
+/* ===== TOOLTIPS PARA DISPOSITIVOS ===== */
+.device-group {
+  position: relative;
+}
+
+.device-group:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow);
+  z-index: 1000;
+  pointer-events: none;
+  white-space: nowrap;
+}
