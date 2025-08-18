@@ -1,6 +1,10 @@
 import React, { useState, useEffect, createContext } from 'react';
 import axios from 'axios';
 import './App_new.css';
+import './styles/theme.css';
+import { ThemeProvider, useTheme } from './contexts/ThemeContext';
+import ThemeToggle from './components/ThemeToggle';
+import LoginBackground from './components/LoginBackground';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -76,6 +80,18 @@ const API_BASE = process.env.NODE_ENV === 'production'
   ? 'https://energiapp-tfb.onrender.com'
   : 'http://localhost:3001';
 
+// Helper function para colores de gráficos según tema
+const getChartColors = (isDarkMode) => ({
+  primary: isDarkMode ? '#3b82f6' : '#2563eb',
+  secondary: isDarkMode ? '#10b981' : '#059669',
+  tertiary: isDarkMode ? '#f59e0b' : '#d97706',
+  quaternary: isDarkMode ? '#ef4444' : '#dc2626',
+  grid: isDarkMode ? '#374151' : '#e5e7eb',
+  text: isDarkMode ? '#cbd5e1' : '#374151',
+  background: isDarkMode ? 'rgba(59, 130, 246, 0.1)' : 'rgba(37, 99, 235, 0.1)',
+  backgroundSecondary: isDarkMode ? 'rgba(16, 185, 129, 0.1)' : 'rgba(5, 150, 105, 0.1)'
+});
+
 // Context para manejo de autenticación
 const AuthContext = createContext();
 
@@ -141,7 +157,7 @@ const LoginForm = ({ onLogin }) => {
   };
 
   return (
-    <div className="login-container">
+    <LoginBackground>
       <div className="login-form">
         <h1><FaBolt /> EnergiApp</h1>
         <h2>{isRegister ? 'Crear Cuenta' : 'Iniciar Sesión'}</h2>
@@ -198,8 +214,8 @@ const LoginForm = ({ onLogin }) => {
           </button>
         </p>
         
-        <div className="demo-users">
-          <h3>Usuarios de prueba:</h3>
+        <div className="demo-info">
+          <h4>Usuarios de prueba:</h4>
           <div style={{ marginBottom: '10px' }}>
             <p><strong>👤 Usuario Normal:</strong></p>
             <p>Usuario: usuario1</p>
@@ -214,12 +230,15 @@ const LoginForm = ({ onLogin }) => {
           </div>
         </div>
       </div>
-    </div>
+    </LoginBackground>
   );
 };
 
 // Componente principal de la aplicación autenticada
 function AuthenticatedApp({ user, token, onLogout }) {
+  const { isDarkMode } = useTheme();
+  const chartColors = getChartColors(isDarkMode);
+  
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -2575,9 +2594,9 @@ Con subvenciones: ROI 5-6 años`;
       datasets: [{
         label: 'Consumo (kWh)',
         data: generateMonthlyData(),
-        backgroundColor: 'rgba(75, 192, 192, 0.8)',
-        borderColor: 'rgba(75, 192, 192, 1)',
-        borderWidth: 1
+        backgroundColor: chartColors.background,
+        borderColor: chartColors.primary,
+        borderWidth: 2
       }]
     };
 
@@ -2589,7 +2608,8 @@ Con subvenciones: ROI 5-6 años`;
         },
         title: {
           display: true,
-          text: 'Evolución Mensual del Consumo'
+          text: 'Evolución Mensual del Consumo',
+          color: chartColors.text
         }
       },
       scales: {
@@ -2597,7 +2617,22 @@ Con subvenciones: ROI 5-6 años`;
           beginAtZero: true,
           title: {
             display: true,
-            text: 'Consumo (kWh)'
+            text: 'Consumo (kWh)',
+            color: chartColors.text
+          },
+          ticks: {
+            color: chartColors.text
+          },
+          grid: {
+            color: chartColors.grid
+          }
+        },
+        x: {
+          ticks: {
+            color: chartColors.text
+          },
+          grid: {
+            color: chartColors.grid
           }
         }
       }
@@ -3120,13 +3155,21 @@ function App() {
   };
 
   if (!user) {
-    return <LoginForm onLogin={handleLogin} />;
+    return (
+      <ThemeProvider>
+        <ThemeToggle />
+        <LoginForm onLogin={handleLogin} />
+      </ThemeProvider>
+    );
   }
 
   return (
-    <AuthContext.Provider value={{ user, token, logout: handleLogout }}>
-      <AuthenticatedApp user={user} token={token} onLogout={handleLogout} />
-    </AuthContext.Provider>
+    <ThemeProvider>
+      <ThemeToggle />
+      <AuthContext.Provider value={{ user, token, logout: handleLogout }}>
+        <AuthenticatedApp user={user} token={token} onLogout={handleLogout} />
+      </AuthContext.Provider>
+    </ThemeProvider>
   );
 }
 
